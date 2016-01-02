@@ -1,76 +1,56 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.Management.KeyVault;
 
 namespace AzureKeyVaultManager.KeyVaultWrapper
 {
-    public class KeyVaultSecret
+    public class KeyVaultSecret : KeyVaultTreeItem
     {
+        public override string Header => Name;
+
+        public override ObservableCollection<KeyVaultTreeItem> Children
+        {
+            get
+            {
+                return new ObservableCollection<KeyVaultTreeItem>(_secrets);
+            }
+        }
+
         private KeyVaultClient Client { get; }
-        private SecretItem SecretItem { get; }
+        public SecretItem CurrentVersion { get; }
 
-        public string Name => SecretItem.Identifier.Name;
-        public SecretIdentifier Identifier => SecretItem.Identifier;
+        public string Name => CurrentVersion.Identifier.Name;
 
-        public SecretAttributes Attributes
-        {
-            get { return SecretItem.Attributes; }
-            set { SecretItem.Attributes = value; }
-        }
+        private List<KeyVaultTreeItem> _secrets = new List<KeyVaultTreeItem>();
 
-        public Dictionary<string, string> Tags => SecretItem.Tags;
-
-        public string ContentType
-        {
-            get { return SecretItem.ContentType; }
-            set { SecretItem.ContentType = value; }
-        }
-
-        public KeyVaultSecret(KeyVaultClient client, SecretItem secretItem)
+        internal KeyVaultSecret(KeyVaultClient client, SecretItem secret)
         {
             Client = client;
-            SecretItem = secretItem;
+            CurrentVersion = secret;
         }
 
-        public async Task Delete()
+        public async Task<List<SecretItem>> GetVersions()
         {
-            await Client.DeleteSecretAsync(SecretItem.Identifier.Vault, Name);
-        }
-
-        public async Task Update()
-        {
-            await Client.UpdateSecretAsync(SecretItem.Identifier.Identifier, SecretItem.ContentType, Attributes, Tags);
-        }
-        
-        public async Task<string> GetValue()
-        {
-            return (await Client.GetSecretAsync(SecretItem.Identifier.Identifier)).Value;
-        }
-
-        public async Task<string> GetValue(string version)
-        {
-            return (await Client.GetSecretAsync(SecretItem.Identifier.Vault, Name, version)).Value;
-        }
-
-        public async Task<string> SetValue(string value)
-        {
-            return (await Client.SetSecretAsync(SecretItem.Identifier.Vault, Name, value)).SecretIdentifier.Version;
-        }
-
-        public async Task<List<string>> GetVersions()
-        {
-            // todo: change the UI to use versions across the whole pane *facepalm*
-            var response = await Client.GetSecretVersionsAsync(SecretItem.Identifier.Vault, Name);
-            var versions = new List<string>(response.Value.Select(s => s.Identifier.Version));
+            var response = await Client.GetSecretVersionsAsync(CurrentVersion.Identifier.Vault, Name);
+            var versions = new List<SecretItem>(response.Value);
 
             string nextLink = response.NextLink;
             while (!string.IsNullOrEmpty(response.NextLink))
             {
                 var nextResponse = await Client.GetSecretVersionsNextAsync(nextLink);
-                versions.AddRange(nextResponse.Value.Select(s => s.Identifier.Version));
+                versions.AddRange(nextResponse.Value);
                 nextLink = response.NextLink;
             }
+
+            _secrets = versions.Select(s => (KeyVaultTreeItem)new KeyVaultSecretVersion(Client, s)).ToList();
+            var valueTasks = new List<Task>();
+            foreach (KeyVaultSecretVersion secret in _secrets)
+                valueTasks.Add(secret.GetValue(secret.Identifier.Version));
+            await Task.WhenAll(valueTasks.ToArray());
+
             return versions;
         }
     }

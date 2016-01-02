@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AzureKeyVaultManager"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:self="clr-namespace:AzureKeyVaultManager.KeyVaultWrapper"
         mc:Ignorable="d"
-        Title="Azure Key Vault Manager" Height="500" Width="725"
+        Title="Azure Key Vault Manager" Height="600" Width="725"
         BorderBrush="{DynamicResource AccentColorBrush}"
         BorderThickness="1">
     <controls:MetroWindow.RightWindowCommands>
@@ -23,7 +24,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="320" />
             </Grid.ColumnDefinitions>
-            <TreeView Name="vaultList" Grid.Row="0" Grid.Column="0" />
+            <local:KeyVaultTreeControl x:Name="keyVaultTree" />
             <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center">
                 <Button Click="CreateKey_Click" Width="90" Margin="4 0 8 0">Create Key</Button>
                 <Button Click="CreateSecret_Click" Width="90" Margin="4 0 8 0">Create Secret</Button>

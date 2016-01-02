@@ -21,7 +21,7 @@ namespace AzureKeyVaultManager
     /// </summary>
     public partial class KeyViewer : UserControl
     {
-        public KeyViewer(KeyVaultKey key)
+        public KeyViewer(KeyVaultKeyVersion key)
         {
             InitializeComponent();
             DataContext = key;

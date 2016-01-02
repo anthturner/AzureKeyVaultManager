@@ -1,99 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.KeyVault;
-using Microsoft.Azure.KeyVault.WebKey;
 
 namespace AzureKeyVaultManager.KeyVaultWrapper
 {
-    public class KeyVaultKey
+    public class KeyVaultKey : KeyVaultTreeItem
     {
-        private KeyVaultClient Client { get; }
-        private KeyItem KeyItem { get; set; }
-        
-        public string Name => KeyItem.Identifier.Name;
-        public KeyIdentifier Identifier => KeyItem.Identifier;
-        public KeyAttributes Attributes => KeyItem.Attributes;
+        public override string Header => Name;
 
-        public Dictionary<string, string> Tags => KeyItem.Tags;
+        public override ObservableCollection<KeyVaultTreeItem> Children
+        {
+            get
+            {
+                return new ObservableCollection<KeyVaultTreeItem>(_keys);
+            }
+        }
+
+        private KeyVaultClient Client { get; }
+        public KeyItem CurrentVersion { get; private set; }
+        
+        public string Name => CurrentVersion.Identifier.Name;
+        public KeyIdentifier Identifier => CurrentVersion.Identifier;
+        public KeyAttributes Attributes => CurrentVersion.Attributes;
+
+        private List<KeyVaultTreeItem> _keys = null;
         
         public KeyVaultKey(KeyVaultClient client, KeyItem keyItem)
         {
             Client = client;
-            KeyItem = keyItem;
+            CurrentVersion = keyItem;
         }
 
-        public async Task Delete()
+        public async Task<List<KeyItem>> GetVersions()
         {
-            await Client.DeleteKeyAsync(KeyItem.Identifier.Vault, KeyItem.Identifier.Name);
-        }
+            var response = await Client.GetKeyVersionsAsync(CurrentVersion.Identifier.Vault, Name);
+            var versions = new List<KeyItem>(response.Value);
 
-        public async Task<byte[]> Backup()
-        {
-            return await Client.BackupKeyAsync(KeyItem.Identifier.Vault, Name);
-        }
-
-        public async Task Restore(byte[] backup)
-        {
-            var keyBundle = await Client.RestoreKeyAsync(KeyItem.Identifier.Vault, backup);
-            KeyItem = new KeyItem()
+            string nextLink = response.NextLink;
+            while (!string.IsNullOrEmpty(response.NextLink))
             {
-                Attributes = keyBundle.Attributes,
-                Kid = keyBundle.KeyIdentifier.Identifier,
-                Tags = keyBundle.Tags
-            };
-        }
+                var nextResponse = await Client.GetKeyVersionsNextAsync(nextLink);
+                versions.AddRange(nextResponse.Value);
+                nextLink = response.NextLink;
+            }
 
-        public async Task<JsonWebKey> GetValue()
-        {
-            return (await Client.GetKeyAsync(KeyItem.Identifier.Identifier)).Key;
-        }
+            _keys = versions.Select(s => (KeyVaultTreeItem)new KeyVaultKeyVersion(Client, s)).ToList();
 
-        public async Task<byte[]> Sign(KeyVaultAlgorithm algorithm, byte[] digest)
-        {
-            if (!algorithm.CanSignOrVerify())
-                throw new InvalidOperationException("Cannot sign with this algorithm type.");
-            return (await Client.SignAsync(KeyItem.Identifier.Identifier, algorithm.GetConfigurationString(), digest)).Result;
-        }
-
-        public async Task<bool> Verify(KeyVaultAlgorithm algorithm, byte[] digest, byte[] signature)
-        {
-            if (!algorithm.CanSignOrVerify())
-                throw new InvalidOperationException("Cannot verify with this algorithm type.");
-            return await Client.VerifyAsync(KeyItem.Identifier.Identifier, algorithm.GetConfigurationString(), digest, signature);
-        }
-
-        public async Task<byte[]> Decrypt(KeyVaultAlgorithm algorithm, byte[] cipherText)
-        {
-            if (!algorithm.CanCryptOrWrap())
-                throw new InvalidOperationException("Cannot decrypt with this algorithm type.");
-            return (await Client.DecryptAsync(KeyItem.Identifier.Identifier, algorithm.GetConfigurationString(), cipherText)).Result;
-        }
-
-        public async Task<byte[]> Encrypt(KeyVaultAlgorithm algorithm, byte[] plainText)
-        {
-            if (!algorithm.CanCryptOrWrap())
-                throw new InvalidOperationException("Cannot encrypt with this algorithm type.");
-            return (await Client.EncryptAsync(KeyItem.Identifier.Identifier, algorithm.GetConfigurationString(), plainText)).Result;
-        }
-
-        public async Task<byte[]> Wrap(KeyVaultAlgorithm algorithm, byte[] key)
-        {
-            if (!algorithm.CanCryptOrWrap())
-                throw new InvalidOperationException("Cannot wrap with this algorithm type.");
-            return (await Client.WrapKeyAsync(KeyItem.Identifier.Identifier, algorithm.GetConfigurationString(), key)).Result;
-        }
-
-        public async Task<byte[]> Unwrap(KeyVaultAlgorithm algorithm, byte[] wrappedKey)
-        {
-            if (!algorithm.CanCryptOrWrap())
-                throw new InvalidOperationException("Cannot unwrap with this algorithm type.");
-            return (await Client.UnwrapKeyAsync(KeyItem.Identifier.Identifier, algorithm.GetConfigurationString(), wrappedKey)).Result;
-        }
-
-        public async Task Update()
-        {
-            await Client.UpdateKeyAsync(KeyItem.Identifier.Identifier, null, Attributes, Tags);
+            return versions;
         }
     }
 }

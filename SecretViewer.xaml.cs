@@ -10,27 +10,10 @@ namespace AzureKeyVaultManager
     /// </summary>
     public partial class SecretViewer : UserControl
     {
-        public SecretViewer(KeyVaultSecret secret)
+        public SecretViewer(KeyVaultSecretVersion secret)
         {
             DataContext = secret;
             InitializeComponent();
-
-            Loaded += async (sender, args) =>
-            {
-                secretVersion.Items.Clear();
-                var versions = await secret.GetVersions();
-                versions.ForEach(v => secretVersion.Items.Add(new ComboBoxItem() { Content = v }));
-
-                attributeViewer.SecretAttributes = secret.Attributes;
-                attributeViewer.Tags = secret.Tags;
-            };
-        }
-
-        private async void Update_OnClick(object sender, RoutedEventArgs e)
-        {
-            attributeViewer.UpdateSecretAttributes();
-            ((KeyVaultSecret) DataContext).Attributes = attributeViewer.SecretAttributes;
-            await ((KeyVaultSecret) DataContext).Update();
         }
 
         private async void Delete_OnClick(object sender, RoutedEventArgs e)
@@ -39,7 +22,7 @@ namespace AzureKeyVaultManager
             var result = await window.ShowMessageAsync("Confirm", "Are you sure you want to delete this secret?", MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
-                await ((KeyVaultSecret) DataContext).Delete();
+                //await ((KeyVaultSecret) DataContext).Delete();
                 window.ClearActivePane();
             }
         }
@@ -51,13 +34,13 @@ namespace AzureKeyVaultManager
             string newVersion = "";
             if (result == MessageDialogResult.Affirmative)
             {
-                newVersion = await ((KeyVaultSecret)DataContext).SetValue(value.Text);
+                //newVersion = await ((KeyVaultSecret)DataContext).SetValue(value.Text);
             }
 
             var newItem = new ComboBoxItem() {Content = newVersion};
-            secretVersion.Items.Add(newItem);
+            //secretVersion.Items.Add(newItem);
 
-            secretVersion.SelectedItem = newItem;
+            //secretVersion.SelectedItem = newItem;
         }
 
         private async void Version_Changed(object sender, SelectionChangedEventArgs e)
@@ -65,7 +48,7 @@ namespace AzureKeyVaultManager
             if (e.AddedItems != null)
             {
                 var version = (string) ((ComboBoxItem) e.AddedItems[0]).Content;
-                value.Text = await ((KeyVaultSecret) DataContext).GetValue(version);
+                //value.Text = await ((KeyVaultSecret) DataContext).GetValue(version);
                 saveButton.IsEnabled = true;
             }
             else

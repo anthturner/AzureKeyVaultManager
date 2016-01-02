@@ -12,10 +12,20 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
 {
     public class KeyVaultService
     {
-        public List<Tuple<string, string>> Vaults { get; private set; }
+        public List<KeyVault> Vaults { get; private set; }
 
         private KeyVaultManagementClient VaultManagementClient { get; }
         private KeyVaultClient VaultClient { get; }
+
+        public static CancellationToken GetTimeoutToken(TimeSpan timeout = new TimeSpan())
+        {
+            if (timeout.Ticks == 0)
+                timeout = new TimeSpan(0,0,10); // default is 10s
+
+            var cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(timeout);
+            return cancellationTokenSource.Token;
+        }
 
         public KeyVaultService(SubscriptionCloudCredentials credentials)
         {
@@ -23,29 +33,46 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
             VaultClient = new KeyVaultClient(GetKeyVaultAccessToken);
         }
         
-        public async Task<KeyVault> GetKeyVault(string resourceGroup, string name)
+        public async Task<KeyVault> GetKeyVault(string resourceGroup, string name, CancellationToken cancellationToken)
         {
-            var vault = (await VaultManagementClient.Vaults.GetAsync(resourceGroup, name)).Vault;
+            var vault = (await VaultManagementClient.Vaults.GetAsync(resourceGroup, name, cancellationToken)).Vault;
             return new KeyVault(VaultClient, vault);
         }
 
         public async Task RefreshVaults()
         {
-            Vaults = new List<Tuple<string, string>>();
+            Vaults = new List<KeyVault>();
 
             var resourceGroups = await AdalHelper.Instance.GetResourceGroups();
+            var resourceGroupTasks = new List<Task>();
             foreach (var group in resourceGroups)
             {
-                var response = await VaultManagementClient.Vaults.ListAsync(group, 50, CancellationToken.None);
-                Vaults.AddRange(response.Vaults.Select(v => Tuple.Create(group, v.Name)));
-                string nextLink = response.NextLink;
-                while (!string.IsNullOrEmpty(response.NextLink))
+                resourceGroupTasks.Add(Task.Run(async () =>
                 {
-                    var nextResponse = await VaultManagementClient.Vaults.ListNextAsync(nextLink, CancellationToken.None);
-                    Vaults.AddRange(nextResponse.Vaults.Select(v => Tuple.Create(group, v.Name)));
-                    nextLink = response.NextLink;
-                }
+                    var response = await VaultManagementClient.Vaults.ListAsync(group, 50, KeyVaultService.GetTimeoutToken());
+
+                    foreach (var vaultDescriptor in response.Vaults)
+                    {
+                        try
+                        {
+                            Vaults.Add(new KeyVault(VaultClient, (await VaultManagementClient.Vaults.GetAsync(group, vaultDescriptor.Name, KeyVaultService.GetTimeoutToken())).Vault));
+                        }
+                        catch (Exception ex)
+                        {
+                        }
+                    }
+
+                    string nextLink = response.NextLink;
+                    while (!string.IsNullOrEmpty(response.NextLink))
+                    {
+                        var nextResponse = await VaultManagementClient.Vaults.ListNextAsync(nextLink, KeyVaultService.GetTimeoutToken());
+                        foreach (var vaultDescriptor in nextResponse.Vaults)
+                            Vaults.Add(new KeyVault(VaultClient, (await VaultManagementClient.Vaults.GetAsync(group, vaultDescriptor.Name, KeyVaultService.GetTimeoutToken())).Vault));
+                        nextLink = response.NextLink;
+                    }
+                }));
             }
+            await Task.WhenAll(resourceGroupTasks.ToArray());
         }
 
         private async Task<string> GetKeyVaultAccessToken(string authority, string resource, string scope)

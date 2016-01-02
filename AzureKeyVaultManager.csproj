@@ -208,6 +208,12 @@
       <DependentUpon>BlankViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileCache.cs" />
+    <Compile Include="KeyVaultTreeControl.xaml.cs">
+      <DependentUpon>KeyVaultTreeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="KeyVaultWrapper\KeyVaultKeyVersion.cs" />
+    <Compile Include="KeyVaultWrapper\KeyVaultSecretVersion.cs" />
+    <Compile Include="KeyVaultWrapper\KeyVaultTreeItem.cs" />
     <Compile Include="KeyVaultWrapper\KeyVaultAlgorithm.cs" />
     <Compile Include="KeyVaultWrapper\KeyVaultKey.cs" />
     <Compile Include="KeyVaultWrapper\KeyVaultSecret.cs" />
@@ -222,6 +228,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="BlankViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="KeyVaultTreeControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
