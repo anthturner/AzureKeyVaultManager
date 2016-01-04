@@ -1,10 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using AzureKeyVaultManager.KeyVaultWrapper;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Azure;
+using Microsoft.Azure.KeyVault;
 
 namespace AzureKeyVaultManager
 {
@@ -13,10 +16,12 @@ namespace AzureKeyVaultManager
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        public static MainWindow Instance { get; private set; }
         private KeyVaultService Service { get; set; }
 
         public MainWindow()
         {
+            Instance = this;
             InitializeComponent();
             
             Loaded += async (sender, args) =>
@@ -27,14 +32,90 @@ namespace AzureKeyVaultManager
                 Service = new KeyVaultService(new TokenCloudCredentials
                             (AdalHelper.Subscription, AdalHelper.Instance.GetAccessToken()));
 
-                await Refresh_Click(progressDialog);
+                keyVaultTree.Service = Service;
+                await keyVaultTree.Refresh(progressDialog);
                 await progressDialog.CloseAsync();
 
+                keyVaultTree.NothingSelected += (o, eventArgs) => SetDetailPane(new BlankViewer());
                 keyVaultTree.VaultSelected += (o, vault) => SetDetailPane(new BlankViewer());
-                keyVaultTree.SecretSelected += (o, secret) => SetDetailPane(new BlankViewer());
-                keyVaultTree.SecretVersionSelected += (o, secretVersion) => SetDetailPane(new SecretViewer(secretVersion));
-                keyVaultTree.KeySelected += (o, key) => SetDetailPane(new BlankViewer());
-                keyVaultTree.KeyVersionSelected += (o, keyVersion) => SetDetailPane(new KeyViewer(keyVersion));
+                keyVaultTree.SecretSelected += (o, secretVersion) => SetDetailPane(new SecretViewer(secretVersion));
+                keyVaultTree.KeySelected += (o, keyVersion) => SetDetailPane(new KeyViewer(keyVersion));
+
+                keyVaultTree.SecretCreating += async (o, vault) =>
+                {
+                    var createDlg = new CreateSecret();
+                    createDlg.Owner = this;
+                    var dlg = createDlg.ShowDialog();
+                    if (dlg.GetValueOrDefault(false))
+                    {
+                        await vault.CreateSecret(createDlg.SecretName, createDlg.Value, new SecretAttributes()
+                        {
+                            Enabled = createDlg.Enabled,
+                            Expires = createDlg.Expires,
+                            NotBefore = createDlg.NotBefore
+                        });
+                        var item = keyVaultTree.GetItemByContext(vault);
+                        item.IsExpanded = false;
+                        item.IsExpanded = true;
+                    }
+                };
+
+                keyVaultTree.KeyCreating += async (o, vault) =>
+                {
+                    var createDlg = new CreateKey();
+                    createDlg.Owner = this;
+                    var dlg = createDlg.ShowDialog();
+                    if (dlg.GetValueOrDefault(false))
+                    {
+                        await vault.CreateKey(createDlg.KeyName, createDlg.Operations, new KeyAttributes()
+                        {
+                            Enabled = createDlg.Enabled,
+                            Expires = createDlg.Expires,
+                            NotBefore = createDlg.NotBefore
+                        });
+                        var item = keyVaultTree.GetItemByContext(vault);
+                        item.IsExpanded = false;
+                        item.IsExpanded = true;
+                    }
+                };
+
+                keyVaultTree.VaultDeleting += async (o, vault) =>
+                {
+                    var result = await this.ShowMessageAsync("Confirm", "Are you sure you want to delete this vault? ALL keys and secrets will be deleted!", MessageDialogStyle.AffirmativeAndNegative);
+                    if (result == MessageDialogResult.Affirmative)
+                    {
+                        await vault.Delete();
+                        await keyVaultTree.Refresh();
+                    }
+                };
+
+                keyVaultTree.SecretDeleting += async (o, secret) =>
+                {
+                    var result = await this.ShowMessageAsync("Confirm", "Are you sure you want to delete this secret? ALL versions will be deleted!", MessageDialogStyle.AffirmativeAndNegative);
+                    if (result == MessageDialogResult.Affirmative)
+                    {
+                        var item = keyVaultTree.GetItemByContext(keyVaultTree.GetCurrent<KeyVault>());
+                        await secret.Delete();
+                        item.IsExpanded = false;
+                        item.Items.Clear();
+                        item.Items.Add("Loading");
+                        item.IsExpanded = true;
+                    }
+                };
+
+                keyVaultTree.KeyDeleting += async (o, key) =>
+                {
+                    var result = await this.ShowMessageAsync("Confirm", "Are you sure you want to delete this key? ALL versions will be deleted!", MessageDialogStyle.AffirmativeAndNegative);
+                    if (result == MessageDialogResult.Affirmative)
+                    {
+                        var item = keyVaultTree.GetItemByContext(keyVaultTree.GetCurrent<KeyVault>());
+                        await key.Delete();
+                        item.IsExpanded = false;
+                        item.Items.Clear();
+                        item.Items.Add("Loading");
+                        item.IsExpanded = true;
+                    }
+                };
             };
         }
 
@@ -42,53 +123,6 @@ namespace AzureKeyVaultManager
         {
             detailPane.Children.Clear();
             detailPane.Children.Add(control);
-        }
-
-        public void ClearActivePane()
-        {
-            // todo: deal with redrawing the vault list
-            detailPane.Children.Clear();
-            detailPane.Children.Add(new BlankViewer());
-        }
-
-        private async void CreateKey_Click(object sender, RoutedEventArgs e)
-        {
-            if (keyVaultTree.SelectedVault == null)
-                return;
-
-            keyVaultTree.GetItemByContext(keyVaultTree.SelectedVault).IsExpanded = false;
-        }
-
-        private async void CreateSecret_Click(object sender, RoutedEventArgs e)
-        {
-            if (keyVaultTree.SelectedVault == null)
-                return;
-
-            var secretName = await this.ShowInputAsync("New Secret", "Enter the name of the new secret.");
-            await keyVaultTree.SelectedVault.CreateSecret(secretName, "New Secret");
-
-            keyVaultTree.GetItemByContext(keyVaultTree.SelectedVault).IsExpanded = false;
-        }
-        
-        private async void Refresh_Click(object sender = null, RoutedEventArgs e = null)
-        {
-            var progressDialog = await this.ShowProgressAsync("Loading", "");
-            progressDialog.SetIndeterminate();
-
-            await Refresh_Click(progressDialog);
-            await progressDialog.CloseAsync();
-        }
-
-        private async Task Refresh_Click(ProgressDialogController controller)
-        {
-            detailPane.Children.Clear();
-            detailPane.Children.Add(new BlankViewer());
-
-            controller.SetMessage("Refreshing Key Vault list...");
-
-            await Service.RefreshVaults();
-
-            keyVaultTree.Vaults = Service.Vaults;
         }
 
         private void LogOut_Click(object sender, RoutedEventArgs e)

@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
 using AzureKeyVaultManager.KeyVaultWrapper;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace AzureKeyVaultManager
 {
@@ -12,23 +17,13 @@ namespace AzureKeyVaultManager
     /// </summary>
     public partial class KeyVaultTreeControl : TreeView
     {
-        public List<KeyVault> Vaults
-        {
-            get { return (List<KeyVault>) ((List<TreeViewItem>)ItemsSource).Select(src => (KeyVault)src.DataContext).ToList(); }
-            set { ItemsSource = value.Select(vault => CreateTreeItem(vault, CreateVaultContextMenu())); }
-        }
-
         public KeyVault SelectedVault => GetCurrent<KeyVault>();
         public KeyVaultSecret SelectedSecret => GetCurrent<KeyVaultSecret>();
         public KeyVaultKey SelectedKey => GetCurrent<KeyVaultKey>();
-        public KeyVaultSecretVersion SelectedSecretVersion => GetCurrent<KeyVaultSecretVersion>();
-        public KeyVaultKeyVersion SelectedKeyVersion => GetCurrent<KeyVaultKeyVersion>();
 
         public event EventHandler<KeyVault> VaultSelected;
         public event EventHandler<KeyVaultKey> KeySelected;
-        public event EventHandler<KeyVaultKeyVersion> KeyVersionSelected;
         public event EventHandler<KeyVaultSecret> SecretSelected;
-        public event EventHandler<KeyVaultSecretVersion> SecretVersionSelected;
 
         public event EventHandler<KeyVault> KeyCreating;
         public event EventHandler<KeyVault> SecretCreating;
@@ -38,9 +33,51 @@ namespace AzureKeyVaultManager
 
         public event EventHandler<KeyVault> VaultDeleting;
 
+        public event EventHandler NothingSelected;
+
+        public KeyVaultService Service { get; set; }
+
         public KeyVaultTreeControl()
         {
             InitializeComponent();
+
+            ContextMenu = new ContextMenu();
+            var secretDelete = new MenuItem() { Header = "Refresh All" };
+            secretDelete.Click += async (sender, args) =>
+            {
+                await Refresh();
+                NothingSelected?.Invoke(this, null);
+            };
+
+            ContextMenu.Items.Add(secretDelete);
+
+            this.PreviewMouseRightButtonDown += (sender, args) =>
+            {
+                TreeViewItem treeViewItem = VisualUpwardSearch(args.OriginalSource as DependencyObject);
+
+                if (treeViewItem != null)
+                {
+                    treeViewItem.Focus();
+                    args.Handled = true;
+                }
+            };
+        }
+
+        static TreeViewItem VisualUpwardSearch(DependencyObject source)
+        {
+            while (source != null && !(source is TreeViewItem))
+                source = VisualTreeHelper.GetParent(source);
+
+            return source as TreeViewItem;
+        }
+
+        internal async Task SetVaults(List<KeyVault> vaults)
+        {
+            ItemsSource = new ObservableCollection<TreeViewItem>();
+            foreach (var vault in vaults)
+            {
+                ((ObservableCollection<TreeViewItem>)ItemsSource).Add(await CreateTreeItem(vault, CreateVaultContextMenu()));
+            }
         }
 
         private async void TreeViewItem_OnExpanded(object sender, RoutedEventArgs e)
@@ -52,24 +89,38 @@ namespace AzureKeyVaultManager
 
                 if (item.DataContext is KeyVault)
                 {
-                    await ((KeyVault) item.DataContext).ListSecrets();
-                    await ((KeyVault) item.DataContext).ListKeys();
+                    try
+                    {
+                        await ((KeyVault) item.DataContext).ListSecrets();
+                    }
+                    catch (Exception ex)
+                    {
+                        await MainWindow.Instance.ShowMessageAsync("Error", $"Error listing secrets from vault. ({ex.Message})");
+                    }
+
+                    try
+                    {
+                        await ((KeyVault)item.DataContext).ListKeys();
+                    }
+                    catch (Exception ex)
+                    {
+                        await MainWindow.Instance.ShowMessageAsync("Error", $"Error listing keys from vault. ({ex.Message})");
+                    }
 
                     foreach (var vaultChild in ((KeyVault) item.DataContext).Children)
-                        item.Items.Add(CreateTreeItem(vaultChild,
+                        item.Items.Add(await CreateTreeItem(vaultChild,
                             vaultChild is KeyVaultKey ? CreateKeyContextMenu() : CreateSecretContextMenu()));
                 }
-                else if (item.DataContext is KeyVaultSecret)
+                else
                 {
-                    await ((KeyVaultSecret) item.DataContext).GetVersions();
-                    foreach (var vaultChild in ((KeyVaultSecret) item.DataContext).Children)
-                        item.Items.Add(CreateTreeItem(vaultChild, null, true));
-                }
-                else if (item.DataContext is KeyVaultKey)
-                {
-                    await ((KeyVaultKey)item.DataContext).GetVersions();
-                    foreach (var vaultChild in ((KeyVaultKey)item.DataContext).Children)
-                        item.Items.Add(CreateTreeItem(vaultChild, null, true));
+                    var parentKey = (KeyVaultItem) item.DataContext;
+                    var versions = (await parentKey.GetVersions()).OrderBy(v => v.Created);
+
+                    foreach (var vaultChild in versions)
+                    {
+                        await vaultChild.PopulateValue();
+                        item.Items.Add(await CreateTreeItem(vaultChild, null, true));
+                    }
                 }
             }
         }
@@ -82,7 +133,7 @@ namespace AzureKeyVaultManager
                 if (itemContext is T && ReferenceEquals(itemContext, context))
                     return item;
                 else
-                    return GetItemByContext<T>(context);
+                    return GetItemByContext<T>((T)itemContext);
             }
             return null;
         }
@@ -104,7 +155,7 @@ namespace AzureKeyVaultManager
                 return null;
         }
 
-        private TreeViewItem CreateTreeItem(KeyVaultTreeItem item, ContextMenu menu = null, bool omitLoading = false)
+        internal async Task<TreeViewItem> CreateTreeItem(KeyVaultTreeItem item, ContextMenu menu = null, bool omitLoading = false)
         {
             var newItem = new TreeViewItem()
             {
@@ -112,6 +163,10 @@ namespace AzureKeyVaultManager
                 ContextMenu = menu,
                 DataContext = item
             };
+            
+            if (item is KeyVaultItem)
+                await ((KeyVaultItem) item).PopulateValue();
+
             if (!omitLoading) newItem.Items.Add("Loading...");
             return newItem;
         }
@@ -127,15 +182,9 @@ namespace AzureKeyVaultManager
 
                 if (selected.DataContext is KeyVaultSecret)
                     SecretSelected?.Invoke(this, (KeyVaultSecret)selected.DataContext);
-
-                if (selected.DataContext is KeyVaultSecretVersion)
-                    SecretVersionSelected?.Invoke(this, (KeyVaultSecretVersion)selected.DataContext);
-
+                
                 if (selected.DataContext is KeyVaultKey)
                     KeySelected?.Invoke(this, (KeyVaultKey)selected.DataContext);
-
-                if (selected.DataContext is KeyVaultKeyVersion)
-                    KeyVersionSelected?.Invoke(this, (KeyVaultKeyVersion)selected.DataContext);
             }
         }
 
@@ -180,6 +229,25 @@ namespace AzureKeyVaultManager
             cxtMenu.Items.Add(secretDelete);
 
             return cxtMenu;
+        }
+
+        public async Task Refresh()
+        {
+            var progressDialog = await MainWindow.Instance.ShowProgressAsync("Loading", "");
+            progressDialog.SetIndeterminate();
+
+            await Refresh(progressDialog);
+            await progressDialog.CloseAsync();
+
+            NothingSelected?.Invoke(this, null);
+        }
+
+        public async Task Refresh(ProgressDialogController controller)
+        {
+            controller.SetMessage("Refreshing Key Vault list...");
+
+            await Service.RefreshVaults();
+            await SetVaults(Service.Vaults);
         }
     }
 }

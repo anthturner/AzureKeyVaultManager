@@ -8,7 +8,7 @@
         xmlns:self="clr-namespace:AzureKeyVaultManager.KeyVaultWrapper"
         mc:Ignorable="d"
         Title="Azure Key Vault Manager" Height="600" Width="725"
-        BorderBrush="{DynamicResource AccentColorBrush}"
+        GlowBrush="{DynamicResource AccentColorBrush}"
         BorderThickness="1">
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
@@ -16,21 +16,7 @@
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
     <DockPanel>
-        <Grid DockPanel.Dock="Left">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="30" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="320" />
-            </Grid.ColumnDefinitions>
-            <local:KeyVaultTreeControl x:Name="keyVaultTree" />
-            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center">
-                <Button Click="CreateKey_Click" Width="90" Margin="4 0 8 0">Create Key</Button>
-                <Button Click="CreateSecret_Click" Width="90" Margin="4 0 8 0">Create Secret</Button>
-                <Button Click="Refresh_Click" Width="90" Margin="4 0 8 0">Refresh</Button>
-            </StackPanel>
-        </Grid>
+        <local:KeyVaultTreeControl DockPanel.Dock="Left" Width="320" x:Name="keyVaultTree" />
         <Grid Margin="10" Name="detailPane">
             <local:BlankViewer />
         </Grid>

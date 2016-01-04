@@ -2,9 +2,9 @@
 
 namespace AzureKeyVaultManager.KeyVaultWrapper
 {
-    public class KeyVaultTreeItem
+    public abstract class KeyVaultTreeItem
     {
-        public virtual string Header => "Account";
+        public abstract string Header { get; }
         public virtual ObservableCollection<KeyVaultTreeItem> Children => new ObservableCollection<KeyVaultTreeItem>();
     }
 }

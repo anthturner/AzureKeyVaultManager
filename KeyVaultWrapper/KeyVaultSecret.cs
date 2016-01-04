@@ -1,40 +1,60 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.KeyVault;
-using Microsoft.Azure.Management.KeyVault;
 
 namespace AzureKeyVaultManager.KeyVaultWrapper
 {
-    public class KeyVaultSecret : KeyVaultTreeItem
+    public class KeyVaultSecret : KeyVaultItem
     {
-        public override string Header => Name;
+        public override string Header => CurrentVersion ? Identifier.Name : Identifier.Version;
+        public bool CurrentVersion { get; private set; }
+        public string Value { get; private set; }
 
-        public override ObservableCollection<KeyVaultTreeItem> Children
+        public KeyVaultSecret(KeyVaultClient client, SecretItem secretItem, bool currentVersion) : base(client, secretItem)
         {
-            get
+            CurrentVersion = currentVersion;
+        }
+
+        public KeyVaultSecret(KeyVaultClient client, Secret secretItem, bool currentVersion) : base(client, secretItem)
+        {
+            CurrentVersion = currentVersion;
+            Value = secretItem.Value;
+        }
+
+        public override async Task Update()
+        {
+            await Client.UpdateSecretAsync(Identifier.Identifier, null, new SecretAttributes() { Enabled = this.Enabled, Expires = this.Expires, NotBefore = this.NotBefore }, Tags);
+        }
+
+        public override async Task Delete()
+        {
+            await Client.DeleteSecretAsync(Identifier.Vault, Identifier.Name);
+        }
+        
+        public override async Task PopulateValue(string version = null, bool force = false)
+        {
+            if (version == null)
+                version = Identifier.Version;
+            if (Value != null && !force)
+                return;
+            try
             {
-                return new ObservableCollection<KeyVaultTreeItem>(_secrets);
+                if (Identifier.Version != null)
+                    Value = (await Client.GetSecretAsync(Identifier.Vault, Identifier.Name, version)).Value;
+                else
+                    Value = (await Client.GetSecretAsync(Identifier.Vault, Identifier.Name)).Value;
+                ValueRetrievalSuccess = true;
+            }
+            catch
+            {
+                ValueRetrievalSuccess = false;
             }
         }
 
-        private KeyVaultClient Client { get; }
-        public SecretItem CurrentVersion { get; }
-
-        public string Name => CurrentVersion.Identifier.Name;
-
-        private List<KeyVaultTreeItem> _secrets = new List<KeyVaultTreeItem>();
-
-        internal KeyVaultSecret(KeyVaultClient client, SecretItem secret)
+        public override async Task<List<KeyVaultItem>> GetVersions()
         {
-            Client = client;
-            CurrentVersion = secret;
-        }
-
-        public async Task<List<SecretItem>> GetVersions()
-        {
-            var response = await Client.GetSecretVersionsAsync(CurrentVersion.Identifier.Vault, Name);
+            var response = await Client.GetSecretVersionsAsync(Identifier.Vault, Identifier.Name);
             var versions = new List<SecretItem>(response.Value);
 
             string nextLink = response.NextLink;
@@ -45,13 +65,12 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
                 nextLink = response.NextLink;
             }
 
-            _secrets = versions.Select(s => (KeyVaultTreeItem)new KeyVaultSecretVersion(Client, s)).ToList();
-            var valueTasks = new List<Task>();
-            foreach (KeyVaultSecretVersion secret in _secrets)
-                valueTasks.Add(secret.GetValue(secret.Identifier.Version));
-            await Task.WhenAll(valueTasks.ToArray());
+            return versions.Select(item => (KeyVaultItem)new KeyVaultSecret(Client, item, false)).ToList();
+        }
 
-            return versions;
+        public async Task<KeyVaultSecret> SetValue(string value)
+        {
+            return new KeyVaultSecret(Client, (await Client.SetSecretAsync(Identifier.Vault, Identifier.Name, value)), true);
         }
     }
 }

@@ -36,7 +36,7 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
         public async Task<KeyVault> GetKeyVault(string resourceGroup, string name, CancellationToken cancellationToken)
         {
             var vault = (await VaultManagementClient.Vaults.GetAsync(resourceGroup, name, cancellationToken)).Vault;
-            return new KeyVault(VaultClient, vault);
+            return new KeyVault(VaultClient, VaultManagementClient, resourceGroup, vault);
         }
 
         public async Task RefreshVaults()
@@ -55,7 +55,7 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
                     {
                         try
                         {
-                            Vaults.Add(new KeyVault(VaultClient, (await VaultManagementClient.Vaults.GetAsync(group, vaultDescriptor.Name, KeyVaultService.GetTimeoutToken())).Vault));
+                            Vaults.Add(new KeyVault(VaultClient, VaultManagementClient, group, (await VaultManagementClient.Vaults.GetAsync(group, vaultDescriptor.Name, KeyVaultService.GetTimeoutToken())).Vault));
                         }
                         catch (Exception ex)
                         {
@@ -67,7 +67,7 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
                     {
                         var nextResponse = await VaultManagementClient.Vaults.ListNextAsync(nextLink, KeyVaultService.GetTimeoutToken());
                         foreach (var vaultDescriptor in nextResponse.Vaults)
-                            Vaults.Add(new KeyVault(VaultClient, (await VaultManagementClient.Vaults.GetAsync(group, vaultDescriptor.Name, KeyVaultService.GetTimeoutToken())).Vault));
+                            Vaults.Add(new KeyVault(VaultClient, VaultManagementClient, group, (await VaultManagementClient.Vaults.GetAsync(group, vaultDescriptor.Name, KeyVaultService.GetTimeoutToken())).Vault));
                         nextLink = response.NextLink;
                     }
                 }));

@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using AzureKeyVaultManager.KeyVaultWrapper;
-using Microsoft.Azure.KeyVault;
 
 namespace AzureKeyVaultManager
 {
@@ -24,29 +23,10 @@ namespace AzureKeyVaultManager
             if (!DateTime.TryParse(activeAfter.Text, out newActiveAfter))
                 throw new Exception("Active After time is in an invalid format.");
 
-            if (DataContext is KeyVaultKeyVersion)
-            {
-                var newAttributes = new KeyAttributes()
-                {
-                    Enabled = enabled.IsChecked,
-                    Expires = newExpiry,
-                    NotBefore = newActiveAfter
-                };
-                ((KeyVaultKeyVersion) DataContext).Attributes = newAttributes;
-                await ((KeyVaultKeyVersion)DataContext).Update();
-            }
+            ((KeyVaultItem) DataContext).Expires = newExpiry;
+            ((KeyVaultItem) DataContext).NotBefore = newActiveAfter;
 
-            if (DataContext is KeyVaultSecretVersion)
-            {
-                var newAttributes = new SecretAttributes()
-                {
-                    Enabled = enabled.IsChecked,
-                    Expires = newExpiry,
-                    NotBefore = newActiveAfter
-                };
-                ((KeyVaultSecretVersion)DataContext).Attributes = newAttributes;
-                await ((KeyVaultSecretVersion)DataContext).Update();
-            }
+            await ((KeyVaultItem) DataContext).Update();
         }
     }
 }

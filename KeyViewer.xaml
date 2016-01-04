@@ -6,34 +6,39 @@
              xmlns:local="clr-namespace:AzureKeyVaultManager"
              xmlns:keyVaultWrapper="clr-namespace:AzureKeyVaultManager.KeyVaultWrapper"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance keyVaultWrapper:KeyVaultKeyVersion}"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DataContext="{d:DesignInstance keyVaultWrapper:KeyVaultKey}"
+             d:DesignHeight="500" d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="290" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="45" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <local:AttributeViewer Grid.Row="0" Grid.Column="0" x:Name="attributeViewer" />
-
-        <GroupBox Grid.Row="1" Grid.Column="0" Header="Secret">
-            <Grid>
+        
+        <GroupBox Grid.Row="1" Grid.Column="0" Header="Key">
+            <Grid IsEnabled="{Binding ValueRetrievalSuccess}">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="25" />
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="28" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="170" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+                <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding CanEncrypt}">Encrypt</CheckBox>
+                <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding CanDecrypt}">Decrypt</CheckBox>
+                <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding CanWrap}">Wrap</CheckBox>
+                <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding CanUnwrap}">Unwrap</CheckBox>
+                <CheckBox Grid.Row="0" Grid.Column="2" IsChecked="{Binding CanSign}">Sign</CheckBox>
+                <CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{Binding CanVerify}">Verify</CheckBox>
 
-                <TextBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Name="value" AcceptsReturn="True" AcceptsTab="True" Text="{Binding Value, Mode=OneWay}"></TextBox>
-                <Label Grid.Row="1" Grid.Column="0" Content="{Binding Identifier.Version}"></Label>
-                <!--<Button Grid.Row="1" Grid.Column="1" Margin="2" IsEnabled="False" Name="saveButton" Click="Set_Secret">Replace Current Version</Button>-->
+                <TextBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" AcceptsTab="True" AcceptsReturn="True" Text="{Binding JsonKey, Mode=OneWay}" />
             </Grid>
         </GroupBox>
     </Grid>
