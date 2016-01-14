@@ -77,10 +77,22 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
 
         private async Task<string> GetKeyVaultAccessToken(string authority, string resource, string scope)
         {
-            var clientCredential = new ClientCredential(AdalHelper.KeyVaultClientId, AdalHelper.KeyVaultClientSecret);
-            var context = new AuthenticationContext(authority, null);
-            var result = await context.AcquireTokenAsync(resource, clientCredential);
-            return result.AccessToken;
+            if (string.IsNullOrWhiteSpace(AdalHelper.KeyVaultClientId) || string.IsNullOrWhiteSpace(AdalHelper.KeyVaultClientSecret))
+            {
+                return await Task.Factory.StartNew(() =>
+                {
+                    var context = new AuthenticationContext(authority, new FileCache());
+                    var result = context.AcquireToken(resource, AdalHelper.AADClientId, new Uri(AdalHelper.RedirectUri), PromptBehavior.Never);
+                    return result.AccessToken;
+                });
+            }
+            else
+            {
+                var clientCredential = new ClientCredential(AdalHelper.KeyVaultClientId, AdalHelper.KeyVaultClientSecret);
+                var context = new AuthenticationContext(authority, null);
+                var result = await context.AcquireTokenAsync(resource, clientCredential);
+                return result.AccessToken;
+            }
         }
     }
 }
