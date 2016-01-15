@@ -37,7 +37,7 @@ namespace AzureKeyVaultManager
                 await progressDialog.CloseAsync();
 
                 keyVaultTree.NothingSelected += (o, eventArgs) => SetDetailPane(new BlankViewer());
-                keyVaultTree.VaultSelected += (o, vault) => SetDetailPane(new BlankViewer());
+                keyVaultTree.VaultSelected += (o, vault) => SetDetailPane(new VaultViewer(vault));
                 keyVaultTree.SecretSelected += (o, secretVersion) => SetDetailPane(new SecretViewer(secretVersion));
                 keyVaultTree.KeySelected += (o, keyVersion) => SetDetailPane(new KeyViewer(keyVersion));
 

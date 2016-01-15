@@ -1,0 +1,79 @@
+﻿<UserControl x:Class="AzureKeyVaultManager.VaultViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AzureKeyVaultManager"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ListBox Name="policyItems" Grid.Row="0">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,2">
+                        <TextBlock Text="{Binding ObjectId}" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <StackPanel Orientation="Vertical" Grid.Row="1">
+            <GroupBox Header="Keys" Name="keyGroup">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25" />
+                        <RowDefinition Height="25" />
+                        <RowDefinition Height="25" />
+                        <RowDefinition Height="25" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding CanEncrypt}">Encrypt</CheckBox>
+                    <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding CanDecrypt}">Decrypt</CheckBox>
+                    <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding CanWrap}">Wrap</CheckBox>
+                    <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding CanUnwrap}">Unwrap</CheckBox>
+                    <CheckBox Grid.Row="0" Grid.Column="2" IsChecked="{Binding CanSign}">Sign</CheckBox>
+                    <CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{Binding CanVerify}">Verify</CheckBox>
+                    
+                    <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding CanCreate}">Create</CheckBox>
+                    <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding CanUpdate}">Update</CheckBox>
+                    <CheckBox Grid.Row="2" Grid.Column="2" IsChecked="{Binding CanDelete}">Delete</CheckBox>
+                    
+                    <CheckBox Grid.Row="3" Grid.Column="0" IsChecked="{Binding CanBackup}">Backup</CheckBox>
+                    <CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{Binding CanRestore}">Restore</CheckBox>
+                    <CheckBox Grid.Row="3" Grid.Column="2" IsChecked="{Binding CanImport}">Import</CheckBox>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Secrets" Name="secretGroup">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25" />
+                        <RowDefinition Height="25" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding CanGet}">Get</CheckBox>
+                    <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding CanList}">List</CheckBox>
+                    <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding CanSet}">Set</CheckBox>
+                    <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding CanDelete}">Delete</CheckBox>
+                </Grid>
+            </GroupBox>
+            <Button Margin="10" Click="Update_Clicked">Update</Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

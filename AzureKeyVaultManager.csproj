@@ -217,6 +217,7 @@
     <Compile Include="KeyVaultTreeControl.xaml.cs">
       <DependentUpon>KeyVaultTreeControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="KeyVaultWrapper\AccessPolicy.cs" />
     <Compile Include="KeyVaultWrapper\KeyOperations.cs" />
     <Compile Include="KeyVaultWrapper\KeyVaultKey.cs" />
     <Compile Include="KeyVaultWrapper\KeyVaultSecret.cs" />
@@ -228,6 +229,9 @@
     </Compile>
     <Compile Include="SecretViewer.xaml.cs">
       <DependentUpon>SecretViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VaultViewer.xaml.cs">
+      <DependentUpon>VaultViewer.xaml</DependentUpon>
     </Compile>
     <Page Include="AttributeViewer.xaml">
       <SubType>Designer</SubType>
@@ -272,6 +276,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="SecretViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VaultViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

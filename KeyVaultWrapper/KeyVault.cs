@@ -124,6 +124,20 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
             return secrets;
         }
 
+        public List<AccessPolicyEntry> GetAccessPolicy()
+        {
+            return Vault.Properties.AccessPolicies.ToList();
+        }
+
+        public async Task UpdateAccessPolicy(List<AccessPolicyEntry> accessPolicies)
+        {
+            Vault.Properties.AccessPolicies = accessPolicies;
+
+            var vault = await ManagementClient.Vaults.CreateOrUpdateAsync(ResourceGroup, Vault.Name, new VaultCreateOrUpdateParameters(Vault.Properties, Vault.Location));
+            Vault.Properties = vault.Vault.Properties;
+            Vault.Location = vault.Vault.Location;
+        }
+
         private bool HasKeyAccess(string accessPolicy)
         {
             return true; // stub; need to bring in permissions
