@@ -11,7 +11,8 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="100" />
+            <RowDefinition MinHeight="100" Height="100" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -33,8 +34,10 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        
+        <GridSplitter Grid.Row="1" Height="10" ResizeDirection="Rows" Width="Auto" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" />
 
-        <StackPanel Orientation="Vertical" Grid.Row="1">
+        <StackPanel Orientation="Vertical" Grid.Row="2">
             <GroupBox Header="Keys" Name="keyGroup">
                 <Grid>
                     <Grid.RowDefinitions>

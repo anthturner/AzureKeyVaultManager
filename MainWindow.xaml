@@ -15,10 +15,16 @@
             <Button Content="log out" Click="LogOut_Click" />
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
-    <DockPanel>
-        <local:KeyVaultTreeControl DockPanel.Dock="Left" Width="320" x:Name="keyVaultTree" />
-        <Grid Margin="10" Name="detailPane">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="150" Width="150" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <local:KeyVaultTreeControl HorizontalAlignment="Stretch"  x:Name="keyVaultTree" />
+        <GridSplitter Grid.Column="1" ResizeDirection="Columns" Width="5" HorizontalAlignment="Center" />
+        <Grid Grid.Column="2" Margin="10" Name="detailPane">
             <local:BlankViewer />
         </Grid>
-    </DockPanel>
+    </Grid>
 </controls:MetroWindow>
