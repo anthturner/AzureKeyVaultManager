@@ -19,7 +19,16 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid Margin="0,2">
-                        <TextBlock Text="{Binding ObjectId}" />
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding ObjectType}" />
+                        <TextBlock Grid.Column="2" Text="{Binding ObjectName}" />
+                        <TextBlock Grid.Column="4" Text="{Binding ObjectId}" />
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>

@@ -27,26 +27,31 @@ namespace AzureKeyVaultManager
             DataContext = vault;
             InitializeComponent();
 
-            policyItems.ItemsSource = vault.GetAccessPolicy();
+            Loaded += async (sender, args) =>
+            {
+                var policyItemList = vault.GetAccessPolicy().Select(p => new EntityAccessPolicy(p)).ToList();
+
+                var tasks = new List<Task>();
+                foreach (EntityAccessPolicy item in policyItemList)
+                    tasks.Add(item.PopulateDirectoryInformation());
+                await Task.WhenAll(tasks.ToArray());
+
+                policyItems.ItemsSource = policyItemList;
+            };
+
             policyItems.SelectionChanged += (sender, args) =>
             {
-                var policy = ((AccessPolicyEntry) args.AddedItems[0]);
-                keyGroup.DataContext = new AccessPolicy() {AccessPermissionString = policy.PermissionsToKeys};
-                secretGroup.DataContext = new AccessPolicy() { AccessPermissionString = policy.PermissionsToSecrets };
+                var policy = ((EntityAccessPolicy)args.AddedItems[0]);
+                keyGroup.DataContext = policy.KeyPolicy;
+                secretGroup.DataContext = policy.SecretPolicy;
             };
         }
 
         private async void Update_Clicked(object sender, RoutedEventArgs e)
         {
             var vault = (KeyVault) DataContext;
-
-            var keyAccess = ((AccessPolicy) keyGroup.DataContext).AccessPermissionString;
-            var secretAccess = ((AccessPolicy) secretGroup.DataContext).AccessPermissionString;
-
-            ((AccessPolicyEntry) policyItems.SelectedItem).PermissionsToKeys = keyAccess;
-            ((AccessPolicyEntry) policyItems.SelectedItem).PermissionsToSecrets = secretAccess;
-
-            await vault.UpdateAccessPolicy((List<AccessPolicyEntry>) policyItems.ItemsSource);
+            ((EntityAccessPolicy) policyItems.SelectedItem).Update();
+            await vault.UpdateAccessPolicy(((List<EntityAccessPolicy>) policyItems.ItemsSource).Select(p => p.OriginalPolicyEntry).ToList());
         }
     }
 }

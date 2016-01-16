@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Azure;
+using Microsoft.Azure.ActiveDirectory.GraphClient;
 using Microsoft.Azure.Management.Resources;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.Rest;
@@ -36,12 +37,20 @@ namespace AzureKeyVaultManager
             AuthContext = new AuthenticationContext(Authority, new FileCache());
         }
 
-        internal string GetAccessToken(bool promptIfNeeded = true)
+        internal ActiveDirectoryClient GetAdClient()
         {
+            return new ActiveDirectoryClient(new Uri($"https://graph.windows.net/{ActiveDirectoryTenantId}"), () => Task.FromResult(this.GetAccessToken("https://graph.windows.net", false)));
+        }
+
+        internal string GetAccessToken(string authenticationRealm = null, bool promptIfNeeded = true)
+        {
+            if (authenticationRealm == null)
+                authenticationRealm = WindowsManagementUri;
+
             AuthenticationResult result = null;
             try
             {
-                result = AuthContext.AcquireToken(WindowsManagementUri, AADClientId, new Uri(RedirectUri), PromptBehavior.Never);
+                result = AuthContext.AcquireToken(authenticationRealm, AADClientId, new Uri(RedirectUri), PromptBehavior.Never);
                 return result.AccessToken;
             }
             catch (AdalException ex)
@@ -77,7 +86,7 @@ namespace AzureKeyVaultManager
         internal async Task<IEnumerable<string>> GetResourceGroups()
         {
             var groups = new List<string>();
-            using (var resourceManagementClient = new ResourceManagementClient(new TokenCredentials(GetAccessToken(false))))
+            using (var resourceManagementClient = new ResourceManagementClient(new TokenCredentials(GetAccessToken(null, false))))
             {
                 resourceManagementClient.SubscriptionId = Subscription;
                 var response = await resourceManagementClient.ResourceGroups.ListAsync();
