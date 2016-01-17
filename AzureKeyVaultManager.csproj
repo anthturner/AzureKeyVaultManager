@@ -217,7 +217,7 @@
     <Compile Include="KeyVaultTreeControl.xaml.cs">
       <DependentUpon>KeyVaultTreeControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="KeyVaultWrapper\AccessPolicy.cs" />
+    <Compile Include="KeyVaultWrapper\Policies\AccessPolicy.cs" />
     <Compile Include="KeyVaultWrapper\EntityAccessPolicy.cs" />
     <Compile Include="KeyVaultWrapper\KeyOperations.cs" />
     <Compile Include="KeyVaultWrapper\KeyVaultKey.cs" />
@@ -225,6 +225,8 @@
     <Compile Include="KeyVaultWrapper\KeyVaultItem.cs" />
     <Compile Include="KeyVaultWrapper\KeyVaultTreeItem.cs" />
     <Compile Include="KeyVaultWrapper\KeyVaultAlgorithm.cs" />
+    <Compile Include="KeyVaultWrapper\Policies\KeyAccessPolicy.cs" />
+    <Compile Include="KeyVaultWrapper\Policies\SecretAccessPolicy.cs" />
     <Compile Include="KeyViewer.xaml.cs">
       <DependentUpon>KeyViewer.xaml</DependentUpon>
     </Compile>

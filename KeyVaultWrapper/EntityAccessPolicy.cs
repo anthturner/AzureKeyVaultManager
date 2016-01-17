@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using AzureKeyVaultManager.KeyVaultWrapper.Policies;
 using Microsoft.Azure.ActiveDirectory.GraphClient;
 using Microsoft.Azure.Management.KeyVault;
 
@@ -25,8 +23,8 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
         public EntityAccessPolicy(AccessPolicyEntry originalPolicyEntry)
         {
             OriginalPolicyEntry = originalPolicyEntry;
-            KeyPolicy = new AccessPolicy() {AccessPermissionString = originalPolicyEntry.PermissionsToKeys};
-            SecretPolicy = new AccessPolicy() {AccessPermissionString = originalPolicyEntry.PermissionsToSecrets};
+            KeyPolicy = new KeyAccessPolicy() {AccessPermissionString = originalPolicyEntry.PermissionsToKeys};
+            SecretPolicy = new SecretAccessPolicy() {AccessPermissionString = originalPolicyEntry.PermissionsToSecrets};
         }
 
         public async Task PopulateDirectoryInformation()
