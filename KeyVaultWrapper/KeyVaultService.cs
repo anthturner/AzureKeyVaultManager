@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure;
@@ -49,13 +48,13 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
             {
                 resourceGroupTasks.Add(Task.Run(async () =>
                 {
-                    var response = await VaultManagementClient.Vaults.ListAsync(group, 50, KeyVaultService.GetTimeoutToken());
+                    var response = await VaultManagementClient.Vaults.ListAsync(group, 50, GetTimeoutToken());
 
                     foreach (var vaultDescriptor in response.Vaults)
                     {
                         try
                         {
-                            Vaults.Add(new KeyVault(VaultClient, VaultManagementClient, group, (await VaultManagementClient.Vaults.GetAsync(group, vaultDescriptor.Name, KeyVaultService.GetTimeoutToken())).Vault));
+                            Vaults.Add(new KeyVault(VaultClient, VaultManagementClient, group, (await VaultManagementClient.Vaults.GetAsync(group, vaultDescriptor.Name, GetTimeoutToken())).Vault));
                         }
                         catch (Exception ex)
                         {
@@ -65,9 +64,9 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
                     string nextLink = response.NextLink;
                     while (!string.IsNullOrEmpty(response.NextLink))
                     {
-                        var nextResponse = await VaultManagementClient.Vaults.ListNextAsync(nextLink, KeyVaultService.GetTimeoutToken());
+                        var nextResponse = await VaultManagementClient.Vaults.ListNextAsync(nextLink, GetTimeoutToken());
                         foreach (var vaultDescriptor in nextResponse.Vaults)
-                            Vaults.Add(new KeyVault(VaultClient, VaultManagementClient, group, (await VaultManagementClient.Vaults.GetAsync(group, vaultDescriptor.Name, KeyVaultService.GetTimeoutToken())).Vault));
+                            Vaults.Add(new KeyVault(VaultClient, VaultManagementClient, group, (await VaultManagementClient.Vaults.GetAsync(group, vaultDescriptor.Name, GetTimeoutToken())).Vault));
                         nextLink = response.NextLink;
                     }
                 }));

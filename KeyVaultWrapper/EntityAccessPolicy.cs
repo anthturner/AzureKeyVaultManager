@@ -40,13 +40,13 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
             }
             ObjectType = fetchedObj?.ObjectType;
 
-            if (fetchedObj is Microsoft.Azure.ActiveDirectory.GraphClient.User)
+            if (fetchedObj is User)
                 ObjectName = ((User) fetchedObj).DisplayName;
-            else if (fetchedObj is Microsoft.Azure.ActiveDirectory.GraphClient.ServicePrincipal)
+            else if (fetchedObj is ServicePrincipal)
                 ObjectName = ((ServicePrincipal)fetchedObj).DisplayName;
-            else if (fetchedObj is Microsoft.Azure.ActiveDirectory.GraphClient.Group)
+            else if (fetchedObj is Group)
                 ObjectName = ((Group)fetchedObj).DisplayName;
-            else if (fetchedObj is Microsoft.Azure.ActiveDirectory.GraphClient.Application)
+            else if (fetchedObj is Application)
                 ObjectName = ((Application)fetchedObj).DisplayName;
         }
 

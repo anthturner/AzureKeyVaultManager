@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
-using Microsoft.Azure;
 using Microsoft.Azure.ActiveDirectory.GraphClient;
 using Microsoft.Azure.Management.Resources;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;

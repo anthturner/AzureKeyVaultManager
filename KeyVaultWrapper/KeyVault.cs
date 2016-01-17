@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.KeyVault;
@@ -15,13 +14,7 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
     {
         public override string Header => Vault.Name;
 
-        public override ObservableCollection<KeyVaultTreeItem> Children
-        {
-            get
-            {
-                return new ObservableCollection<KeyVaultTreeItem>(_secrets.Union(_keys));
-            }
-        }
+        public override ObservableCollection<KeyVaultTreeItem> Children => new ObservableCollection<KeyVaultTreeItem>(_secrets.Union(_keys));
 
         private KeyVaultClient Client { get; }
         private KeyVaultManagementClient ManagementClient { get; }
