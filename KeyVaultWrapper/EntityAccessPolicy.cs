@@ -29,15 +29,7 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
 
         public async Task PopulateDirectoryInformation()
         {
-            var adClient = AdalHelper.Instance.GetAdClient();
-            IDirectoryObject fetchedObj = null;
-            try
-            {
-                fetchedObj = await adClient.DirectoryObjects.GetByObjectId(ObjectId).ExecuteAsync();
-            }
-            catch (Exception ex)
-            {
-            }
+            var fetchedObj = await AzureServiceAdapter.Instance.FetchObjectById(ObjectId);
             ObjectType = fetchedObj?.ObjectType;
 
             if (fetchedObj is User)

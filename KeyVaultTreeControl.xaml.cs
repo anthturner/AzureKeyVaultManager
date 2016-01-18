@@ -26,6 +26,7 @@ namespace AzureKeyVaultManager
 
         public event EventHandler<KeyVault> KeyCreating;
         public event EventHandler<KeyVault> SecretCreating;
+        public event EventHandler VaultCreating;
 
         public event EventHandler<KeyVaultKey> KeyDeleting;
         public event EventHandler<KeyVaultSecret> SecretDeleting;
@@ -47,8 +48,13 @@ namespace AzureKeyVaultManager
                 await Refresh();
                 NothingSelected?.Invoke(this, null);
             };
-
             ContextMenu.Items.Add(secretDelete);
+
+            ContextMenu.Items.Add(new Separator());
+
+            var vaultCreate = new MenuItem() {Header = "New Vault"};
+            vaultCreate.Click += (sender, args) => VaultCreating?.Invoke(this, new EventArgs());
+            ContextMenu.Items.Add(vaultCreate);
 
             this.PreviewMouseRightButtonDown += (sender, args) =>
             {

@@ -113,6 +113,10 @@
       <HintPath>packages\Microsoft.WindowsAzure.Common.1.4.1\lib\net45\Microsoft.WindowsAzure.Common.NetFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Management, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.WindowsAzure.Management.4.1.1\lib\net40\Microsoft.WindowsAzure.Management.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -158,10 +162,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AdalHelper.cs" />
     <Compile Include="AttributeViewer.xaml.cs">
       <DependentUpon>AttributeViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AzureServiceAdapter.cs" />
     <Compile Include="BlankViewer.xaml.cs">
       <DependentUpon>BlankViewer.xaml</DependentUpon>
     </Compile>
@@ -170,6 +174,9 @@
     </Compile>
     <Compile Include="CreateSecret.xaml.cs">
       <DependentUpon>CreateSecret.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CreateVault.xaml.cs">
+      <DependentUpon>CreateVault.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileCache.cs" />
     <Compile Include="KeyVaultTreeControl.xaml.cs">
@@ -207,6 +214,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CreateSecret.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CreateVault.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

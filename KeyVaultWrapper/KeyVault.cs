@@ -77,7 +77,7 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
 
         public async Task<List<KeyVaultKey>> ListKeys()
         {
-            if (!HasKeyAccess("list"))
+            if (!await HasKeyAccess("list"))
                 return new List<KeyVaultKey>();
 
             var response = await Client.GetKeysAsync(Vault.Properties.VaultUri);
@@ -98,7 +98,7 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
 
         public async Task<List<KeyVaultSecret>> ListSecrets()
         {
-            if (!HasSecretAccess("list"))
+            if (!await HasSecretAccess("list"))
                 return new List<KeyVaultSecret>();
 
             var response = await Client.GetSecretsAsync(Vault.Properties.VaultUri);
@@ -131,19 +131,21 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
             Vault.Location = vault.Vault.Location;
         }
 
-        private bool HasKeyAccess(string accessPolicy)
+        private async Task<bool> HasKeyAccess(string accessPolicy)
         {
-            return true; // stub; need to bring in permissions
-            var policy = Vault.Properties.AccessPolicies.FirstOrDefault(p => p.ApplicationId == Guid.Parse(AdalHelper.KeyVaultClientId));
+            return true;
+            var objectId = await AzureServiceAdapter.Instance.GetClientObjectId();
+            var policy = Vault.Properties.AccessPolicies.FirstOrDefault(p => p.ApplicationId == Guid.Parse(objectId));
             if (policy == null)
                 return false;
             return policy.PermissionsToKeys.Contains(accessPolicy);
         }
 
-        private bool HasSecretAccess(string accessPolicy)
+        private async Task<bool> HasSecretAccess(string accessPolicy)
         {
-            return true; // stub; need to bring in permissions
-            var policy = Vault.Properties.AccessPolicies.FirstOrDefault(p => p.ApplicationId == Guid.Parse(AdalHelper.KeyVaultClientId));
+            return true;
+            var objectId = await AzureServiceAdapter.Instance.GetClientObjectId();
+            var policy = Vault.Properties.AccessPolicies.FirstOrDefault(p => p.ApplicationId == Guid.Parse(objectId));
             if (policy == null)
                 return false;
             return policy.PermissionsToSecrets.Contains(accessPolicy);

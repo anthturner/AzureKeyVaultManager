@@ -3,7 +3,6 @@ using System.Windows.Controls;
 using AzureKeyVaultManager.KeyVaultWrapper;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using Microsoft.Azure;
 using Microsoft.Azure.KeyVault;
 
 namespace AzureKeyVaultManager
@@ -25,9 +24,8 @@ namespace AzureKeyVaultManager
             {
                 var progressDialog = await this.ShowProgressAsync("Loading", "Authenticating with Azure Active Directory...");
                 progressDialog.SetIndeterminate();
-                
-                Service = new KeyVaultService(new TokenCloudCredentials
-                            (AdalHelper.Subscription, AdalHelper.Instance.GetAccessToken()));
+
+                Service = new KeyVaultService();
 
                 keyVaultTree.Service = Service;
                 await keyVaultTree.Refresh(progressDialog);
@@ -73,6 +71,18 @@ namespace AzureKeyVaultManager
                         var item = keyVaultTree.GetItemByContext(vault);
                         item.IsExpanded = false;
                         item.IsExpanded = true;
+                    }
+                };
+
+                keyVaultTree.VaultCreating += async (o, eventArgs) =>
+                {
+                    var createDlg = new CreateVault();
+                    createDlg.Owner = this;
+                    var dlg = createDlg.ShowDialog();
+                    if (dlg.GetValueOrDefault(false))
+                    {
+                        await Service.CreateKeyVault(createDlg.Name, createDlg.ResourceGroup, createDlg.Location);
+                        await keyVaultTree.Refresh();
                     }
                 };
 
@@ -124,7 +134,7 @@ namespace AzureKeyVaultManager
 
         private void LogOut_Click(object sender, RoutedEventArgs e)
         {
-            AdalHelper.Instance.ClearCache();
+            AzureServiceAdapter.Instance.ClearTokenCache();
             Application.Current.Shutdown(0);
         }
     }

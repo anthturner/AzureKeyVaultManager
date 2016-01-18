@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Azure;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Management.KeyVault;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace AzureKeyVaultManager.KeyVaultWrapper
 {
@@ -26,12 +24,42 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
             return cancellationTokenSource.Token;
         }
 
-        public KeyVaultService(SubscriptionCloudCredentials credentials)
+        public KeyVaultService()
         {
-            VaultManagementClient = new KeyVaultManagementClient(credentials);
-            VaultClient = new KeyVaultClient(GetKeyVaultAccessToken);
+            VaultManagementClient = AzureServiceAdapter.Instance.CreateKeyVaultManagementClient();
+            VaultClient = AzureServiceAdapter.Instance.CreateKeyVaultClient();
         }
-        
+
+        public async Task CreateKeyVault(string vaultName, string resourceGroup, string location)
+        {
+            AccessPolicyEntry policyEntry = new AccessPolicyEntry()
+            {
+                PermissionsToKeys = new[] {"all"},
+                PermissionsToSecrets = new[] {"all"},
+                TenantId = Guid.Parse(AzureServiceAdapter.ActiveDirectoryTenantId)
+            };
+            var objectId = await AzureServiceAdapter.Instance.GetClientObjectId();
+            if (AzureServiceAdapter.Instance.ClientAuthenticatedMode)
+                policyEntry.ApplicationId = Guid.Parse(objectId);
+            else
+                policyEntry.ObjectId = Guid.Parse(objectId);
+
+            await VaultManagementClient.Vaults.CreateOrUpdateAsync(resourceGroup, vaultName,
+                new VaultCreateOrUpdateParameters()
+                {
+                    Location = location,
+                    Properties = new VaultProperties()
+                    {
+                        EnabledForDeployment = true,
+                        EnabledForTemplateDeployment = true,
+                        EnabledForDiskEncryption = true,
+                        Sku = new Sku { Name = "Premium", Family = "A" },
+                        AccessPolicies = new List<AccessPolicyEntry>() { policyEntry },
+                        TenantId = Guid.Parse(AzureServiceAdapter.ActiveDirectoryTenantId)
+                    }
+                });
+        }
+
         public async Task<KeyVault> GetKeyVault(string resourceGroup, string name, CancellationToken cancellationToken)
         {
             var vault = (await VaultManagementClient.Vaults.GetAsync(resourceGroup, name, cancellationToken)).Vault;
@@ -42,12 +70,13 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
         {
             Vaults = new List<KeyVault>();
 
-            var resourceGroups = await AdalHelper.Instance.GetResourceGroups();
+            var resourceGroups = await AzureServiceAdapter.Instance.GetResourceGroups();
             var resourceGroupTasks = new List<Task>();
-            foreach (var group in resourceGroups)
+            foreach (var groupObj in resourceGroups)
             {
                 resourceGroupTasks.Add(Task.Run(async () =>
                 {
+                    var group = groupObj.Name;
                     var response = await VaultManagementClient.Vaults.ListAsync(group, 50, GetTimeoutToken());
 
                     foreach (var vaultDescriptor in response.Vaults)
@@ -72,26 +101,6 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
                 }));
             }
             await Task.WhenAll(resourceGroupTasks.ToArray());
-        }
-
-        private async Task<string> GetKeyVaultAccessToken(string authority, string resource, string scope)
-        {
-            if (string.IsNullOrWhiteSpace(AdalHelper.KeyVaultClientId) || string.IsNullOrWhiteSpace(AdalHelper.KeyVaultClientSecret))
-            {
-                return await Task.Factory.StartNew(() =>
-                {
-                    var context = new AuthenticationContext(authority, new FileCache());
-                    var result = context.AcquireToken(resource, AdalHelper.AADClientId, new Uri(AdalHelper.RedirectUri), PromptBehavior.Never);
-                    return result.AccessToken;
-                });
-            }
-            else
-            {
-                var clientCredential = new ClientCredential(AdalHelper.KeyVaultClientId, AdalHelper.KeyVaultClientSecret);
-                var context = new AuthenticationContext(authority, null);
-                var result = await context.AcquireTokenAsync(resource, clientCredential);
-                return result.AccessToken;
-            }
         }
     }
 }
