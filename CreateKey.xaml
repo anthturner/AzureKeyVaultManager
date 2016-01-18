@@ -6,6 +6,8 @@
         xmlns:local="clr-namespace:AzureKeyVaultManager"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
+        BorderBrush="{StaticResource AccentColorBrush}"
+        WindowStartupLocation="CenterOwner"
         Title="CreateKey" Height="320" Width="300">
     <Grid Margin="3">
         <Grid.ColumnDefinitions>

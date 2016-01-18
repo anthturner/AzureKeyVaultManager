@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Runtime.InteropServices;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Azure;
 using Microsoft.Azure.ActiveDirectory.GraphClient;
+using Microsoft.Azure.ActiveDirectory.GraphClient.Extensions;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Management.KeyVault;
 using Microsoft.Azure.Management.Resources;
@@ -55,6 +57,40 @@ namespace AzureKeyVaultManager
         public KeyVaultClient CreateKeyVaultClient()
         {
             return new KeyVaultClient(GetKeyVaultAccessTokenCallback);
+        }
+
+        public async Task<List<IDirectoryObject>> GetAllDirectoryObjects(string searchString)
+        {
+            var objects = new List<IDirectoryObject>();
+            var tasks = new List<Task>();
+            tasks.Add(SearchServicePrincipals(searchString).ContinueWith(t => objects.AddRange(t.Result)));
+            tasks.Add(SearchUsers(searchString).ContinueWith(t => objects.AddRange(t.Result)));
+            await Task.WhenAll(tasks);
+            return objects;
+        }
+
+        private async Task<List<IServicePrincipal>> SearchServicePrincipals(string searchString)
+        {
+            var adClient = new ActiveDirectoryClient(new Uri(GraphAuthority), () => Task.FromResult(this.GetAuthenticationResult(Authority, GraphUri)?.AccessToken));
+            var initialPage = await adClient.ServicePrincipals.Where(p => p.DisplayName.StartsWith(searchString)).ExecuteAsync();
+            return await EnumeratePagedCollection(initialPage);
+        }
+
+        private async Task<List<IUser>> SearchUsers(string searchString)
+        {
+            var adClient = new ActiveDirectoryClient(new Uri(GraphAuthority), () => Task.FromResult(this.GetAuthenticationResult(Authority, GraphUri)?.AccessToken));
+            var initialPage = await adClient.Users.Where(p => p.DisplayName.StartsWith(searchString)).ExecuteAsync();
+            return await EnumeratePagedCollection(initialPage);
+        }
+
+        private async Task<List<T>> EnumeratePagedCollection<T>(IPagedCollection<T> collection, List<T> listSoFar = null)
+        {
+            if (listSoFar == null)
+                listSoFar = new List<T>();
+            listSoFar.AddRange(collection.CurrentPage);
+            if (collection.MorePagesAvailable)
+                await EnumeratePagedCollection<T>(await collection.GetNextPageAsync(), listSoFar);
+            return listSoFar;
         }
 
         public async Task<string> GetClientObjectId()

@@ -169,6 +169,9 @@
     <Compile Include="BlankViewer.xaml.cs">
       <DependentUpon>BlankViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CreateAccessPolicy.xaml.cs">
+      <DependentUpon>CreateAccessPolicy.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CreateKey.xaml.cs">
       <DependentUpon>CreateKey.xaml</DependentUpon>
     </Compile>
@@ -206,6 +209,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="BlankViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CreateAccessPolicy.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
