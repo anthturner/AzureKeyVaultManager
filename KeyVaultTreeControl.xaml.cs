@@ -130,15 +130,23 @@ namespace AzureKeyVaultManager
             }
         }
 
-        public TreeViewItem GetItemByContext<T>(T context)
+        public TreeViewItem GetItemByContext<T>(T context, ItemCollection collection = null)
         {
-            foreach (TreeViewItem item in Items)
+            if (collection == null) collection = Items;
+            foreach (object item in collection)
             {
-                var itemContext = item.DataContext;
+                if (!(item is TreeViewItem))
+                    continue;
+
+                var itemContext = ((TreeViewItem)item).DataContext;
                 if (itemContext is T && ReferenceEquals(itemContext, context))
-                    return item;
-                else
-                    return GetItemByContext<T>((T)itemContext);
+                    return ((TreeViewItem)item);
+                else if (((TreeViewItem) item).Items.Count > 0)
+                {
+                    var contextualItem = GetItemByContext<T>(context, ((TreeViewItem) item).Items);
+                    if (contextualItem != null)
+                        return contextualItem;
+                }
             }
             return null;
         }
