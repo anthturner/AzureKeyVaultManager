@@ -50,8 +50,7 @@ namespace AzureKeyVaultManager
                             NotBefore = createDlg.NotBefore
                         });
                         var item = keyVaultTree.GetItemByContext(vault);
-                        item.IsExpanded = false;
-                        item.IsExpanded = true;
+                        ResetTreeViewLevel(item);
                     }
                 };
 
@@ -69,8 +68,7 @@ namespace AzureKeyVaultManager
                             NotBefore = createDlg.NotBefore
                         });
                         var item = keyVaultTree.GetItemByContext(vault);
-                        item.IsExpanded = false;
-                        item.IsExpanded = true;
+                        ResetTreeViewLevel(item);
                     }
                 };
 
@@ -103,10 +101,7 @@ namespace AzureKeyVaultManager
                     {
                         var item = keyVaultTree.GetItemByContext(keyVaultTree.GetCurrent<KeyVault>());
                         await secret.Delete();
-                        item.IsExpanded = false;
-                        item.Items.Clear();
-                        item.Items.Add("Loading");
-                        item.IsExpanded = true;
+                        ResetTreeViewLevel(item);
                     }
                 };
 
@@ -117,10 +112,7 @@ namespace AzureKeyVaultManager
                     {
                         var item = keyVaultTree.GetItemByContext(keyVaultTree.GetCurrent<KeyVault>());
                         await key.Delete();
-                        item.IsExpanded = false;
-                        item.Items.Clear();
-                        item.Items.Add("Loading");
-                        item.IsExpanded = true;
+                        ResetTreeViewLevel(item);
                     }
                 };
             };
@@ -130,6 +122,14 @@ namespace AzureKeyVaultManager
         {
             detailPane.Children.Clear();
             detailPane.Children.Add(control);
+        }
+
+        private void ResetTreeViewLevel(TreeViewItem item)
+        {
+            item.IsExpanded = false;
+            item.Items.Clear();
+            item.Items.Add("Loading");
+            item.IsExpanded = true;
         }
 
         private void LogOut_Click(object sender, RoutedEventArgs e)
