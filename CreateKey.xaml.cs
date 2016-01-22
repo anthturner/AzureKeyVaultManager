@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using AzureKeyVaultManager.KeyVaultWrapper;
+using AzureKeyVaultManager.KeyVaultWrapper.Policies;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 
@@ -16,11 +17,13 @@ namespace AzureKeyVaultManager
         public bool Enabled { get; private set; }
         public string Value { get; private set; }
         public string KeyName { get; private set; }
-        public KeyOperations Operations { get; private set; }
+        public KeyAccessPolicy AccessPolicy { get; set; }
 
         public CreateKey()
         {
+            AccessPolicy = new KeyAccessPolicy();
             InitializeComponent();
+            operations.DataContext = AccessPolicy;
         }
 
         private async void Create_Clicked(object sender, RoutedEventArgs e)
@@ -49,20 +52,6 @@ namespace AzureKeyVaultManager
 
             Enabled = enabled.IsChecked.GetValueOrDefault(false);
             KeyName = keyName.Text;
-
-            if (op_encrypt.IsChecked.GetValueOrDefault(false))
-                Operations &= KeyOperations.Encrypt;
-            if (op_decrypt.IsChecked.GetValueOrDefault(false))
-                Operations &= KeyOperations.Decrypt;
-            if (op_sign.IsChecked.GetValueOrDefault(false))
-                Operations &= KeyOperations.Sign;
-            if (op_verify.IsChecked.GetValueOrDefault(false))
-                Operations &= KeyOperations.Verify;
-            if (op_wrap.IsChecked.GetValueOrDefault(false))
-                Operations &= KeyOperations.Wrap;
-            if (op_unwrap.IsChecked.GetValueOrDefault(false))
-                Operations &= KeyOperations.Unwrap;
-
             DialogResult = true;
         }
     }

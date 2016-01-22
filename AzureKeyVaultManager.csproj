@@ -187,7 +187,6 @@
     </Compile>
     <Compile Include="KeyVaultWrapper\Policies\AccessPolicy.cs" />
     <Compile Include="KeyVaultWrapper\EntityAccessPolicy.cs" />
-    <Compile Include="KeyVaultWrapper\KeyOperations.cs" />
     <Compile Include="KeyVaultWrapper\KeyVaultKey.cs" />
     <Compile Include="KeyVaultWrapper\KeyVaultSecret.cs" />
     <Compile Include="KeyVaultWrapper\KeyVaultItem.cs" />

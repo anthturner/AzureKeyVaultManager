@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AzureKeyVaultManager"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
         BorderBrush="{StaticResource AccentColorBrush}"
@@ -33,13 +32,13 @@
         <TextBox Grid.Row="2" Grid.Column="1" Name="expires" />
         <CheckBox Grid.Row="3" Grid.Column="1" Name="enabled" HorizontalAlignment="Center" />
 
-        <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Vertical">
-            <CheckBox Width="80" Name="op_encrypt" HorizontalAlignment="Center">Encrypt</CheckBox>
-            <CheckBox Width="80" Name="op_decrypt" HorizontalAlignment="Center">Decrypt</CheckBox>
-            <CheckBox Width="80" Name="op_wrap" HorizontalAlignment="Center">Wrap</CheckBox>
-            <CheckBox Width="80" Name="op_unwrap" HorizontalAlignment="Center">Unwrap</CheckBox>
-            <CheckBox Width="80" Name="op_sign" HorizontalAlignment="Center">Sign</CheckBox>
-            <CheckBox Width="80" Name="op_verify" HorizontalAlignment="Center">Verify</CheckBox>
+        <StackPanel Name="operations" Grid.Row="4" Grid.Column="1" Orientation="Vertical">
+            <CheckBox Width="80" IsChecked="{Binding CanEncrypt, Mode=TwoWay}" HorizontalAlignment="Center">Encrypt</CheckBox>
+            <CheckBox Width="80" IsChecked="{Binding CanDecrypt, Mode=TwoWay}" HorizontalAlignment="Center">Decrypt</CheckBox>
+            <CheckBox Width="80" IsChecked="{Binding CanWrap, Mode=TwoWay}" HorizontalAlignment="Center">Wrap</CheckBox>
+            <CheckBox Width="80" IsChecked="{Binding CanUnwrap, Mode=TwoWay}" HorizontalAlignment="Center">Unwrap</CheckBox>
+            <CheckBox Width="80" IsChecked="{Binding CanSign, Mode=TwoWay}" HorizontalAlignment="Center">Sign</CheckBox>
+            <CheckBox Width="80" IsChecked="{Binding CanVerify, Mode=TwoWay}" HorizontalAlignment="Center">Verify</CheckBox>
         </StackPanel>
 
         <Button Grid.Row="5" Grid.Column="1" Margin="5" HorizontalAlignment="Right" Width="80" Click="Create_Clicked">Create</Button>

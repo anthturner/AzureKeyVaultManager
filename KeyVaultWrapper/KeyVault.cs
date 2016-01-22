@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AzureKeyVaultManager.KeyVaultWrapper.Policies;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.KeyVault.WebKey;
 using Microsoft.Azure.Management.KeyVault;
@@ -54,18 +55,9 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
             return new KeyVaultSecret(Client, secret, secretVersion != null);
         }
 
-        public async Task<KeyVaultKey> CreateKey(string keyName, KeyOperations operations, KeyAttributes attributes = null)
+        public async Task<KeyVaultKey> CreateKey(string keyName, KeyAccessPolicy operations, KeyAttributes attributes = null)
         {
-            var ops = new List<string>();
-            foreach (KeyOperations enumValue in Enum.GetValues(typeof (KeyOperations)))
-            {
-                if (operations.HasFlag(enumValue))
-                {
-                    ops.Add(Enum.GetName(typeof(KeyOperations), enumValue));
-                }
-            }
-
-            var key = await Client.CreateKeyAsync(Vault.Properties.VaultUri, keyName, JsonWebKeyType.Rsa, key_ops:ops.ToArray(), keyAttributes: attributes);
+            var key = await Client.CreateKeyAsync(Vault.Properties.VaultUri, keyName, JsonWebKeyType.Rsa, key_ops:operations.AccessPermissionString, keyAttributes: attributes);
             return new KeyVaultKey(Client, key, true);
         }
 

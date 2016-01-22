@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AzureKeyVaultManager.KeyVaultWrapper.Policies;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.KeyVault.WebKey;
 using Newtonsoft.Json;
@@ -14,39 +15,7 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
 
         public bool CurrentVersion { get; private set; }
         public JsonWebKey Value { get; private set; }
-
-        public bool CanEncrypt
-        {
-            get { return HasOperation(KeyOperations.Encrypt); }
-            set { SetOperation(KeyOperations.Encrypt, value); }
-        }
-        public bool CanDecrypt
-        {
-            get { return HasOperation(KeyOperations.Decrypt); }
-            set { SetOperation(KeyOperations.Decrypt, value); }
-        }
-
-        public bool CanWrap
-        {
-            get { return HasOperation(KeyOperations.Wrap); }
-            set { SetOperation(KeyOperations.Wrap, value); }
-        }
-        public bool CanUnwrap
-        {
-            get { return HasOperation(KeyOperations.Unwrap); }
-            set { SetOperation(KeyOperations.Unwrap, value); }
-        }
-
-        public bool CanSign
-        {
-            get { return HasOperation(KeyOperations.Sign); }
-            set { SetOperation(KeyOperations.Sign, value); }
-        }
-        public bool CanVerify
-        {
-            get { return HasOperation(KeyOperations.Verify); }
-            set { SetOperation(KeyOperations.Verify, value); }
-        }
+        public KeyAccessPolicy AccessPolicy { get; set; }
 
         public string JsonKey
         {
@@ -61,12 +30,14 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
         public KeyVaultKey(KeyVaultClient client, KeyItem keyObject, bool currentVersion) : base(client, keyObject)
         {
             CurrentVersion = currentVersion;
+            AccessPolicy = new KeyAccessPolicy();
         }
 
         public KeyVaultKey(KeyVaultClient client, KeyBundle keyBundleObject, bool currentVersion) : base(client, keyBundleObject)
         {
             CurrentVersion = currentVersion;
             Value = keyBundleObject.Key;
+            AccessPolicy = new KeyAccessPolicy() {AccessPermissionString = Value.KeyOps};
         }
 
         public async override Task Update()
@@ -92,6 +63,8 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
                 else
                     Value = (await Client.GetKeyAsync(Identifier.Vault, Identifier.Name)).Key;
                 ValueRetrievalSuccess = true;
+
+                AccessPolicy = new KeyAccessPolicy() { AccessPermissionString = Value.KeyOps };
             }
             catch
             {
@@ -167,27 +140,6 @@ namespace AzureKeyVaultManager.KeyVaultWrapper
             if (!algorithm.CanCryptOrWrap())
                 throw new InvalidOperationException("Cannot unwrap with this algorithm type.");
             return (await Client.UnwrapKeyAsync(Identifier.Identifier, algorithm.GetConfigurationString(), wrappedKey)).Result;
-        }
-
-        private bool HasOperation(KeyOperations operation)
-        {
-            return Value.KeyOps.Contains(GetOperationString(operation));
-        }
-
-        private void SetOperation(KeyOperations operation, bool state)
-        {
-            if (HasOperation(operation) && state || !HasOperation(operation) && !state)
-                return;
-
-            if (HasOperation(operation) && !state)
-                Value.KeyOps = Value.KeyOps.Where(w => w != GetOperationString(operation)).ToArray();
-            else if (!HasOperation(operation) && state)
-                Value.KeyOps = Value.KeyOps.Union(new[] {GetOperationString(operation)}).ToArray();
-        }
-
-        private string GetOperationString(KeyOperations operation)
-        {
-            return Enum.GetName(typeof (KeyOperations), operation).ToLower();
         }
     }
 }

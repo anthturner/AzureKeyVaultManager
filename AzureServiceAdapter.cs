@@ -165,7 +165,7 @@ namespace AzureKeyVaultManager
                 return result.AccessToken;
             }
             else
-                return await Task.Factory.StartNew(() => GetAuthenticationResult(authority, resource, false).AccessToken);
+                return await Task.Factory.StartNew(() => GetAuthenticationResult(authority, resource, true).AccessToken);
         }
 
         [DllImport("wininet.dll", SetLastError = true)]

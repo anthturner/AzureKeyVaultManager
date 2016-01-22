@@ -62,7 +62,7 @@ namespace AzureKeyVaultManager
                     var dlg = createDlg.ShowDialog();
                     if (dlg.GetValueOrDefault(false))
                     {
-                        await vault.CreateKey(createDlg.KeyName, createDlg.Operations, new KeyAttributes()
+                        await vault.CreateKey(createDlg.KeyName, createDlg.AccessPolicy, new KeyAttributes()
                         {
                             Enabled = createDlg.Enabled,
                             Expires = createDlg.Expires,

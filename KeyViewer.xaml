@@ -18,28 +18,29 @@
         </Grid.ColumnDefinitions>
 
         <local:AttributeViewer Grid.Row="0" Grid.Column="0" x:Name="attributeViewer" />
-        
-        <GroupBox Grid.Row="1" Grid.Column="0" Header="Key">
-            <Grid IsEnabled="{Binding ValueRetrievalSuccess}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="25" />
-                    <RowDefinition Height="25" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding CanEncrypt}">Encrypt</CheckBox>
-                <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding CanDecrypt}">Decrypt</CheckBox>
-                <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding CanWrap}">Wrap</CheckBox>
-                <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding CanUnwrap}">Unwrap</CheckBox>
-                <CheckBox Grid.Row="0" Grid.Column="2" IsChecked="{Binding CanSign}">Sign</CheckBox>
-                <CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{Binding CanVerify}">Verify</CheckBox>
 
-                <TextBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" AcceptsTab="True" AcceptsReturn="True" Text="{Binding JsonKey, Mode=OneWay}" />
-            </Grid>
+        <GroupBox Grid.Row="1" Grid.Column="0" IsEnabled="{Binding ValueRetrievalSuccess}" Header="Key">
+            <DockPanel>
+                <Grid DockPanel.Dock="Top" DataContext="{Binding AccessPolicy}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25" />
+                        <RowDefinition Height="25" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding CanEncrypt}">Encrypt</CheckBox>
+                    <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding CanDecrypt}">Decrypt</CheckBox>
+                    <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding CanWrap}">Wrap</CheckBox>
+                    <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding CanUnwrap}">Unwrap</CheckBox>
+                    <CheckBox Grid.Row="0" Grid.Column="2" IsChecked="{Binding CanSign}">Sign</CheckBox>
+                    <CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{Binding CanVerify}">Verify</CheckBox>
+                </Grid>
+                <TextBox AcceptsTab="True" AcceptsReturn="True" Text="{Binding JsonKey, Mode=OneWay}" />
+            </DockPanel>
         </GroupBox>
     </Grid>
 </UserControl>
