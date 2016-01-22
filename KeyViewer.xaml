@@ -39,7 +39,7 @@
                     <CheckBox Grid.Row="0" Grid.Column="2" IsChecked="{Binding CanSign}">Sign</CheckBox>
                     <CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{Binding CanVerify}">Verify</CheckBox>
                 </Grid>
-                <TextBox AcceptsTab="True" AcceptsReturn="True" Text="{Binding JsonKey, Mode=OneWay}" />
+                <TextBox VerticalScrollBarVisibility="Visible" AcceptsTab="True" AcceptsReturn="True" Text="{Binding JsonKey, Mode=OneWay}" />
             </DockPanel>
         </GroupBox>
     </Grid>
