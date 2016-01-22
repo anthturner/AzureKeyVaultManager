@@ -4,8 +4,8 @@
     {
         protected const string ENCRYPT_OPERATION = "encrypt";
         protected const string DECRYPT_OPERATION = "decrypt";
-        protected const string WRAP_OPERATION = "wrap";
-        protected const string UNWRAP_OPERATION = "unwrap";
+        protected const string WRAP_OPERATION = "wrapKey";
+        protected const string UNWRAP_OPERATION = "unwrapKey";
         protected const string SIGN_OPERATION = "sign";
         protected const string VERIFY_OPERATION = "verify";
         protected const string CREATE_OPERATION = "create";
