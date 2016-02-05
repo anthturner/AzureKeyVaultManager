@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureKeyVaultManager.UWP", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureKeyVault.Library", "AzureKeyVault.Library\AzureKeyVault.Library.csproj", "{3AA1A8BF-019C-4738-B56F-AEA454B0333E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureKeyVault.Simulators", "AzureKeyVault.Simulators\AzureKeyVault.Simulators.csproj", "{77BB7D28-20AC-4708-BCA0-6513D254C9DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,22 @@ Global
 		{3AA1A8BF-019C-4738-B56F-AEA454B0333E}.Release|x64.Build.0 = Release|Any CPU
 		{3AA1A8BF-019C-4738-B56F-AEA454B0333E}.Release|x86.ActiveCfg = Release|Any CPU
 		{3AA1A8BF-019C-4738-B56F-AEA454B0333E}.Release|x86.Build.0 = Release|Any CPU
+		{77BB7D28-20AC-4708-BCA0-6513D254C9DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77BB7D28-20AC-4708-BCA0-6513D254C9DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77BB7D28-20AC-4708-BCA0-6513D254C9DA}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{77BB7D28-20AC-4708-BCA0-6513D254C9DA}.Debug|ARM.Build.0 = Debug|Any CPU
+		{77BB7D28-20AC-4708-BCA0-6513D254C9DA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{77BB7D28-20AC-4708-BCA0-6513D254C9DA}.Debug|x64.Build.0 = Debug|Any CPU
+		{77BB7D28-20AC-4708-BCA0-6513D254C9DA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{77BB7D28-20AC-4708-BCA0-6513D254C9DA}.Debug|x86.Build.0 = Debug|Any CPU
+		{77BB7D28-20AC-4708-BCA0-6513D254C9DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77BB7D28-20AC-4708-BCA0-6513D254C9DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77BB7D28-20AC-4708-BCA0-6513D254C9DA}.Release|ARM.ActiveCfg = Release|Any CPU
+		{77BB7D28-20AC-4708-BCA0-6513D254C9DA}.Release|ARM.Build.0 = Release|Any CPU
+		{77BB7D28-20AC-4708-BCA0-6513D254C9DA}.Release|x64.ActiveCfg = Release|Any CPU
+		{77BB7D28-20AC-4708-BCA0-6513D254C9DA}.Release|x64.Build.0 = Release|Any CPU
+		{77BB7D28-20AC-4708-BCA0-6513D254C9DA}.Release|x86.ActiveCfg = Release|Any CPU
+		{77BB7D28-20AC-4708-BCA0-6513D254C9DA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
