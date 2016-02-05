@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Security.Authentication.Web.Core;
 using Windows.Security.Credentials;
@@ -22,6 +20,12 @@ namespace AzureKeyVaultManager.UWP
         internal async static Task<WebTokenResponse> GetManagementApiToken()
         {
             return await PerformRequest(ManagementApiResource);
+        }
+
+        internal async static Task<WebTokenResponse> GetToken(string authority, string resource)
+        {
+            // todo: is authority needed since we're using a global authority to begin with?
+            return await PerformRequest(resource);
         }
 
         private async static Task<WebTokenResponse> PerformRequest(string resource)
