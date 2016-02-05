@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AzureKeyVaultManager
 {
-    public class KeyVaultServiceSimulator : IKeyVaultService
+    public class KeyVaultServiceSimulator : IKeyVaultManagementService
     {
         public async Task<ICollection<IKeyVaultSecret>> GetSecrets(IKeyVault vault)
         {
