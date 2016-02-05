@@ -129,6 +129,12 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AzureKeyVault.Library\AzureKeyVault.Library.csproj">
+      <Project>{3aa1a8bf-019c-4738-b56f-aea454b0333e}</Project>
+      <Name>AzureKeyVault.Library</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
