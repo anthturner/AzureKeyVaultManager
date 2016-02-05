@@ -1,3 +1,5 @@
+![Build Status](https://dpeted.visualstudio.com/DefaultCollection/_apis/public/build/definitions/f172cbc4-c5dd-4e53-a795-ed5dc807800c/128/badge)
+
 # Azure Key Vault Manager
 Manage your Azure Key Vault with ease via a simple WPF application. This can help developers and deployment managers update keys and secrets, manage access policies, and roll over keys with just a few clicks.
 
