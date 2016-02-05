@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AzureKeyVaultManager.Contracts
 {
-    public interface IKeyVaultManagementService
+    public interface IKeyVaultService
     {
         Task<ICollection<IKeyVaultSecret>> GetSecrets(IKeyVault vault);
     }
