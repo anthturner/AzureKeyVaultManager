@@ -56,10 +56,10 @@ namespace AzureKeyVaultManager.UWP
             }
         }
 
-        private ObservableCollection<IKeyVaultSecret> originalKeysSecrets;
-        private ObservableCollection<IKeyVaultSecret> keysSecrets;
+        private ObservableCollection<KeyVaultSecretViewModel> originalKeysSecrets;
+        private ObservableCollection<KeyVaultSecretViewModel> keysSecrets;
 
-        public ObservableCollection<IKeyVaultSecret> KeysSecrets
+        public ObservableCollection<KeyVaultSecretViewModel> KeysSecrets
         {
             get
             {
@@ -130,18 +130,21 @@ namespace AzureKeyVaultManager.UWP
             var vault = (IKeyVault)item;
             var svc = await Factory.GetKeyVaultService(vault);
             var secrets = await svc.GetSecrets();
-
-            KeysSecrets = new ObservableCollection<IKeyVaultSecret>(secrets.Select(x => new KeyVaultSecretViewModel(x)));
+            UpdateSecrets(secrets);
         }
 
         private void searchFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
-            KeysSecrets = new ObservableCollection<IKeyVaultSecret>(
+            UpdateSecrets(
                 from x in originalKeysSecrets
                 where CultureInfo.CurrentCulture.CompareInfo.IndexOf(x.Name, searchFilter.Text, CompareOptions.IgnoreCase) >= 0
                 select x);
         }
 
+        private void UpdateSecrets(IEnumerable<IKeyVaultSecret> secrets)
+        {
+            KeysSecrets = new ObservableCollection<KeyVaultSecretViewModel>(secrets.Select(x => new KeyVaultSecretViewModel(x)));
+        }
         private void KeysSecretsControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // todo: clear value on previous SelectedKeySecret

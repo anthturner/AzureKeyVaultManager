@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AzureKeyVaultManager.UWP.ViewModels
 {
-    class KeyVaultSecretViewModel : KeyVaultSecretDecorator
+    public class KeyVaultSecretViewModel : KeyVaultSecretDecorator
     {
         public KeyVaultSecretViewModel(IKeyVaultSecret secret)
             : base(secret)
