@@ -19,19 +19,19 @@ namespace AzureKeyVaultManager
             _vaults.Add(new KeyVault() { Id = "Test", ResourceGroup = "Resources!", Name = "Test" });
         }
 
-        public async Task CreateKeyVault(string vaultName, string resourceGroup, string location)
+        public async Task CreateKeyVault(string vaultName, string location)
         {
             _vaults.Add(new KeyVault() { Id = vaultName, Name = vaultName });
             await Task.Yield();
         }
 
-        public async Task<IKeyVault> GetKeyVault(string resourceGroup, string name, CancellationToken cancellationToken)
+        public async Task<IKeyVault> GetKeyVault(string name, CancellationToken cancellationToken)
         {
             await Task.Yield();
             return _vaults.Where(x => String.Equals(name, x.Name, StringComparison.OrdinalIgnoreCase)).Single();
         }
 
-        public async Task<ICollection<IKeyVault>> GetKeyVaults(string resourceGroup, CancellationToken cancellationToken)
+        public async Task<ICollection<IKeyVault>> GetKeyVaults(CancellationToken cancellationToken)
         {
             await Task.Yield();
             return _vaults;
