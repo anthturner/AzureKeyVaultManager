@@ -34,6 +34,7 @@ namespace AzureKeyVaultManager.UWP
     public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
         public static IKeyVaultSecret SelectedKeySecret { get; private set; }
+        public IKeyVaultServiceFactory Factory { get; }
 
         private ObservableCollection<IKeyVault> vaults;
 
@@ -70,14 +71,14 @@ namespace AzureKeyVaultManager.UWP
 
         public MainPage()
         {
+            this.Factory = new KeyVaultSimulatorFactory();
             this.InitializeComponent();
             this.DataContext = this;
         }
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
-            var token = (await Authentication.GetManagementApiToken()).AsBearer();
-            var azure = KeyVaultManagerFactory.GetAzureManagementService(token);
+            var azure = await Factory.GetAzureManagementService();
 
             List<Task<IEnumerable<IKeyVault>>> tasks = new List<Task<IEnumerable<IKeyVault>>>();
 
@@ -89,7 +90,7 @@ namespace AzureKeyVaultManager.UWP
 
                     foreach (var resourceGroup in await azure.GetResourceGroups(subscription))
                     {
-                        var mgmt = KeyVaultManagerFactory.GetManagementService(subscription.SubscriptionId, resourceGroup.Name, token);
+                        var mgmt = await Factory.GetManagementService(subscription.SubscriptionId, resourceGroup.Name);
                         var vaults = await mgmt.GetKeyVaults(new CancellationToken());
 
                         if (vaults != null && vaults.Count > 0)
@@ -122,7 +123,7 @@ namespace AzureKeyVaultManager.UWP
             var item = (IKeyVault)e.AddedItems.Single();
 
             var vault = (IKeyVault)item;
-            var svc = KeyVaultManagerFactory.GetKeyVaultService(vault, (await Authentication.GetToken($"https://login.microsoftonline.com/{vault.TenantId.ToString("D")}/", "https://vault.azure.net")).AsBearer());
+            var svc = await Factory.GetKeyVaultService(vault);
             var secrets = await svc.GetSecrets();
 
             KeysSecrets = new ObservableCollection<IKeyVaultSecret>(secrets);

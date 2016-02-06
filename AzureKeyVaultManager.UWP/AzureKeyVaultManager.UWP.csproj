@@ -104,6 +104,7 @@
     <Compile Include="Authentication.cs" />
     <Compile Include="Converters\ValidityBriefConverter.cs" />
     <Compile Include="CustomDataTemplateSelector.cs" />
+    <Compile Include="KeyVaultServiceFactoryWithAuth.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
