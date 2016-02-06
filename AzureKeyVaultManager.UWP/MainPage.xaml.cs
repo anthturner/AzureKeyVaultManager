@@ -61,7 +61,9 @@ namespace AzureKeyVaultManager.UWP
             {
                 while (mainFlow.Children.Count > 1)
                     mainFlow.Children.RemoveAt(1);
-                mainFlow.Children.Add(new KeySecretList() { KeysSecretsSource = new ObservableCollection<IKeyVaultSecret>(await svc.GetSecrets(vault)) });
+                var keysSecrets = await svc.GetSecrets(vault);
+                var newPane = new KeySecretList() { KeysSecretsSource = new ObservableCollection<IKeyVaultSecret>(keysSecrets) };
+                mainFlow.Children.Add(newPane);
             };
             mainFlow.Children.Add(vaultList);
         }

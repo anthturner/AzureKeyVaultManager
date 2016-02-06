@@ -12,11 +12,10 @@
 
     <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal">
-            <FontIcon FontFamily="ms-appx:/Assets/FontAwesome.otf#FontAwesome" Glyph="&#xf132;" Margin="3 0"></FontIcon>
             <TextBlock Margin="5 2" Style="{StaticResource SubheaderTextBlockStyle}">Vaults</TextBlock>
         </StackPanel>
         <Line Height="2" Stroke="{StaticResource ListBoxForegroundThemeBrush}"></Line>
-        <ListView ItemsSource="{Binding VaultListSource}" DataContext="{Binding}" Width="400">
+        <ListView ItemsSource="{Binding VaultListSource}" SelectionChanged="Selector_OnSelectionChanged" Width="400">
             <ListView.ItemTemplateSelector>
                 <uwp:CustomDataTemplateSelector />
             </ListView.ItemTemplateSelector>
