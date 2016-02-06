@@ -92,6 +92,7 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\FontAwesome.otf" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -99,10 +100,18 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Authentication.cs" />
+    <Compile Include="CustomDataTemplateSelector.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewControls\KeySecretList.xaml.cs">
+      <DependentUpon>KeySecretList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControls\VaultList.xaml.cs">
+      <DependentUpon>VaultList.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -129,11 +138,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="ViewControls\KeySecretList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ViewControls\VaultList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AzureKeyVault.Library\AzureKeyVault.Library.csproj">
       <Project>{3aa1a8bf-019c-4738-b56f-aea454b0333e}</Project>
       <Name>AzureKeyVault.Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AzureKeyVault.Simulators\AzureKeyVault.Simulators.csproj">
+      <Project>{77BB7D28-20AC-4708-BCA0-6513D254C9DA}</Project>
+      <Name>AzureKeyVault.Simulators</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

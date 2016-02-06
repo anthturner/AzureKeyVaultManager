@@ -4,5 +4,29 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:AzureKeyVaultManager.UWP"
     RequestedTheme="Light">
+    <Application.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="KeyTemplate">
+                <StackPanel Orientation="Horizontal">
+                    <FontIcon FontFamily="./Assets/fontawesome.otf#FontAwesome" Glyph="&#xf084;" Margin="3 0" />
+                    <TextBlock Text="{Binding Name}" />
+                </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate x:Key="SecretTemplate">
+                <StackPanel Orientation="Horizontal">
+                    <FontIcon FontFamily="./Assets/fontawesome.otf#FontAwesome" Glyph="&#xf21b;" Margin="3 0" />
+                    <TextBlock Text="{Binding Name}" />
+                </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate x:Key="VaultTemplate">
+                <StackPanel Orientation="Horizontal">
+                    <FontIcon FontFamily="./Assets/fontawesome.otf#FontAwesome" Glyph="&#xf132;" Margin="3 0" />
+                    <TextBlock Text="{Binding Name}" />
+                </StackPanel>
+            </DataTemplate>
+        </ResourceDictionary>
+    </Application.Resources>
 
 </Application>

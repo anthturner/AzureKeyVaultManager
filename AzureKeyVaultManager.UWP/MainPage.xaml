@@ -5,9 +5,13 @@
     xmlns:local="using:AzureKeyVaultManager.UWP"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewControls="using:AzureKeyVaultManager.UWP.ViewControls"
     mc:Ignorable="d">
+    <Page.Resources>
+        <local:CustomDataTemplateSelector x:Key="CustomDataTemplateSelector" />
+    </Page.Resources>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
-    </Grid>
+    <StackPanel Orientation="Horizontal" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Name="mainFlow">
+        
+    </StackPanel>
 </Page>
