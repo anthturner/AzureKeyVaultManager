@@ -13,8 +13,7 @@ namespace AzureKeyVaultManager.UWP.ViewControls
     {
         public event EventHandler<IKeyVault> SelectionChanged;
         public static readonly DependencyProperty SelectedProperty = DependencyProperty.Register("Selected", typeof(IKeyVault), typeof(VaultList), new PropertyMetadata(null));
-        public static readonly DependencyProperty VaultListSourceProperty = DependencyProperty.Register("VaultListSource", typeof(ObservableCollection<IKeyVault>), typeof(VaultList), new PropertyMetadata(null));
-
+        
         public IKeyVault Selected { get { return _selected; } set { _selected = value; } }
         private IKeyVault _selected;
 

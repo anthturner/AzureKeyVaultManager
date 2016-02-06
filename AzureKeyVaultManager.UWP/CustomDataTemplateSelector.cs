@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using AzureKeyVaultManager.Contracts;
 
 namespace AzureKeyVaultManager.UWP
 {
@@ -12,10 +13,11 @@ namespace AzureKeyVaultManager.UWP
     {
         protected override DataTemplate SelectTemplateCore(object item)
         {
-            var dataTemplate =  App.Current.Resources["MyVault2"] as DataTemplate;
-
-            return dataTemplate;
-            //return base.SelectTemplateCore(item);
+            if (item is IKeyVault)
+                return App.Current.Resources["VaultTemplate"] as DataTemplate;
+            else if (item is IKeyVaultSecret)
+                return App.Current.Resources["SecretTemplate"] as DataTemplate;
+            return null;
         }
 
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
