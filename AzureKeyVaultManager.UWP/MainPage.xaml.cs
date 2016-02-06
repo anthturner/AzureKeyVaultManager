@@ -75,7 +75,7 @@ namespace AzureKeyVaultManager.UWP
 
         public MainPage()
         {
-            this.Factory = new KeyVaultSimulatorFactory();
+            this.Factory = new KeyVaultServiceFactoryWithAuth();
             this.InitializeComponent();
             this.DataContext = this;
         }

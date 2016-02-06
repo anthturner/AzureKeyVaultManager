@@ -33,10 +33,17 @@ namespace AzureKeyVaultManager.UWP
             WebAccountProvider wap = await WebAuthenticationCoreManager.FindAccountProviderAsync("https://login.microsoft.com", authority);
             var tokenRequest = new WebTokenRequest(wap, string.Empty, PowershellClientId);
             tokenRequest.Properties.Add("resource", resource);
-            var tokenResponse = await WebAuthenticationCoreManager.RequestTokenAsync(tokenRequest);
-            if (tokenResponse.ResponseStatus != WebTokenRequestStatus.Success)
-                throw new Exception(tokenResponse.ResponseError.ErrorMessage);
-            return tokenResponse.ResponseData.Single();
+            try
+            {
+                var tokenResponse = await WebAuthenticationCoreManager.RequestTokenAsync(tokenRequest);
+                if (tokenResponse.ResponseStatus != WebTokenRequestStatus.Success)
+                    throw new Exception(tokenResponse.ResponseError.ErrorMessage);
+                return tokenResponse.ResponseData.Single();
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 
