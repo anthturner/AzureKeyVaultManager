@@ -21,6 +21,7 @@ using AzureKeyVaultManager.UWP.Annotations;
 using AzureKeyVaultManager.UWP.ViewControls;
 using AzureKeyVaultManager;
 using System.Globalization;
+using Windows.UI.Xaml.Markup;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -32,10 +33,6 @@ namespace AzureKeyVaultManager.UWP
     public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
         public static IKeyVaultSecret SelectedKeySecret { get; private set; }
-
-        private Timer FilterChangedTimer { get; set; }
-        private bool FilterChangedTimerElapsed { get; set; }
-        private string LastRequest { get; set; }
 
         private ObservableCollection<IKeyVault> vaults;
 
@@ -105,24 +102,6 @@ namespace AzureKeyVaultManager.UWP
             KeysSecrets = new ObservableCollection<IKeyVaultSecret>(secrets);
         }
 
-        private void ShowExpandedKey(object sender, EventArgs e)
-        {
-            keysSecretsControl.ItemTemplateSelector = null;
-            keysSecretsControl.ItemTemplate = App.Current.Resources["ExpandedKeyTemplate"] as DataTemplate;
-        }
-
-        private void ShowExpandedSecret(object sender, EventArgs e)
-        {
-            keysSecretsControl.ItemTemplateSelector = null;
-            keysSecretsControl.ItemTemplate = App.Current.Resources["ExpandedSecretTemplate"] as DataTemplate;
-        }
-
-        private void ResetKeySecretControl(object sender, EventArgs e)
-        {
-            keysSecretsControl.ItemTemplate = null;
-            keysSecretsControl.ItemTemplateSelector = new CustomDataTemplateSelector();
-        }
-
         private void searchFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
             KeysSecrets = new ObservableCollection<IKeyVaultSecret>(
@@ -135,6 +114,32 @@ namespace AzureKeyVaultManager.UWP
         {
             SelectedKeySecret = (IKeyVaultSecret)keysSecretsControl.SelectedItem;
             keysSecretsControl.ItemTemplateSelector = new CustomDataTemplateSelector();
+            keysSecretsControl.UpdateLayout();
+            var senderContainer = keysSecretsControl.ItemContainerGenerator.ContainerFromItem(keysSecretsControl.Items.First());
+            var gridChild = FindVisualChildren<Grid>(senderContainer).First();
+
+            gridChild.SetValue(Windows.UI.Xaml.Controls.VariableSizedWrapGrid.ColumnSpanProperty, gridChild.ActualWidth / 10);
+            gridChild.SetValue(Windows.UI.Xaml.Controls.VariableSizedWrapGrid.RowSpanProperty, gridChild.ActualHeight / 10);
+        }
+
+        public IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+                }
+            }
         }
     }
 }

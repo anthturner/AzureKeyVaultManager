@@ -47,17 +47,15 @@
                 </ListView.ItemTemplate>
             </ListView>
         </StackPanel>
-        <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Background="White">
-            <ListView SelectionChanged="KeysSecretsControl_OnSelectionChanged" x:Name="keysSecretsControl" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding KeysSecrets}" Background="White">
-                <ItemsControl.ItemTemplateSelector>
-                    <uwp:CustomDataTemplateSelector />
-                </ItemsControl.ItemTemplateSelector>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapGrid />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ListView>
-        </Grid>
+        <uwp:VariableGridView SelectionChanged="KeysSecretsControl_OnSelectionChanged" x:Name="keysSecretsControl" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding KeysSecrets}" Background="White">
+            <uwp:VariableGridView.ItemTemplateSelector>
+                <uwp:CustomDataTemplateSelector />
+            </uwp:VariableGridView.ItemTemplateSelector>
+            <uwp:VariableGridView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="10" ItemHeight="10" />
+                </ItemsPanelTemplate>
+            </uwp:VariableGridView.ItemsPanel>
+        </uwp:VariableGridView>
     </Grid>
 </Page>

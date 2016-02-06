@@ -31,24 +31,23 @@
 
             <DataTemplate x:Key="SecretTemplate">
                 <Grid Width="225" Height="140" Margin="15">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="70" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="20" />
-                    </Grid.RowDefinitions>
-                    <Border Background="#D2D2D2" Grid.ColumnSpan="2" Padding="10">
-                        <Grid>
-                            <FontIcon VerticalAlignment="Top" HorizontalAlignment="Right" Foreground="#F0F0F0" FontFamily="ms-appx:/Assets/FontAwesome.otf#FontAwesome" Glyph="&#xf21b;" Margin="10" FontSize="28" />
-                            <TextBlock Style="{StaticResource SubheaderTextBlockStyle}" Text="{Binding Name}" />
-                        </Grid>
-                    </Border>
-                    <Border Grid.Row="1" Grid.Column="0" Background="#E1E1E1" Padding="10">
-                        <TextBlock TextWrapping="Wrap" Text="{Binding Converter={StaticResource ValidityBriefConverter},  Mode=OneWay}" />
-                    </Border>
-                </Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="70" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Border Background="#D2D2D2" Grid.ColumnSpan="2" Padding="10">
+                            <Grid>
+                                <FontIcon VerticalAlignment="Top" HorizontalAlignment="Right" Foreground="#F0F0F0" FontFamily="ms-appx:/Assets/FontAwesome.otf#FontAwesome" Glyph="&#xf21b;" Margin="10" FontSize="28" />
+                                <TextBlock Style="{StaticResource SubheaderTextBlockStyle}" Text="{Binding Name}" />
+                            </Grid>
+                        </Border>
+                        <Border Grid.Row="1" Grid.Column="0" Background="#E1E1E1" Padding="10">
+                            <TextBlock TextWrapping="Wrap" Text="{Binding Converter={StaticResource ValidityBriefConverter},  Mode=OneWay}" />
+                        </Border>
+                    </Grid>
             </DataTemplate>
             <DataTemplate x:Key="ExpandedSecretTemplate">
-                <Grid Margin="15" Width="350">
+                <Grid Width="350" Margin="15">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*" />
                         <ColumnDefinition Width="1*" />
@@ -77,6 +76,8 @@
                     <TextBlock VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Text="{Binding Updated}" />
                     <TextBlock VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Text="{Binding ValidAfter}" />
                     <TextBlock VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Text="{Binding Expires}" />
+                    
+                    <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Value}" />
                 </Grid>
             </DataTemplate>
         </ResourceDictionary>
