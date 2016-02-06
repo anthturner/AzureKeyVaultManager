@@ -6,12 +6,58 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewControls="using:AzureKeyVaultManager.UWP.ViewControls"
-    mc:Ignorable="d">
-    <Page.Resources>
-        <local:CustomDataTemplateSelector x:Key="CustomDataTemplateSelector" />
-    </Page.Resources>
+    xmlns:uwp="using:AzureKeyVaultManager.UWP"
+    mc:Ignorable="d"
+    d:DesignHeight="768"
+    d:DesignWidth="1024"
+    Background="Black">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="250" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black" Offset="0.95"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+        </Grid>
 
-    <StackPanel Orientation="Horizontal" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Name="mainFlow">
-        
-    </StackPanel>
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Azure Key Vault Manager" Foreground="Orange" VerticalAlignment="Center" FontFamily="Segoe UI" FontSize="20" Margin="10 0" />
+        <TextBox Grid.Column="2" Grid.Row="0" Margin="0 0 20 0" TextAlignment="Left" VerticalAlignment="Center" Name="searchFilter" TextChanged="searchFilter_TextChanged" PlaceholderText="Search Keys/Secrets" />
+        <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0" Background="White">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="5 2" Style="{StaticResource SubheaderTextBlockStyle}">Vaults</TextBlock>
+            </StackPanel>
+            <ListView ItemsSource="{Binding Vaults}" SelectionChanged="VaultSelector_SelectionChanged" Width="400">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical" Height="80" Padding="10">
+                            <TextBlock Style="{StaticResource ListItemHeader}" Text="{Binding Name}" />
+                            <TextBlock Style="{StaticResource ListItemSubHeader}" Text="{Binding ResourceGroup}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
+        <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Background="White">
+            <ItemsControl x:Name="keysSecretsControl" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding KeysSecrets}" Background="White">
+                <ItemsControl.ItemTemplateSelector>
+                    <uwp:CustomDataTemplateSelector />
+                </ItemsControl.ItemTemplateSelector>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapGrid />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </Grid>
+    </Grid>
 </Page>

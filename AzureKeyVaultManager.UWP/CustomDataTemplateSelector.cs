@@ -22,7 +22,7 @@ namespace AzureKeyVaultManager.UWP
 
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
         {
-            return base.SelectTemplateCore(item, container);
+            return SelectTemplateCore(item);
         }
     }
 }

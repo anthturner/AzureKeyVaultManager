@@ -6,6 +6,18 @@
     RequestedTheme="Light">
     <Application.Resources>
         <ResourceDictionary>
+            <!-- Fonts -->
+            <Style x:Key="ListItemHeader" TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="Segoe UI Light, Helvetica, Arial" />
+                <Setter Property="FontSize" Value="24" />
+            </Style>
+
+            <Style x:Key="ListItemSubHeader" TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="Segoe UI, Helvetica, Arial" />
+                <Setter Property="FontSize" Value="18" />
+            </Style>
+
+            <!-- Tile Data Templates -->
             <DataTemplate x:Key="KeyTemplate">
                 <StackPanel Orientation="Horizontal">
                     <FontIcon FontFamily="ms-appx:/Assets/FontAwesome.otf#FontAwesome" Glyph="&#xf084;" Margin="3 0" />
@@ -14,17 +26,37 @@
             </DataTemplate>
 
             <DataTemplate x:Key="SecretTemplate">
-                <StackPanel Orientation="Horizontal">
+                <!--<StackPanel Orientation="Horizontal">
                     <FontIcon FontFamily="ms-appx:/Assets/FontAwesome.otf#FontAwesome" Glyph="&#xf21b;" Margin="3 0" />
                     <TextBlock Text="{Binding Name}" />
-                </StackPanel>
-            </DataTemplate>
+                </StackPanel>-->
+                <Grid Margin="15" Width="200">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Border Background="#D2D2D2" Grid.ColumnSpan="2">
+                        <TextBlock Padding="5 0 0 0" Grid.ColumnSpan="2" Grid.Column="0" Style="{StaticResource SubheaderTextBlockStyle}" Text="{Binding Name}" />
+                    </Border>
+                    <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="4" Background="#E1E1E1" />
+                    <TextBlock Padding="5 0 0 0" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Text="Created On" />
+                    <TextBlock Padding="5 0 0 0" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Text="Updated On" />
+                    <TextBlock Padding="5 0 0 0" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Text="Valid After" />
+                    <TextBlock Padding="5 0 0 0" VerticalAlignment="Center" Grid.Row="4" Grid.Column="0" Text="Expires On" />
 
-            <DataTemplate x:Key="VaultTemplate">
-                <StackPanel Orientation="Horizontal">
-                    <FontIcon FontFamily="ms-appx:/Assets/FontAwesome.otf#FontAwesome" Glyph="&#xf132;" Margin="3 0" />
-                    <TextBlock Text="{Binding Name}" />
-                </StackPanel>
+                    <TextBlock VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Text="{Binding Created}" />
+                    <TextBlock VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Text="{Binding Updated}" />
+                    <TextBlock VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Text="{Binding ValidAfter}" />
+                    <TextBlock VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Text="{Binding Expires}" />
+                </Grid>
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>

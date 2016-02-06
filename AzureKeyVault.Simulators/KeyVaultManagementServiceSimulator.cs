@@ -16,7 +16,7 @@ namespace AzureKeyVaultManager
         public KeyVaultManagementServiceSimulator()
         {
             _vaults = new List<IKeyVault>();
-            _vaults.Add(new KeyVault() { Id = "Test", Name = "Test" });
+            _vaults.Add(new KeyVault() { Id = "Test", ResourceGroup = "Resources!", Name = "Test" });
         }
 
         public async Task CreateKeyVault(string vaultName, string resourceGroup, string location)
