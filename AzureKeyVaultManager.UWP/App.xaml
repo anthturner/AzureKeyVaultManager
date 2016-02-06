@@ -8,21 +8,21 @@
         <ResourceDictionary>
             <DataTemplate x:Key="KeyTemplate">
                 <StackPanel Orientation="Horizontal">
-                    <FontIcon FontFamily="./Assets/fontawesome.otf#FontAwesome" Glyph="&#xf084;" Margin="3 0" />
+                    <FontIcon FontFamily="ms-appx:/Assets/FontAwesome.otf#FontAwesome" Glyph="&#xf084;" Margin="3 0" />
                     <TextBlock Text="{Binding Name}" />
                 </StackPanel>
             </DataTemplate>
 
             <DataTemplate x:Key="SecretTemplate">
                 <StackPanel Orientation="Horizontal">
-                    <FontIcon FontFamily="./Assets/fontawesome.otf#FontAwesome" Glyph="&#xf21b;" Margin="3 0" />
+                    <FontIcon FontFamily="ms-appx:/Assets/FontAwesome.otf#FontAwesome" Glyph="&#xf21b;" Margin="3 0" />
                     <TextBlock Text="{Binding Name}" />
                 </StackPanel>
             </DataTemplate>
 
             <DataTemplate x:Key="VaultTemplate">
                 <StackPanel Orientation="Horizontal">
-                    <FontIcon FontFamily="./Assets/fontawesome.otf#FontAwesome" Glyph="&#xf132;" Margin="3 0" />
+                    <FontIcon FontFamily="ms-appx:/Assets/FontAwesome.otf#FontAwesome" Glyph="&#xf132;" Margin="3 0" />
                     <TextBlock Text="{Binding Name}" />
                 </StackPanel>
             </DataTemplate>
