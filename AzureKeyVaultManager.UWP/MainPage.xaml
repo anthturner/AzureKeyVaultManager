@@ -48,7 +48,7 @@
             </ListView>
         </StackPanel>
         <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Background="White">
-            <ItemsControl x:Name="keysSecretsControl" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding KeysSecrets}" Background="White">
+            <ListView SelectionChanged="KeysSecretsControl_OnSelectionChanged" x:Name="keysSecretsControl" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding KeysSecrets}" Background="White">
                 <ItemsControl.ItemTemplateSelector>
                     <uwp:CustomDataTemplateSelector />
                 </ItemsControl.ItemTemplateSelector>
@@ -57,7 +57,7 @@
                         <WrapGrid />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
-            </ItemsControl>
+            </ListView>
         </Grid>
     </Grid>
 </Page>
