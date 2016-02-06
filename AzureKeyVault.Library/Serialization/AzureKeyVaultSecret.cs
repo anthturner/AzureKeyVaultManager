@@ -72,6 +72,11 @@ namespace AzureKeyVaultManager.Serialization
         }
     }
 
+    class AzureKeyVaultSecretValue
+    {
+        public string Value { get; set; }
+    }
+
     class AzureKeyVaultSecretAttributes
     {
         public bool Enabled { get; set; }

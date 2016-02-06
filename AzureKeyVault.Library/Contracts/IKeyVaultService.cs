@@ -10,5 +10,6 @@ namespace AzureKeyVaultManager.Contracts
     public interface IKeyVaultService
     {
         Task<ICollection<IKeyVaultSecret>> GetSecrets();
+        Task<String> GetSecretValue(IKeyVaultSecret secret);
     }
 }

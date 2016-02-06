@@ -20,5 +20,10 @@ namespace AzureKeyVaultManager
                 new KeyVaultSecret() { Name = "Secret Two", Value = "p@ssW0rd1", Expires = DateTime.Now.AddDays(21)}
             };
         }
+
+        public Task<string> GetSecretValue(IKeyVaultSecret secret)
+        {
+            return Task.FromResult("I'm a secret");
+        }
     }
 }
