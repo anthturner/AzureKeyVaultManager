@@ -38,7 +38,6 @@ namespace AzureKeyVaultManager.UWP
     /// </summary>
     public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
-        private ShowSecretCommand ShowSecretCommand;
         public static IKeyVaultSecret SelectedKeySecret { get; private set; }
         public IKeyVaultServiceFactory Factory { get; }
 
