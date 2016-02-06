@@ -31,7 +31,8 @@ namespace AzureKeyVaultManager.UWP
 
         private async void button_Click(object sender, RoutedEventArgs e)
         {
-            var m = KeyVaultManagerFactory.GetManagementService(Guid.Parse("0b9e34de-be61-4c07-9221-87903ec922bc"), "athens-ci-master", textBox.Text);
+            var t = await Authentication.GetManagementApiToken();
+            var m = KeyVaultManagerFactory.GetManagementService(Guid.Parse("0b9e34de-be61-4c07-9221-87903ec922bc"), "athens-ci-master", t.AsBearer());
             textBlock.Text = (await m.GetKeyVaults(new CancellationToken())).First().Name;
         }
     }
