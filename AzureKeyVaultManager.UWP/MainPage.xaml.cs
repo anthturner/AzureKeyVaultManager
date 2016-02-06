@@ -19,6 +19,8 @@ using Windows.UI.Xaml.Navigation;
 using AzureKeyVaultManager.Contracts;
 using AzureKeyVaultManager.UWP.Annotations;
 using AzureKeyVaultManager.UWP.ViewControls;
+using AzureKeyVaultManager;
+using System.Globalization;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -29,6 +31,10 @@ namespace AzureKeyVaultManager.UWP
     /// </summary>
     public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
+        private Timer FilterChangedTimer { get; set; }
+        private bool FilterChangedTimerElapsed { get; set; }
+        private string LastRequest { get; set; }
+
         private ObservableCollection<IKeyVault> vaults;
 
         public ObservableCollection<IKeyVault> Vaults
@@ -44,6 +50,24 @@ namespace AzureKeyVaultManager.UWP
             }
         }
 
+        private ObservableCollection<IKeyVaultSecret> originalKeysSecrets;
+        private ObservableCollection<IKeyVaultSecret> keysSecrets;
+
+        public ObservableCollection<IKeyVaultSecret> KeysSecrets
+        {
+            get
+            {
+                return keysSecrets;
+            }
+            set
+            {
+                if (originalKeysSecrets == null)
+                    originalKeysSecrets = value;
+                this.keysSecrets = value;
+                this.OnPropertyChanged();
+            }
+        }
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -55,17 +79,6 @@ namespace AzureKeyVaultManager.UWP
             var mgmt = new KeyVaultManagementServiceSimulator();
             var svc = new KeyVaultServiceSimulator();
             Vaults = new ObservableCollection<IKeyVault>(await mgmt.GetKeyVaults("", CancellationToken.None));
-
-            var vaultList = new VaultList() { VaultListSource = Vaults };
-            vaultList.SelectionChanged += async (sender, vault) =>
-            {
-                while (mainFlow.Children.Count > 1)
-                    mainFlow.Children.RemoveAt(1);
-                var keysSecrets = await svc.GetSecrets(vault);
-                var newPane = new KeySecretList() { KeysSecretsSource = new ObservableCollection<IKeyVaultSecret>(keysSecrets) };
-                mainFlow.Children.Add(newPane);
-            };
-            mainFlow.Children.Add(vaultList);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -74,6 +87,46 @@ namespace AzureKeyVaultManager.UWP
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private async void VaultSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count == 0)
+                return;
+            var item = (IKeyVault)e.AddedItems.Single();
+
+            var svc = new KeyVaultServiceSimulator();
+            var mgmt = new KeyVaultManagementServiceSimulator();
+            var vault = await mgmt.GetKeyVault(item.ResourceGroup, item.Name, CancellationToken.None);
+            var secrets = await svc.GetSecrets(vault);
+
+            KeysSecrets = new ObservableCollection<IKeyVaultSecret>(secrets);
+        }
+
+        private void ShowExpandedKey(object sender, EventArgs e)
+        {
+            keysSecretsControl.ItemTemplateSelector = null;
+            keysSecretsControl.ItemTemplate = App.Current.Resources["ExpandedKeyTemplate"] as DataTemplate;
+        }
+
+        private void ShowExpandedSecret(object sender, EventArgs e)
+        {
+            keysSecretsControl.ItemTemplateSelector = null;
+            keysSecretsControl.ItemTemplate = App.Current.Resources["ExpandedSecretTemplate"] as DataTemplate;
+        }
+
+        private void ResetKeySecretControl(object sender, EventArgs e)
+        {
+            keysSecretsControl.ItemTemplate = null;
+            keysSecretsControl.ItemTemplateSelector = new CustomDataTemplateSelector();
+        }
+
+        private void searchFilter_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            KeysSecrets = new ObservableCollection<IKeyVaultSecret>(
+                from x in originalKeysSecrets
+                where CultureInfo.CurrentCulture.CompareInfo.IndexOf(x.Name, searchFilter.Text, CompareOptions.IgnoreCase) >= 0
+                select x);
         }
     }
 }
