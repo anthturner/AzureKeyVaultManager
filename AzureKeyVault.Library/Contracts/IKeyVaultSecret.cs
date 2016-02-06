@@ -11,9 +11,9 @@ namespace AzureKeyVaultManager.Contracts
     {
         string Name { get; }
         string Value { get; }
-        DateTime Created { get; }
-        DateTime? Updated { get; }
-        DateTime? Expires { get; }
-        DateTime? ValidAfter { get; }
+        DateTimeOffset Created { get; }
+        DateTimeOffset? Updated { get; }
+        DateTimeOffset? Expires { get; }
+        DateTimeOffset? ValidAfter { get; }
     }
 }

@@ -11,6 +11,8 @@ namespace AzureKeyVaultManager.Serialization
     {
         public string Id { get; set; }
 
+        public AzureKeyVaultSecretAttributes Attributes { get; set; }
+
         public string Name
         {
             get
@@ -26,6 +28,57 @@ namespace AzureKeyVaultManager.Serialization
                 return "Not Implemented";
             }
         }
+
+        public DateTimeOffset Created
+        {
+            get
+            {
+                return DateTimeOffset.FromUnixTimeSeconds(this.Attributes.Created);
+            }
+        }
+
+        public DateTimeOffset? Updated
+        {
+            get
+            {
+                return AsDateTime(this.Attributes.Updated);
+            }
+        }
+
+        public DateTimeOffset? Expires
+        {
+            get
+            {
+                return AsDateTime(this.Attributes.Exp);
+            }
+        }
+
+        public DateTimeOffset? ValidAfter
+        {
+            get
+            {
+                return AsDateTime(this.Attributes.Nbf);
+            }
+        }
+
+        private DateTimeOffset? AsDateTime(int? seconds)
+        {
+            if (seconds.HasValue)
+            {
+                return DateTimeOffset.FromUnixTimeSeconds(seconds.Value);
+            }
+
+            return null;
+        }
+    }
+
+    class AzureKeyVaultSecretAttributes
+    {
+        public bool Enabled { get; set; }
+        public int? Nbf { get; set; }
+        public int? Exp { get; set; }
+        public int Created { get; set; }
+        public int? Updated { get; set; }
     }
 }
 //id": "secret-identifier",
