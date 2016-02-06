@@ -3,9 +3,13 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:AzureKeyVaultManager.UWP"
+    xmlns:converters="using:AzureKeyVaultManager.UWP.Converters"
     RequestedTheme="Light">
     <Application.Resources>
         <ResourceDictionary>
+            <!-- Converters -->
+            <converters:ValidityBriefConverter x:Name="ValidityBriefConverter" />
+            
             <!-- Fonts -->
             <Style x:Key="ListItemHeader" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="Segoe UI Light, Helvetica, Arial" />
@@ -26,25 +30,42 @@
             </DataTemplate>
 
             <DataTemplate x:Key="SecretTemplate">
-                <!--<StackPanel Orientation="Horizontal">
-                    <FontIcon FontFamily="ms-appx:/Assets/FontAwesome.otf#FontAwesome" Glyph="&#xf21b;" Margin="3 0" />
-                    <TextBlock Text="{Binding Name}" />
-                </StackPanel>-->
-                <Grid Margin="15" Width="200">
+                <Grid Width="225" Height="140" Margin="15">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="70" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="20" />
+                    </Grid.RowDefinitions>
+                    <Border Background="#D2D2D2" Grid.ColumnSpan="2" Padding="10">
+                        <Grid>
+                            <FontIcon VerticalAlignment="Top" HorizontalAlignment="Right" Foreground="#F0F0F0" FontFamily="ms-appx:/Assets/FontAwesome.otf#FontAwesome" Glyph="&#xf21b;" Margin="10" FontSize="28" />
+                            <TextBlock Style="{StaticResource SubheaderTextBlockStyle}" Text="{Binding Name}" />
+                        </Grid>
+                    </Border>
+                    <Border Grid.Row="1" Grid.Column="0" Background="#E1E1E1" Padding="10">
+                        <TextBlock TextWrapping="Wrap" Text="{Binding Converter={StaticResource ValidityBriefConverter},  Mode=OneWay}" />
+                    </Border>
+                </Grid>
+            </DataTemplate>
+            <DataTemplate x:Key="ExpandedSecretTemplate">
+                <Grid Margin="15" Width="350">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*" />
                         <ColumnDefinition Width="1*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="50" />
+                        <RowDefinition Height="70" />
                         <RowDefinition Height="30" />
                         <RowDefinition Height="30" />
                         <RowDefinition Height="30" />
                         <RowDefinition Height="30" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Border Background="#D2D2D2" Grid.ColumnSpan="2">
-                        <TextBlock Padding="5 0 0 0" Grid.ColumnSpan="2" Grid.Column="0" Style="{StaticResource SubheaderTextBlockStyle}" Text="{Binding Name}" />
+                    <Border Background="#D2D2D2" Grid.ColumnSpan="2" Padding="10">
+                        <Grid>
+                            <FontIcon VerticalAlignment="Top" HorizontalAlignment="Right" Foreground="#F0F0F0" FontFamily="ms-appx:/Assets/FontAwesome.otf#FontAwesome" Glyph="&#xf21b;" Margin="10" FontSize="28" />
+                            <TextBlock Style="{StaticResource SubheaderTextBlockStyle}" Text="{Binding Name}" />
+                        </Grid>
                     </Border>
                     <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="4" Background="#E1E1E1" />
                     <TextBlock Padding="5 0 0 0" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Text="Created On" />

@@ -31,6 +31,8 @@ namespace AzureKeyVaultManager.UWP
     /// </summary>
     public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
+        public static IKeyVaultSecret SelectedKeySecret { get; private set; }
+
         private Timer FilterChangedTimer { get; set; }
         private bool FilterChangedTimerElapsed { get; set; }
         private string LastRequest { get; set; }
@@ -127,6 +129,12 @@ namespace AzureKeyVaultManager.UWP
                 from x in originalKeysSecrets
                 where CultureInfo.CurrentCulture.CompareInfo.IndexOf(x.Name, searchFilter.Text, CompareOptions.IgnoreCase) >= 0
                 select x);
+        }
+
+        private void KeysSecretsControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SelectedKeySecret = (IKeyVaultSecret)keysSecretsControl.SelectedItem;
+            keysSecretsControl.ItemTemplateSelector = new CustomDataTemplateSelector();
         }
     }
 }

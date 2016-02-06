@@ -13,16 +13,16 @@ namespace AzureKeyVaultManager.UWP
     {
         protected override DataTemplate SelectTemplateCore(object item)
         {
-            if (item is IKeyVault)
-                return App.Current.Resources["VaultTemplate"] as DataTemplate;
-            else if (item is IKeyVaultSecret)
-                return App.Current.Resources["SecretTemplate"] as DataTemplate;
-            return null;
+            return SelectTemplateCore(item, null);
         }
 
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
         {
-            return SelectTemplateCore(item);
+            if (item is IKeyVaultSecret && MainPage.SelectedKeySecret == item)
+                return App.Current.Resources["ExpandedSecretTemplate"] as DataTemplate;
+            else if (item is IKeyVaultSecret)
+                return App.Current.Resources["SecretTemplate"] as DataTemplate;
+            return null;
         }
     }
 }
