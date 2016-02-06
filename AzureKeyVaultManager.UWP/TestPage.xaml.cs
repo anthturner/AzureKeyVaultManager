@@ -29,11 +29,11 @@ namespace AzureKeyVaultManager.UWP
             this.InitializeComponent();
         }
 
-        private async void button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
             var t = await Authentication.GetManagementApiToken();
-            var m = KeyVaultManagerFactory.GetManagementService(Guid.Parse("0b9e34de-be61-4c07-9221-87903ec922bc"), "athens-ci-master", t.AsBearer());
-            textBlock.Text = (await m.GetKeyVaults(new CancellationToken())).First().Name;
+            var m = KeyVaultManagerFactory.GetAzureManagementService(t.AsBearer());
+            Subscriptions.ItemsSource = (await m.GetSubscriptions()).ToList();
         }
     }
 }

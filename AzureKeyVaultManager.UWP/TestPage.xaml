@@ -7,15 +7,24 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="0,25,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="553*"/>
             <RowDefinition Height="36*"/>
             <RowDefinition Height="51*"/>
         </Grid.RowDefinitions>
-        <Button x:Name="button" Content="Button" Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="button_Click"/>
-        <TextBox x:Name="textBox" TextWrapping="Wrap" Text="Token" VerticalAlignment="Stretch" Grid.Row="1"/>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Stretch"/>
-
+        <ListBox x:Name="Subscriptions" >
+            <ListBox.Resources>
+                <DataTemplate x:Key="SimpleTemplate">
+                    <Grid>
+                        <TextBlock Text="{Binding SubscriptionId}" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.Resources>
+            <ListBox.ItemTemplate>
+                <StaticResource ResourceKey="SimpleTemplate"/>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Content="Click Me" Click="Button_Click_1" />
     </Grid>
 </Page>

@@ -15,5 +15,10 @@ namespace AzureKeyVaultManager
         {
             return new AzureKeyVaultManagementService(subscriptionId, resourceGroup, new AuthorizedHttpClient(authToken));
         }
+
+        public static IAzureManagementService GetAzureManagementService(string authToken)
+        {
+            return new AzureRestClient(new AuthorizedHttpClient(authToken));
+        }
     }
 }
