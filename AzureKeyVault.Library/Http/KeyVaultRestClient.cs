@@ -27,5 +27,12 @@ namespace AzureKeyVaultManager.Http
             var data = await Get<JsonValues<AzureKeyVaultSecret>>(uri);
             return data.Value.Select(x => x as IKeyVaultSecret).ToList();
         }
+
+        public async Task<String> GetSecretValue(IKeyVaultSecret secret)
+        {
+            var uri = new Uri(_root, $"secrets/{secret.Name}?api-version={Version}");
+            var data = await Get<AzureKeyVaultSecretValue>(uri);
+            return data.Value;
+        }
     }
 }
