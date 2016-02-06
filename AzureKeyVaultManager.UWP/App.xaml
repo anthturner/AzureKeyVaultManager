@@ -58,7 +58,7 @@
                         <RowDefinition Height="30" />
                         <RowDefinition Height="30" />
                         <RowDefinition Height="30" />
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="70" />
                     </Grid.RowDefinitions>
                     <Border Background="#D2D2D2" Grid.ColumnSpan="2" Padding="10">
                         <Grid>
@@ -76,8 +76,13 @@
                     <TextBlock VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Text="{Binding Updated}" />
                     <TextBlock VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Text="{Binding ValidAfter}" />
                     <TextBlock VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Text="{Binding Expires}" />
-                    
-                    <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Value}" />
+
+                    <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+                        <TextBlock Text="{Binding Value}" />
+                        <Button Width="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding ShowSecretCommand}" CommandParameter="{Binding}">
+                            <FontIcon FontFamily="ms-appx:/Assets/FontAwesome.otf#FontAwesome" Glyph="&#xf06e;" Margin="3" />
+                        </Button>
+                    </StackPanel>
                 </Grid>
             </DataTemplate>
         </ResourceDictionary>

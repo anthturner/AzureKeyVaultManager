@@ -22,7 +22,10 @@ using AzureKeyVaultManager.UWP.ViewControls;
 using AzureKeyVaultManager;
 using System.Globalization;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using Windows.Security.Authentication.Web;
 using Windows.UI.Xaml.Markup;
+using AzureKeyVaultManager.UWP.Commands;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -33,6 +36,7 @@ namespace AzureKeyVaultManager.UWP
     /// </summary>
     public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
+        private ShowSecretCommand ShowSecretCommand;
         public static IKeyVaultSecret SelectedKeySecret { get; private set; }
         public IKeyVaultServiceFactory Factory { get; }
 
@@ -139,6 +143,8 @@ namespace AzureKeyVaultManager.UWP
 
         private void KeysSecretsControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // todo: clear value on previous SelectedKeySecret
+
             SelectedKeySecret = (IKeyVaultSecret)keysSecretsControl.SelectedItem;
             keysSecretsControl.ItemTemplateSelector = new CustomDataTemplateSelector();
             keysSecretsControl.UpdateLayout();

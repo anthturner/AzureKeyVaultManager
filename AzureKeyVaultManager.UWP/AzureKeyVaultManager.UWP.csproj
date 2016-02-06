@@ -156,10 +156,6 @@
       <Project>{3aa1a8bf-019c-4738-b56f-aea454b0333e}</Project>
       <Name>AzureKeyVault.Library</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AzureKeyVault.Simulators\AzureKeyVault.Simulators.csproj">
-      <Project>{77BB7D28-20AC-4708-BCA0-6513D254C9DA}</Project>
-      <Name>AzureKeyVault.Simulators</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
