@@ -48,6 +48,7 @@
     <Compile Include="Contracts\IKeyVault.cs" />
     <Compile Include="Contracts\IKeyVaultServiceFactory.cs" />
     <Compile Include="Contracts\ISubscription.cs" />
+    <Compile Include="Decorators\KeyVaultSecretDecorator.cs" />
     <Compile Include="Http\AuthorizedHttpClient.cs" />
     <Compile Include="Http\AzureRestClient.cs" />
     <Compile Include="Http\KeyVaultRestClient.cs" />

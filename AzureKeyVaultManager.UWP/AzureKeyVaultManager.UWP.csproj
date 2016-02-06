@@ -117,6 +117,7 @@
     <Compile Include="ViewControls\VaultList.xaml.cs">
       <DependentUpon>VaultList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\KeyVaultSecretViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

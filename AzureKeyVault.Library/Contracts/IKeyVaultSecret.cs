@@ -10,7 +10,6 @@ namespace AzureKeyVaultManager.Contracts
     public interface IKeyVaultSecret
     {
         string Name { get; }
-        string Value { get; }
         DateTimeOffset Created { get; }
         DateTimeOffset? Updated { get; }
         DateTimeOffset? Expires { get; }
