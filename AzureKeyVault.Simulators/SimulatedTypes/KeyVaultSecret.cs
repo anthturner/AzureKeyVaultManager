@@ -12,9 +12,9 @@ namespace AzureKeyVaultManager.SimulatedTypes
         public string Name { get; set; }
 
         public string Value { get; set; }
-        public DateTime Created { get; set; }
-        public DateTime? Updated { get; set; }
-        public DateTime? Expires { get; set; }
-        public DateTime? ValidAfter { get; set; }
+        public DateTimeOffset Created { get; set; }
+        public DateTimeOffset? Updated { get; set; }
+        public DateTimeOffset? Expires { get; set; }
+        public DateTimeOffset? ValidAfter { get; set; }
     }
 }
