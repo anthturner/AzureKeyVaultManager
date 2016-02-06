@@ -16,8 +16,8 @@ namespace AzureKeyVaultManager
 
             return new List<IKeyVaultSecret>()
             {
-                new KeyVaultSecret() { Name = "Secret One", Value = "I'm hidden!" },
-                new KeyVaultSecret() { Name = "Secret Two", Value = "p@ssW0rd1" }
+                new KeyVaultSecret() { Name = "Secret One", Value = "I'm hidden!", Expires = DateTime.Now.AddDays(6), ValidAfter = DateTime.Now.AddDays(1)},
+                new KeyVaultSecret() { Name = "Secret Two", Value = "p@ssW0rd1", Expires = DateTime.Now.AddDays(21)}
             };
         }
     }
