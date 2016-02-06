@@ -27,6 +27,7 @@ using Windows.Security.Authentication.Web;
 using Windows.UI.Xaml.Markup;
 using AzureKeyVaultManager.UWP.Commands;
 using AzureKeyVaultManager.UWP.ViewModels;
+using AzureKeyVaultManager.UWP.Commands;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -130,7 +131,12 @@ namespace AzureKeyVaultManager.UWP
             var vault = (IKeyVault)item;
             var svc = await Factory.GetKeyVaultService(vault);
             var secrets = await svc.GetSecrets();
-            UpdateSecrets(secrets);
+            UpdateSecrets(secrets.Select(x =>
+            {
+                var vm = new KeyVaultSecretViewModel(x);
+                vm.ShowSecret = new ActionCommand(() => vm.Secret = "I'm secret");
+                return vm;
+            }));
         }
 
         private void searchFilter_TextChanged(object sender, TextChangedEventArgs e)
@@ -141,9 +147,9 @@ namespace AzureKeyVaultManager.UWP
                 select x);
         }
 
-        private void UpdateSecrets(IEnumerable<IKeyVaultSecret> secrets)
+        private void UpdateSecrets(IEnumerable<KeyVaultSecretViewModel> secrets)
         {
-            KeysSecrets = new ObservableCollection<KeyVaultSecretViewModel>(secrets.Select(x => new KeyVaultSecretViewModel(x)));
+            KeysSecrets = new ObservableCollection<KeyVaultSecretViewModel>(secrets);
         }
         private void KeysSecretsControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {

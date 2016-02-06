@@ -76,10 +76,10 @@
                     <TextBlock VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Text="{Binding Updated}" />
                     <TextBlock VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Text="{Binding ValidAfter}" />
                     <TextBlock VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Text="{Binding Expires}" />
-
+                    
                     <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
-                        <TextBlock Text="{Binding Value}" />
-                        <Button Width="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding ShowSecretCommand}" CommandParameter="{Binding}">
+                        <TextBlock Text="{Binding Secret}" />
+                        <Button Width="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding ShowSecret}" CommandParameter="{Binding}">
                             <FontIcon FontFamily="ms-appx:/Assets/FontAwesome.otf#FontAwesome" Glyph="&#xf06e;" Margin="3" />
                         </Button>
                     </StackPanel>
