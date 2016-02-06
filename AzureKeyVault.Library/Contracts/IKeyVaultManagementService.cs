@@ -9,8 +9,8 @@ namespace AzureKeyVaultManager.Contracts
 {
     public interface IKeyVaultManagementService
     {
-        Task CreateKeyVault(string vaultName, string resourceGroup, string location);
-        Task<IKeyVault> GetKeyVault(string resourceGroup, string name, CancellationToken cancellationToken);
-        Task<ICollection<IKeyVault>> GetKeyVaults(string resourceGroup, CancellationToken cancellationToken);
+        Task CreateKeyVault(string vaultName, string location);
+        Task<IKeyVault> GetKeyVault(string name, CancellationToken cancellationToken);
+        Task<ICollection<IKeyVault>> GetKeyVaults(CancellationToken cancellationToken);
     }
 }

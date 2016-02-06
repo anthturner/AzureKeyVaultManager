@@ -14,5 +14,9 @@ namespace AzureKeyVaultManager.SimulatedTypes
         public string ResourceGroup { get; set; }
 
         public string Name { get; set; }
+
+        public Uri Uri { get; set; }
+
+        public Guid TenantId { get; set; }
     }
 }

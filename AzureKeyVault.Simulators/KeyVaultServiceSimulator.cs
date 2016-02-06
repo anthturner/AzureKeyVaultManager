@@ -10,7 +10,7 @@ namespace AzureKeyVaultManager
 {
     public class KeyVaultServiceSimulator : IKeyVaultService
     {
-        public async Task<ICollection<IKeyVaultSecret>> GetSecrets(IKeyVault vault)
+        public async Task<ICollection<IKeyVaultSecret>> GetSecrets()
         {
             await Task.Yield();
 

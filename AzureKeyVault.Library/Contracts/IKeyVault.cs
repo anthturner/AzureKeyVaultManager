@@ -12,5 +12,7 @@ namespace AzureKeyVaultManager.Contracts
         string Name { get; }
         string ResourceGroup { get; }
         string Id { get; }
+        Uri Uri { get; }
+        Guid TenantId { get; }
     }
 }

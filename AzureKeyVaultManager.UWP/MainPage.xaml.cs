@@ -21,6 +21,7 @@ using AzureKeyVaultManager.UWP.Annotations;
 using AzureKeyVaultManager.UWP.ViewControls;
 using AzureKeyVaultManager;
 using System.Globalization;
+using System.Threading.Tasks;
 using Windows.UI.Xaml.Markup;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -75,9 +76,35 @@ namespace AzureKeyVaultManager.UWP
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
-            var mgmt = new KeyVaultManagementServiceSimulator();
-            var svc = new KeyVaultServiceSimulator();
-            Vaults = new ObservableCollection<IKeyVault>(await mgmt.GetKeyVaults("", CancellationToken.None));
+            var token = (await Authentication.GetManagementApiToken()).AsBearer();
+            var azure = KeyVaultManagerFactory.GetAzureManagementService(token);
+
+            List<Task<IEnumerable<IKeyVault>>> tasks = new List<Task<IEnumerable<IKeyVault>>>();
+
+            foreach (var subscription in await azure.GetSubscriptions())
+            {
+                var t = Task.Run<IEnumerable<IKeyVault>>(async () =>
+                {
+                    List<IKeyVault> groups = new List<IKeyVault>();
+
+                    foreach (var resourceGroup in await azure.GetResourceGroups(subscription))
+                    {
+                        var mgmt = KeyVaultManagerFactory.GetManagementService(subscription.SubscriptionId, resourceGroup.Name, token);
+                        var vaults = await mgmt.GetKeyVaults(new CancellationToken());
+
+                        if (vaults != null && vaults.Count > 0)
+                        {
+                            groups.AddRange(vaults);
+                        }
+                    }
+
+                    return groups;
+                });
+                tasks.Add(t);
+            }
+
+            Task.WaitAll(tasks.ToArray());
+            Vaults = new ObservableCollection<IKeyVault>(tasks.SelectMany(x => x.Result).ToList());
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -94,10 +121,9 @@ namespace AzureKeyVaultManager.UWP
                 return;
             var item = (IKeyVault)e.AddedItems.Single();
 
-            var svc = new KeyVaultServiceSimulator();
-            var mgmt = new KeyVaultManagementServiceSimulator();
-            var vault = await mgmt.GetKeyVault(item.ResourceGroup, item.Name, CancellationToken.None);
-            var secrets = await svc.GetSecrets(vault);
+            var vault = (IKeyVault)item;
+            var svc = KeyVaultManagerFactory.GetKeyVaultService(vault, (await Authentication.GetToken($"https://login.microsoftonline.com/{vault.TenantId.ToString("D")}/", "https://vault.azure.net")).AsBearer());
+            var secrets = await svc.GetSecrets();
 
             KeysSecrets = new ObservableCollection<IKeyVaultSecret>(secrets);
         }
