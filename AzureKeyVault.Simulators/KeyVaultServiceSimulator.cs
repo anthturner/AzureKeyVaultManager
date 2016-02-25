@@ -2,8 +2,6 @@
 using AzureKeyVaultManager.SimulatedTypes;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AzureKeyVaultManager
@@ -24,6 +22,25 @@ namespace AzureKeyVaultManager
         public Task<string> GetSecretValue(IKeyVaultSecret secret)
         {
             return Task.FromResult("I'm a secret");
+        }
+
+        public async Task<ICollection<IKeyVaultKey>> GetKeys()
+        {
+            await Task.Yield();
+
+            return new List<IKeyVaultKey>()
+            {
+                new KeyVaultKey()
+                {
+                    Name = "Key One",
+                    Key = "{ \"kid\":\"https://demo7616.vault.azure.net/keys/mytestkey/e0ec2eb3b8764192aa1e7f20fc74dab7\",\"kty\":\"RSA\",\"key_ops\":[\"encrypt\",\"decrypt\",\"sign\",\"verify\",\"wrapKey\",\"unwrapKey\"],\"n\":\"8jfbzUQDIOo8\",\"e\":\"AQAB\"}",
+                }
+            };
+        }
+
+        public Task<string> GetKeyValue(IKeyVaultKey key)
+        {
+            throw new NotImplementedException();
         }
     }
 }

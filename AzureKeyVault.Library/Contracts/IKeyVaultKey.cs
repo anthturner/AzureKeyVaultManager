@@ -1,6 +1,6 @@
 ﻿namespace AzureKeyVaultManager.Contracts
 {
-    public interface IKeyVaultSecret : IKeyVaultSecureItem
+    public interface IKeyVaultKey : IKeyVaultSecureItem
     {
     }
 }

@@ -5,27 +5,26 @@ using System.Windows.Input;
 
 namespace AzureKeyVaultManager.UWP.ViewModels
 {
-    public class KeyVaultSecretViewModel : KeyVaultSecretDecorator, IKeyVaultItemViewModel, INotifyPropertyChanged
+    public class KeyVaultKeyViewModel : KeyVaultKeyDecorator, IKeyVaultItemViewModel, INotifyPropertyChanged
     {
-        private string _secret;
+        private string _key;
 
-        public KeyVaultSecretViewModel(IKeyVaultSecret secret)
-            : base(secret)
+        public KeyVaultKeyViewModel(IKeyVaultKey key) : base(key)
         {
         }
 
         public ICommand ShowSecret { get; set; }
 
-        public string Secret
+        public string Key
         {
             get
             {
-                return _secret;
+                return _key;
             }
             set
             {
-                _secret = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Secret)));
+                _key = value;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Key)));
             }
         }
 

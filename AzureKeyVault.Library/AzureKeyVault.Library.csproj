@@ -43,11 +43,14 @@
     <Compile Include="Azure\AzureKeyVaultManagementService.cs" />
     <Compile Include="Contracts\IAzureManagementService.cs" />
     <Compile Include="Contracts\IKeyVaultManagementService.cs" />
+    <Compile Include="Contracts\IKeyVaultKey.cs" />
+    <Compile Include="Contracts\IKeyVaultSecureItem.cs" />
     <Compile Include="Contracts\IKeyVaultSecret.cs" />
     <Compile Include="Contracts\IKeyVaultService.cs" />
     <Compile Include="Contracts\IKeyVault.cs" />
     <Compile Include="Contracts\IKeyVaultServiceFactory.cs" />
     <Compile Include="Contracts\ISubscription.cs" />
+    <Compile Include="Decorators\KeyVaultKeyDecorator.cs" />
     <Compile Include="Decorators\KeyVaultSecretDecorator.cs" />
     <Compile Include="Http\AuthorizedHttpClient.cs" />
     <Compile Include="Http\AzureRestClient.cs" />
@@ -62,6 +65,7 @@
     <Compile Include="KeyVaultWrapper\Policies\SecretAccessPolicy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serialization\AzureKeyVault.cs" />
+    <Compile Include="Serialization\AzureKeyVaultKey.cs" />
     <Compile Include="Serialization\AzureKeyVaultSecret.cs" />
     <Compile Include="Serialization\AzureResource.cs" />
     <Compile Include="Serialization\AzureSubscription.cs" />

@@ -1,33 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using AzureKeyVaultManager.Contracts;
 using AzureKeyVaultManager.UWP.Annotations;
-using AzureKeyVaultManager.UWP.ViewControls;
-using AzureKeyVaultManager;
 using System.Globalization;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using Windows.Security.Authentication.Web;
-using Windows.UI.Xaml.Markup;
 using AzureKeyVaultManager.UWP.Commands;
 using AzureKeyVaultManager.UWP.ViewModels;
-using AzureKeyVaultManager.UWP.Commands;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -38,7 +22,7 @@ namespace AzureKeyVaultManager.UWP
     /// </summary>
     public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
-        public static IKeyVaultSecret SelectedKeySecret { get; private set; }
+        public static IKeyVaultSecureItem SelectedKeySecret { get; private set; }
         public IKeyVaultServiceFactory Factory { get; }
 
         private ObservableCollection<IKeyVault> vaults;
@@ -56,10 +40,10 @@ namespace AzureKeyVaultManager.UWP
             }
         }
 
-        private ObservableCollection<KeyVaultSecretViewModel> originalKeysSecrets;
-        private ObservableCollection<KeyVaultSecretViewModel> keysSecrets;
+        private ObservableCollection<IKeyVaultItemViewModel> originalKeysSecrets;
+        private ObservableCollection<IKeyVaultItemViewModel> keysSecrets;
 
-        public ObservableCollection<KeyVaultSecretViewModel> KeysSecrets
+        public ObservableCollection<IKeyVaultItemViewModel> KeysSecrets
         {
             get
             {
@@ -81,7 +65,7 @@ namespace AzureKeyVaultManager.UWP
             this.DataContext = this;
         }
 
-        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             var azure = await Factory.GetAzureManagementService();
 
@@ -130,11 +114,27 @@ namespace AzureKeyVaultManager.UWP
             var vault = (IKeyVault)item;
             var svc = await Factory.GetKeyVaultService(vault);
             var secrets = await svc.GetSecrets();
-            UpdateSecrets(secrets.Select(x =>
+            var keys = await svc.GetKeys();
+
+            var castSecrets = secrets.Select(s => (IKeyVaultSecureItem) s);
+            var castKeys = keys.Select(k => (IKeyVaultSecureItem) k);
+            var secretsAndKeys = castSecrets.Union(castKeys);
+
+            UpdateSecrets(secretsAndKeys.Select(x =>
             {
-                var vm = new KeyVaultSecretViewModel(x);
-                vm.ShowSecret = new ActionCommand(() => vm.Secret = "I'm secret");
-                return vm;
+                if (x is IKeyVaultSecret)
+                {
+                    var vm = new KeyVaultSecretViewModel((IKeyVaultSecret)x);
+                    vm.ShowSecret = new ActionCommand(() => vm.Secret = "I'm secret");
+                    return (IKeyVaultItemViewModel)vm;
+                }
+                else if (x is IKeyVaultKey)
+                {
+                    var vm = new KeyVaultKeyViewModel((IKeyVaultKey)x);
+                    vm.ShowSecret = new ActionCommand(() => vm.Key = "I'm a key!");
+                    return (IKeyVaultItemViewModel)vm;
+                }
+                return null;
             }));
         }
 
@@ -146,42 +146,18 @@ namespace AzureKeyVaultManager.UWP
                 select x);
         }
 
-        private void UpdateSecrets(IEnumerable<KeyVaultSecretViewModel> secrets)
+        private void UpdateSecrets(IEnumerable<IKeyVaultItemViewModel> secrets)
         {
-            KeysSecrets = new ObservableCollection<KeyVaultSecretViewModel>(secrets);
+            KeysSecrets = new ObservableCollection<IKeyVaultItemViewModel>(secrets);
         }
+
         private void KeysSecretsControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // todo: clear value on previous SelectedKeySecret
 
-            SelectedKeySecret = (IKeyVaultSecret)keysSecretsControl.SelectedItem;
+            SelectedKeySecret = (IKeyVaultSecureItem) keysSecretsControl.SelectedItem;
             keysSecretsControl.ItemTemplateSelector = new CustomDataTemplateSelector();
             keysSecretsControl.UpdateLayout();
-            var senderContainer = keysSecretsControl.ItemContainerGenerator.ContainerFromItem(keysSecretsControl.Items.First());
-            var gridChild = FindVisualChildren<Grid>(senderContainer).First();
-
-            gridChild.SetValue(Windows.UI.Xaml.Controls.VariableSizedWrapGrid.ColumnSpanProperty, gridChild.ActualWidth / 10);
-            gridChild.SetValue(Windows.UI.Xaml.Controls.VariableSizedWrapGrid.RowSpanProperty, gridChild.ActualHeight / 10);
-        }
-
-        public IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
-        {
-            if (depObj != null)
-            {
-                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
-                {
-                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
-                    if (child != null && child is T)
-                    {
-                        yield return (T)child;
-                    }
-
-                    foreach (T childOfChild in FindVisualChildren<T>(child))
-                    {
-                        yield return childOfChild;
-                    }
-                }
-            }
         }
     }
 }

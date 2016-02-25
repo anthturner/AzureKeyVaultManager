@@ -1,13 +1,11 @@
 ﻿using AzureKeyVaultManager.Contracts;
 using AzureKeyVaultManager.Serialization;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace AzureKeyVaultManager.Http
 {
@@ -33,6 +31,20 @@ namespace AzureKeyVaultManager.Http
             var uri = new Uri(_root, $"secrets/{secret.Name}?api-version={Version}");
             var data = await Get<AzureKeyVaultSecretValue>(uri);
             return data.Value;
+        }
+
+        public async Task<ICollection<IKeyVaultKey>> GetKeys()
+        {
+            var uri = new Uri(_root, $"keys?api-version={Version}");
+            var data = await Get<JsonValues<AzureKeyVaultKey>>(uri);
+            return data.Value.Select(x => x as IKeyVaultKey).ToList();
+        }
+
+        public async Task<String> GetKeyValue(IKeyVaultKey key)
+        {
+            var uri = new Uri(_root, $"keys/{key.Name}?api-version={Version}");
+            var data = await Get<AzureKeyVaultKeyValue>(uri);
+            return JsonConvert.SerializeObject(new { key = data.Key });
         }
     }
 }

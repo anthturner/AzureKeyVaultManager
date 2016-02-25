@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace AzureKeyVaultManager.Contracts
@@ -11,5 +8,7 @@ namespace AzureKeyVaultManager.Contracts
     {
         Task<ICollection<IKeyVaultSecret>> GetSecrets();
         Task<String> GetSecretValue(IKeyVaultSecret secret);
+        Task<ICollection<IKeyVaultKey>> GetKeys();
+        Task<String> GetKeyValue(IKeyVaultKey key);
     }
 }

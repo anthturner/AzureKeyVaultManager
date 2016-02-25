@@ -3,20 +3,20 @@ using System;
 
 namespace AzureKeyVaultManager.Decorators
 {
-    public class KeyVaultSecretDecorator : IKeyVaultSecret
+    public class KeyVaultKeyDecorator : IKeyVaultKey
     {
-        private readonly IKeyVaultSecret _secret;
+        private readonly IKeyVaultKey _key;
 
-        public KeyVaultSecretDecorator(IKeyVaultSecret secret)
+        public KeyVaultKeyDecorator(IKeyVaultKey key)
         {
-            _secret = secret;
+            _key = key;
         }
 
         public virtual DateTimeOffset Created
         {
             get
             {
-                return _secret.Created;
+                return _key.Created;
             }
         }
 
@@ -24,7 +24,7 @@ namespace AzureKeyVaultManager.Decorators
         {
             get
             {
-                return _secret.Expires;
+                return _key.Expires;
             }
         }
 
@@ -32,7 +32,7 @@ namespace AzureKeyVaultManager.Decorators
         {
             get
             {
-                return _secret.Name;
+                return _key.Name;
             }
         }
 
@@ -40,7 +40,7 @@ namespace AzureKeyVaultManager.Decorators
         {
             get
             {
-                return _secret.Updated;
+                return _key.Updated;
             }
         }
 
@@ -48,7 +48,7 @@ namespace AzureKeyVaultManager.Decorators
         {
             get
             {
-                return _secret.ValidAfter;
+                return _key.ValidAfter;
             }
         }
     }

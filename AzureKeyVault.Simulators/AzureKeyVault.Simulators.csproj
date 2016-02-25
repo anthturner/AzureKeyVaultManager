@@ -45,6 +45,7 @@
     <Compile Include="KeyVaultSimulatorFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimulatedTypes\KeyVault.cs" />
+    <Compile Include="SimulatedTypes\KeyVaultKey.cs" />
     <Compile Include="SimulatedTypes\KeyVaultSecret.cs" />
     <Compile Include="SimulatedTypes\Subscription.cs" />
   </ItemGroup>
