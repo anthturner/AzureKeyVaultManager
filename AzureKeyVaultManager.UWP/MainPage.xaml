@@ -5,7 +5,6 @@
     xmlns:local="using:AzureKeyVaultManager.UWP"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewControls="using:AzureKeyVaultManager.UWP.ViewControls"
     xmlns:uwp="using:AzureKeyVaultManager.UWP"
     mc:Ignorable="d"
     d:DesignHeight="768"
@@ -57,6 +56,54 @@
                     <VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="10" ItemHeight="10" />
                 </ItemsPanelTemplate>
             </uwp:VariableGridView.ItemsPanel>
+            <!--<uwp:VariableGridView.ItemContainerStyle>
+                --><!--Storyboard animation--><!--
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="VisualStateGroup">
+                        --><!--This animation will be invoked when you tap on the front of the tile--><!--
+                        <VisualState x:Name="FlipCardFront" >
+                            <Storyboard >
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)" Storyboard.TargetName="frontrectangle">
+                                    <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="90"/>
+                                </DoubleAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="backrectangle">
+                                    <DiscreteObjectKeyFrame KeyTime="0:0:0.25">
+                                        <DiscreteObjectKeyFrame.Value>
+                                            <Visibility>Visible</Visibility>
+                                        </DiscreteObjectKeyFrame.Value>
+                                    </DiscreteObjectKeyFrame>
+                                </ObjectAnimationUsingKeyFrames>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)" Storyboard.TargetName="backrectangle">
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="-90"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </VisualState>
+
+                        --><!--This animation will be invoked when you tap on the back of the card--><!--
+                        <VisualState x:Name="FlipCardBack" >
+                            <Storyboard >
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)" Storyboard.TargetName="backrectangle">
+                                    <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:.25" Value="-90"/>
+                                </DoubleAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="backrectangle">
+                                    <DiscreteObjectKeyFrame KeyTime="0:0:.25">
+                                        <DiscreteObjectKeyFrame.Value>
+                                            <Visibility>Visible</Visibility>
+                                        </DiscreteObjectKeyFrame.Value>
+                                    </DiscreteObjectKeyFrame>
+                                </ObjectAnimationUsingKeyFrames>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)" Storyboard.TargetName="frontrectangle">
+                                    <EasingDoubleKeyFrame KeyTime="0:0:.25" Value="90"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:.5" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+            </uwp:VariableGridView.ItemContainerStyle>-->
         </uwp:VariableGridView>
     </Grid>
 </Page>

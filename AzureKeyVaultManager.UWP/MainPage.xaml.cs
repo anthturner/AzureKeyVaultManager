@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -10,6 +11,7 @@ using AzureKeyVaultManager.Contracts;
 using AzureKeyVaultManager.UWP.Annotations;
 using System.Globalization;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 using AzureKeyVaultManager.UWP.Commands;
 using AzureKeyVaultManager.UWP.ViewModels;
 
@@ -131,7 +133,7 @@ namespace AzureKeyVaultManager.UWP
                 else if (x is IKeyVaultKey)
                 {
                     var vm = new KeyVaultKeyViewModel((IKeyVaultKey)x);
-                    vm.ShowSecret = new ActionCommand(() => vm.Key = "I'm a key!");
+                    vm.ShowKey = new ActionCommand(() => vm.Key = "I'm a key!");
                     return (IKeyVaultItemViewModel)vm;
                 }
                 return null;
@@ -158,6 +160,18 @@ namespace AzureKeyVaultManager.UWP
             SelectedKeySecret = (IKeyVaultSecureItem) keysSecretsControl.SelectedItem;
             keysSecretsControl.ItemTemplateSelector = new CustomDataTemplateSelector();
             keysSecretsControl.UpdateLayout();
+        }
+
+        //When you tap on backward rectangle
+        private void Back_rectangle_tap(object sender, EventArgs e)
+        {
+            VisualStateManager.GoToState(this, "FlipCardBack", true);
+        }
+
+        //When you tap on front rectangle
+        private void Front_rectangle_tap(object sender, EventArgs e)
+        {
+            VisualStateManager.GoToState(this, "FlipCardFront", true);
         }
     }
 }

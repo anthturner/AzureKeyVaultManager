@@ -13,7 +13,7 @@ namespace AzureKeyVaultManager.UWP.ViewModels
         {
         }
 
-        public ICommand ShowSecret { get; set; }
+        public ICommand ShowKey { get; set; }
 
         public string Key
         {

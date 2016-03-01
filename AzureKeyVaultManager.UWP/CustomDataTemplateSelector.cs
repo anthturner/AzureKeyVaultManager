@@ -1,6 +1,10 @@
-﻿using Windows.UI.Xaml;
+﻿using System;
+using Windows.UI;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using AzureKeyVaultManager.Contracts;
+using AzureKeyVaultManager.UWP.ViewModels;
 
 namespace AzureKeyVaultManager.UWP
 {
@@ -19,7 +23,13 @@ namespace AzureKeyVaultManager.UWP
                 return Application.Current.Resources["SecretTemplate"] as DataTemplate;
 
             else if (item is IKeyVaultKey && MainPage.SelectedKeySecret == item)
-                return Application.Current.Resources["ExpandedKeyTemplate"] as DataTemplate;
+            {
+                //return Application.Current.Resources["ExpandedKeyTemplate"] as DataTemplate;
+                var colour = "#D2ABD2";
+                var colorObj = Color.FromArgb(0xff, Convert.ToByte(colour.Substring(1, 2), 16), Convert.ToByte(colour.Substring(3, 2), 16), Convert.ToByte(colour.Substring(5, 2), 16));
+                
+                return new FlippableItemTile() {TileBackground = new SolidColorBrush(colorObj), KeyVaultItem = (IKeyVaultItemViewModel)item};
+            }
             else if (item is IKeyVaultKey)
                 return Application.Current.Resources["KeyTemplate"] as DataTemplate;
             return null;

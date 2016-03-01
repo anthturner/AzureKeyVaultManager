@@ -105,6 +105,9 @@
     <Compile Include="Commands\ActionCommand.cs" />
     <Compile Include="Converters\ValidityBriefConverter.cs" />
     <Compile Include="CustomDataTemplateSelector.cs" />
+    <Compile Include="FlippableItemTile.xaml.cs">
+      <DependentUpon>FlippableItemTile.xaml</DependentUpon>
+    </Compile>
     <Compile Include="KeyVaultServiceFactoryWithAuth.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -136,9 +139,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="FlippableItemTile.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="KeyTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SecretTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
   </ItemGroup>
   <ItemGroup>
