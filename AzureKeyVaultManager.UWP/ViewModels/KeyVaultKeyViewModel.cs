@@ -15,6 +15,8 @@ namespace AzureKeyVaultManager.UWP.ViewModels
 
         public ICommand ShowKey { get; set; }
 
+        public ICommand ShowAccessPermissions { get; set; }
+
         public string Key
         {
             get

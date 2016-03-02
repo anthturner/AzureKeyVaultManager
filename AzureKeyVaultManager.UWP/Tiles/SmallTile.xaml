@@ -1,0 +1,27 @@
+﻿<UserControl
+    x:Class="AzureKeyVaultManager.UWP.Tiles.SmallTile"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AzureKeyVaultManager.UWP.Tiles"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converter="using:AzureKeyVaultManager.UWP.Converters"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+    <UserControl.Resources>
+        <converter:ItemTypeToBrushConverter x:Name="typeToBrushConverter" />
+        <converter:ItemTypeToGlyphConverter x:Name="typeToGlyphConverter" />
+    </UserControl.Resources>
+    
+    <Grid Width="230" Height="140">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <local:TileHeader Grid.ColumnSpan="2" />
+        <Border Grid.Row="1" Grid.Column="0" Background="#E1E1E1" Padding="10">
+            <TextBlock TextWrapping="Wrap" Text="{Binding Converter={StaticResource ValidityBriefConverter},  Mode=OneWay}" />
+        </Border>
+    </Grid>
+</UserControl>

@@ -37,7 +37,7 @@
             <TextBlock Margin="5 2" Style="{StaticResource SubheaderTextBlockStyle}">Vaults</TextBlock>
         </Border>
 
-        <ListView Grid.Row="2" Grid.Column="0" ItemsSource="{Binding Vaults}" Background="White" SelectionChanged="VaultSelector_SelectionChanged" Width="400">
+        <ListView Grid.Row="2" Grid.Column="0" ItemsSource="{Binding Vaults}" Background="White" SelectionChanged="VaultSelector_SelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Vertical" Height="80" Padding="10">
@@ -47,7 +47,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <uwp:VariableGridView SelectionChanged="KeysSecretsControl_OnSelectionChanged" x:Name="keysSecretsControl" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding KeysSecrets}" Background="White">
+        <uwp:VariableGridView SelectionChanged="KeysSecretsControl_OnSelectionChanged" x:Name="keysSecretsControl" Margin="0 10 0 0" Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2" ItemsSource="{Binding KeysSecrets}" Background="White">
             <uwp:VariableGridView.ItemTemplateSelector>
                 <uwp:CustomDataTemplateSelector />
             </uwp:VariableGridView.ItemTemplateSelector>
@@ -56,54 +56,6 @@
                     <VariableSizedWrapGrid Orientation="Horizontal" ItemWidth="10" ItemHeight="10" />
                 </ItemsPanelTemplate>
             </uwp:VariableGridView.ItemsPanel>
-            <!--<uwp:VariableGridView.ItemContainerStyle>
-                --><!--Storyboard animation--><!--
-                <VisualStateManager.VisualStateGroups>
-                    <VisualStateGroup x:Name="VisualStateGroup">
-                        --><!--This animation will be invoked when you tap on the front of the tile--><!--
-                        <VisualState x:Name="FlipCardFront" >
-                            <Storyboard >
-                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)" Storyboard.TargetName="frontrectangle">
-                                    <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                                    <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="90"/>
-                                </DoubleAnimationUsingKeyFrames>
-                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="backrectangle">
-                                    <DiscreteObjectKeyFrame KeyTime="0:0:0.25">
-                                        <DiscreteObjectKeyFrame.Value>
-                                            <Visibility>Visible</Visibility>
-                                        </DiscreteObjectKeyFrame.Value>
-                                    </DiscreteObjectKeyFrame>
-                                </ObjectAnimationUsingKeyFrames>
-                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)" Storyboard.TargetName="backrectangle">
-                                    <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="-90"/>
-                                    <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0"/>
-                                </DoubleAnimationUsingKeyFrames>
-                            </Storyboard>
-                        </VisualState>
-
-                        --><!--This animation will be invoked when you tap on the back of the card--><!--
-                        <VisualState x:Name="FlipCardBack" >
-                            <Storyboard >
-                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)" Storyboard.TargetName="backrectangle">
-                                    <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                                    <EasingDoubleKeyFrame KeyTime="0:0:.25" Value="-90"/>
-                                </DoubleAnimationUsingKeyFrames>
-                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="backrectangle">
-                                    <DiscreteObjectKeyFrame KeyTime="0:0:.25">
-                                        <DiscreteObjectKeyFrame.Value>
-                                            <Visibility>Visible</Visibility>
-                                        </DiscreteObjectKeyFrame.Value>
-                                    </DiscreteObjectKeyFrame>
-                                </ObjectAnimationUsingKeyFrames>
-                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)" Storyboard.TargetName="frontrectangle">
-                                    <EasingDoubleKeyFrame KeyTime="0:0:.25" Value="90"/>
-                                    <EasingDoubleKeyFrame KeyTime="0:0:.5" Value="0"/>
-                                </DoubleAnimationUsingKeyFrames>
-                            </Storyboard>
-                        </VisualState>
-                    </VisualStateGroup>
-                </VisualStateManager.VisualStateGroups>
-            </uwp:VariableGridView.ItemContainerStyle>-->
         </uwp:VariableGridView>
     </Grid>
 </Page>

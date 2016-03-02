@@ -103,9 +103,11 @@
     </Compile>
     <Compile Include="Authentication.cs" />
     <Compile Include="Commands\ActionCommand.cs" />
+    <Compile Include="Converters\ItemTypeToBrushConverter.cs" />
+    <Compile Include="Converters\ItemTypeToGlyphConverter.cs" />
     <Compile Include="Converters\ValidityBriefConverter.cs" />
     <Compile Include="CustomDataTemplateSelector.cs" />
-    <Compile Include="FlippableItemTile.xaml.cs">
+    <Compile Include="Tiles\FlippableItemTile.xaml.cs">
       <DependentUpon>FlippableItemTile.xaml</DependentUpon>
     </Compile>
     <Compile Include="KeyVaultServiceFactoryWithAuth.cs" />
@@ -114,6 +116,12 @@
     </Compile>
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tiles\SmallTile.xaml.cs">
+      <DependentUpon>SmallTile.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tiles\TileHeader.xaml.cs">
+      <DependentUpon>TileHeader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="VariableGridView.cs" />
     <Compile Include="ViewModels\KeyVaultKeyViewModel.cs" />
     <Compile Include="ViewModels\IKeyVaultItemViewModel.cs" />
@@ -139,23 +147,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="FlippableItemTile.xaml">
+    <Page Include="KeyAccessPermissions.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="KeyTemplates.xaml">
+    <Page Include="Tiles\FlippableItemTile.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="SecretTemplates.xaml">
+    <Page Include="Tiles\SmallTile.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Tiles\TileHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,89 @@
+﻿<ContentControl
+    x:Class="AzureKeyVaultManager.UWP.Tiles.FlippableItemTile"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AzureKeyVaultManager.UWP"
+    xmlns:tiles="using:AzureKeyVaultManager.UWP.Tiles"
+    xmlns:converter="using:AzureKeyVaultManager.UWP.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+    <ContentControl.Resources>
+        <converter:ItemTypeToBrushConverter x:Name="typeToBrushConverter" />
+        <converter:ItemTypeToGlyphConverter x:Name="typeToGlyphConverter" />
+        <Storyboard x:Name="FlipToBack">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)" Storyboard.TargetName="cardFront">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="90"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)" Storyboard.TargetName="cardBack">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="-90"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Name="FlipToFront">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)" Storyboard.TargetName="cardFront">
+                <SplineDoubleKeyFrame KeyTime="0:0:0.2" Value="90"/>
+                <SplineDoubleKeyFrame KeyTime="0:0:0.4" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)" Storyboard.TargetName="cardBack">
+                <SplineDoubleKeyFrame KeyTime="0:0:0.2" Value="-90"/>
+                <SplineDoubleKeyFrame KeyTime="0:0:0.4" Value="-90"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </ContentControl.Resources>
+    <Grid Margin="5" Width="345" Height="285">
+        <Grid Name="cardFront" DoubleTapped="Interact_Card">
+            <Grid.Projection>
+                <PlaneProjection />
+            </Grid.Projection>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="110" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <tiles:TileHeader Grid.ColumnSpan="2" />
+            <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="4" Background="#E1E1E1" />
+            <TextBlock Padding="5 0 0 0" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Text="Created On" />
+            <TextBlock Padding="5 0 0 0" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Text="Updated On" />
+            <TextBlock Padding="5 0 0 0" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Text="Valid After" />
+            <TextBlock Padding="5 0 0 0" VerticalAlignment="Center" Grid.Row="4" Grid.Column="0" Text="Expires On" />
+
+            <TextBlock VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Text="{Binding Created}" />
+            <TextBlock VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Text="{Binding Updated}" />
+            <TextBlock VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Text="{Binding ValidAfter}" />
+            <TextBlock VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Text="{Binding Expires}" />
+
+            <Border Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="{Binding Converter={StaticResource typeToBrushConverter}}" BorderThickness="2">
+                <Grid Name="displaySection">
+                    <ContentPresenter />
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Grid Name="cardBack" DoubleTapped="Interact_Card">
+            <Grid.Projection>
+                <PlaneProjection RotationY="-90" />
+            </Grid.Projection>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <tiles:TileHeader />
+            <Border Grid.Row="1" BorderBrush="{Binding Converter={StaticResource typeToBrushConverter}}" BorderThickness="2">
+                <Grid Name="displaySectionBack">
+                    <ContentPresenter />
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentControl>

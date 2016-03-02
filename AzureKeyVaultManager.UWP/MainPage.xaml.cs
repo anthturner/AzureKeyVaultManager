@@ -14,6 +14,9 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using AzureKeyVaultManager.UWP.Commands;
 using AzureKeyVaultManager.UWP.ViewModels;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -128,12 +131,14 @@ namespace AzureKeyVaultManager.UWP
                 {
                     var vm = new KeyVaultSecretViewModel((IKeyVaultSecret)x);
                     vm.ShowSecret = new ActionCommand(() => vm.Secret = "I'm secret");
+                    vm.ShowAccessPermissions = new ActionCommand(() => ShowAccessPermissions());
                     return (IKeyVaultItemViewModel)vm;
                 }
                 else if (x is IKeyVaultKey)
                 {
                     var vm = new KeyVaultKeyViewModel((IKeyVaultKey)x);
                     vm.ShowKey = new ActionCommand(() => vm.Key = "I'm a key!");
+                    vm.ShowAccessPermissions = new ActionCommand(() => ShowAccessPermissions());
                     return (IKeyVaultItemViewModel)vm;
                 }
                 return null;
@@ -162,16 +167,23 @@ namespace AzureKeyVaultManager.UWP
             keysSecretsControl.UpdateLayout();
         }
 
-        //When you tap on backward rectangle
-        private void Back_rectangle_tap(object sender, EventArgs e)
+        private async void ShowAccessPermissions()
         {
-            VisualStateManager.GoToState(this, "FlipCardBack", true);
-        }
+            var dialog = new ContentDialog()
+            {
+                Title = "Access Permissions",
+                MaxWidth = this.ActualWidth,
+                Content = new KeyAccessPermissions(),
+                //http://www.reflectionit.nl/blog/2015/windows-10-xaml-tips-messagedialog-and-contentdialog
 
-        //When you tap on front rectangle
-        private void Front_rectangle_tap(object sender, EventArgs e)
-        {
-            VisualStateManager.GoToState(this, "FlipCardFront", true);
+                PrimaryButtonText = "Save",
+                IsPrimaryButtonEnabled = true,
+
+                SecondaryButtonText = "Cancel",
+                IsSecondaryButtonEnabled = true
+            };
+
+            var result = await dialog.ShowAsync();
         }
     }
 }
