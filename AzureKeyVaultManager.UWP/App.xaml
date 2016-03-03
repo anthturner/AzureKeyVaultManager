@@ -60,8 +60,7 @@
                             </Grid.ColumnDefinitions>
 
                             <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Grid.RowSpan="2" Background="#E1E1E1" />
-                            <Button Grid.Row="0" Width="200" HorizontalAlignment="Center" Grid.Column="0" Command="{Binding ShowAccessPermissions}">Access Permissions</Button>
-                            <Button Grid.Row="1" Width="200" HorizontalAlignment="Center" Grid.Column="0">Delete</Button>
+                            <Button Grid.Row="1" Width="200" HorizontalAlignment="Center" Grid.Column="0" Command="{Binding ShowDeleteConfirmation}" CommandParameter="{Binding}">Delete</Button>
                         </Grid>
                     </tiles:FlippableItemTile.BackChildren>
                 </tiles:FlippableItemTile>
@@ -103,8 +102,7 @@
 
                             <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="#E1E1E1" />
                             <Button Width="200" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="0">Regenerate</Button>
-                            <Button Width="200" HorizontalAlignment="Center" Grid.Row="1" Grid.Column="0" Command="{Binding ShowAccessPermissions}">Access Permissions</Button>
-                            <Button Width="200" HorizontalAlignment="Center" Grid.Row="2" Grid.Column="0">Delete</Button>
+                            <Button Width="200" HorizontalAlignment="Center" Grid.Row="2" Grid.Column="0" Command="{Binding ShowDeleteConfirmation}" CommandParameter="{Binding}">Delete</Button>
                         </Grid>
                     </tiles:FlippableItemTile.BackChildren>
                 </tiles:FlippableItemTile>

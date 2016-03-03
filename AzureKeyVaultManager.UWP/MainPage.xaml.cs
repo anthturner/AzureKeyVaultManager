@@ -14,9 +14,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using AzureKeyVaultManager.UWP.Commands;
 using AzureKeyVaultManager.UWP.ViewModels;
-using Windows.ApplicationModel.Core;
-using Windows.UI.Core;
-using Windows.UI.ViewManagement;
+using System.Windows.Input;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -27,9 +25,12 @@ namespace AzureKeyVaultManager.UWP
     /// </summary>
     public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
+        public KeyVaultViewModel SelectedVault { get; set; }
         public static IKeyVaultSecureItem SelectedKeySecret { get; private set; }
         public IKeyVaultServiceFactory Factory { get; }
 
+        public Visibility VaultSelectedVisibility { get { return SelectedVault != null ? Visibility.Visible : Visibility.Collapsed; } }
+        
         private ObservableCollection<IKeyVault> vaults;
 
         public ObservableCollection<IKeyVault> Vaults
@@ -121,9 +122,17 @@ namespace AzureKeyVaultManager.UWP
             var secrets = await svc.GetSecrets();
             var keys = await svc.GetKeys();
 
-            var castSecrets = secrets.Select(s => (IKeyVaultSecureItem) s);
-            var castKeys = keys.Select(k => (IKeyVaultSecureItem) k);
+            var castSecrets = secrets.Select(s => (IKeyVaultSecureItem)s);
+            var castKeys = keys.Select(k => (IKeyVaultSecureItem)k);
             var secretsAndKeys = castSecrets.Union(castKeys);
+
+            SelectedVault = new KeyVaultViewModel(vault)
+            {
+                ShowAccessPermissions = new ActionCommand(() => ShowAccessPermissions()),
+                ShowDeleteConfirmation = new ActionCommand(() => ShowVaultDeleteConfirmation())
+            };
+            OnPropertyChanged(nameof(VaultSelectedVisibility));
+            OnPropertyChanged(nameof(SelectedVault));
 
             UpdateSecrets(secretsAndKeys.Select(x =>
             {
@@ -132,6 +141,7 @@ namespace AzureKeyVaultManager.UWP
                     var vm = new KeyVaultSecretViewModel((IKeyVaultSecret)x);
                     vm.ShowSecret = new ActionCommand(() => vm.Secret = "I'm secret");
                     vm.ShowAccessPermissions = new ActionCommand(() => ShowAccessPermissions());
+                    vm.ShowDeleteConfirmation = new ActionCommand(() => ShowItemDeleteConfirmation());
                     return (IKeyVaultItemViewModel)vm;
                 }
                 else if (x is IKeyVaultKey)
@@ -139,6 +149,7 @@ namespace AzureKeyVaultManager.UWP
                     var vm = new KeyVaultKeyViewModel((IKeyVaultKey)x);
                     vm.ShowKey = new ActionCommand(() => vm.Key = "I'm a key!");
                     vm.ShowAccessPermissions = new ActionCommand(() => ShowAccessPermissions());
+                    vm.ShowDeleteConfirmation = new ActionCommand(() => ShowItemDeleteConfirmation());
                     return (IKeyVaultItemViewModel)vm;
                 }
                 return null;
@@ -169,20 +180,19 @@ namespace AzureKeyVaultManager.UWP
 
         private async void ShowAccessPermissions()
         {
-            var dialog = new ContentDialog()
-            {
-                Title = "Access Permissions",
-                MaxWidth = this.ActualWidth,
-                Content = new KeyAccessPermissions(),
-                //http://www.reflectionit.nl/blog/2015/windows-10-xaml-tips-messagedialog-and-contentdialog
+            var dialog = new AzureKeyVaultManager.UWP.Dialogs.KeyAccessPermissionsDialog();
+            var result = await dialog.ShowAsync();
+        }
 
-                PrimaryButtonText = "Save",
-                IsPrimaryButtonEnabled = true,
+        private async void ShowVaultDeleteConfirmation()
+        {
+            var dialog = new AzureKeyVaultManager.UWP.Dialogs.VaultDeleteConfirmationDialog();
+            var result = await dialog.ShowAsync();
+        }
 
-                SecondaryButtonText = "Cancel",
-                IsSecondaryButtonEnabled = true
-            };
-
+        private async void ShowItemDeleteConfirmation()
+        {
+            var dialog = new AzureKeyVaultManager.UWP.Dialogs.ItemDeleteConfirmationDialog();
             var result = await dialog.ShowAsync();
         }
     }

@@ -1,0 +1,18 @@
+﻿<ContentDialog
+    x:Class="AzureKeyVaultManager.UWP.Dialogs.ItemDeleteConfirmationDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AzureKeyVaultManager.UWP.Dialogs"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Confirm Delete"
+    Height="Auto"
+    Width="Auto"
+    VerticalAlignment="Stretch"
+    HorizontalAlignment="Stretch"
+    PrimaryButtonText="Delete"
+    SecondaryButtonText="Cancel">
+
+    <TextBlock TextWrapping="Wrap">Are you sure you want to delete this key/secret? All versions of the key/secret will be unavailable if you continue, and you may lose access to the data it protects.</TextBlock>
+</ContentDialog>

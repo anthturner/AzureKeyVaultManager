@@ -50,6 +50,7 @@
     <Compile Include="Contracts\IKeyVault.cs" />
     <Compile Include="Contracts\IKeyVaultServiceFactory.cs" />
     <Compile Include="Contracts\ISubscription.cs" />
+    <Compile Include="Decorators\KeyVaultDecorator.cs" />
     <Compile Include="Decorators\KeyVaultKeyDecorator.cs" />
     <Compile Include="Decorators\KeyVaultSecretDecorator.cs" />
     <Compile Include="Http\AuthorizedHttpClient.cs" />

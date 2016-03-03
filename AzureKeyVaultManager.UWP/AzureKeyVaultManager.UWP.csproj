@@ -107,6 +107,15 @@
     <Compile Include="Converters\ItemTypeToGlyphConverter.cs" />
     <Compile Include="Converters\ValidityBriefConverter.cs" />
     <Compile Include="CustomDataTemplateSelector.cs" />
+    <Compile Include="Dialogs\ItemDeleteConfirmationDialog.xaml.cs">
+      <DependentUpon>ItemDeleteConfirmationDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\VaultDeleteConfirmationDialog.xaml.cs">
+      <DependentUpon>VaultDeleteConfirmationDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\KeyAccessPermissionsDialog.xaml.cs">
+      <DependentUpon>KeyAccessPermissionsDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tiles\FlippableItemTile.xaml.cs">
       <DependentUpon>FlippableItemTile.xaml</DependentUpon>
     </Compile>
@@ -126,6 +135,7 @@
     <Compile Include="ViewModels\KeyVaultKeyViewModel.cs" />
     <Compile Include="ViewModels\IKeyVaultItemViewModel.cs" />
     <Compile Include="ViewModels\KeyVaultSecretViewModel.cs" />
+    <Compile Include="ViewModels\KeyVaultViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -147,6 +157,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Dialogs\ItemDeleteConfirmationDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\VaultDeleteConfirmationDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\KeyAccessPermissionsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="KeyAccessPermissions.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
