@@ -2,10 +2,6 @@
 using AzureKeyVaultManager.Contracts;
 using AzureKeyVaultManager.Http;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AzureKeyVaultManager
 {
@@ -24,6 +20,11 @@ namespace AzureKeyVaultManager
         public static IAzureManagementService GetAzureManagementService(string authToken)
         {
             return new AzureRestClient(new AuthorizedHttpClient(authToken));
+        }
+
+        public static IAzureActiveDirectoryService GetAzureActiveDirectoryService(string authToken, string tenant)
+        {
+            return new AzureActiveDirectoryRestClient(new AuthorizedHttpClient(authToken), tenant);
         }
     }
 }

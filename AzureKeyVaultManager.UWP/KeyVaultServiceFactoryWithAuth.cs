@@ -1,8 +1,5 @@
 ﻿using AzureKeyVaultManager.Contracts;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AzureKeyVaultManager.UWP
@@ -15,6 +12,12 @@ namespace AzureKeyVaultManager.UWP
         {
             await Initialize();
             return KeyVaultManagerFactory.GetAzureManagementService(DefaultToken);
+        }
+
+        public async Task<IAzureActiveDirectoryService> GetAzureActiveDirectoryService(string tenantId)
+        {
+            var token = (await Authentication.GetToken($"https://login.microsoftonline.com/{tenantId}/", "https://graph.windows.net/")).AsBearer();
+            return KeyVaultManagerFactory.GetAzureActiveDirectoryService(token, tenantId);
         }
 
         public async Task<IKeyVaultService> GetKeyVaultService(IKeyVault vault)

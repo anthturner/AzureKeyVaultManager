@@ -180,7 +180,7 @@ namespace AzureKeyVaultManager.UWP
 
         private async void ShowAccessPermissions()
         {
-            var dialog = new AzureKeyVaultManager.UWP.Dialogs.KeyAccessPermissionsDialog();
+            var dialog = new AzureKeyVaultManager.UWP.Dialogs.KeyAccessPermissionsDialog(await Factory.GetAzureActiveDirectoryService(SelectedVault.TenantId.ToString("D")));
             var result = await dialog.ShowAsync();
         }
 

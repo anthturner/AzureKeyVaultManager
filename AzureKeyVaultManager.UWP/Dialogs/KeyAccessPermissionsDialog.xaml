@@ -41,25 +41,22 @@
                 <ColumnDefinition Width="50" />
             </Grid.ColumnDefinitions>
             <TextBox Name="searchFilter" Grid.Column="0" />
-            <Button Width="50" Grid.Column="1">
+            <Button Width="50" Grid.Column="1" Click="SearchUsers_Clicked">
                 <FontIcon FontFamily="ms-appx:/Assets/FontAwesome.otf#FontAwesome" Glyph="&#xf002;" />
             </Button>
         </Grid>
-        <Border BorderBrush="{ThemeResource SystemAccentColor}" BorderThickness="1" Grid.Row="1" Grid.ColumnSpan="3" Margin="0 0 0 10">
+        <Border BorderBrush="{ThemeResource SystemControlForegroundAccentBrush}" BorderThickness="1" Grid.Row="1" Grid.ColumnSpan="3" Margin="0 0 0 10">
             <ListBox Name="adObjects">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="0,2">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100" />
-                                <ColumnDefinition Width="10" />
                                 <ColumnDefinition Width="200" />
                                 <ColumnDefinition Width="10" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="{Binding ObjectType}" />
+                            <TextBlock Grid.Column="0" Text="{Binding Mail}" />
                             <TextBlock Grid.Column="2" Text="{Binding DisplayName}" />
-                            <TextBlock Grid.Column="4" Text="{Binding ObjectId}" />
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

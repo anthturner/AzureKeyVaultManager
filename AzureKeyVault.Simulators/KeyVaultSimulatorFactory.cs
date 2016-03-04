@@ -1,8 +1,5 @@
 ﻿using AzureKeyVaultManager.Contracts;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AzureKeyVaultManager
@@ -14,6 +11,11 @@ namespace AzureKeyVaultManager
             return Task.FromResult<IAzureManagementService>(new AzureManagementServiceSimulator());
         }
 
+        public Task<IAzureActiveDirectoryService> GetAzureActiveDirectoryService(string tenant)
+        {
+            return Task.FromResult<IAzureActiveDirectoryService>(new AzureActiveDirectoryServiceSimulator());
+        }
+
         public Task<IKeyVaultService> GetKeyVaultService(IKeyVault vault)
         {
             return Task.FromResult<IKeyVaultService>(new KeyVaultServiceSimulator());
@@ -21,7 +23,6 @@ namespace AzureKeyVaultManager
 
         public Task<IKeyVaultManagementService> GetManagementService(Guid subscriptionId, string resourceGroup)
         {
-
             return Task.FromResult<IKeyVaultManagementService>(new KeyVaultManagementServiceSimulator());
         }
     }
