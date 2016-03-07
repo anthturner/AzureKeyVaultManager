@@ -15,6 +15,8 @@ using Windows.UI.Xaml;
 using AzureKeyVaultManager.UWP.Commands;
 using AzureKeyVaultManager.UWP.ViewModels;
 using System.Windows.Input;
+using Windows.Security.Authentication.Web;
+using AzureKeyVaultManager.UWP.Dialogs;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -66,7 +68,9 @@ namespace AzureKeyVaultManager.UWP
 
         public MainPage()
         {
-            this.Factory = new KeyVaultSimulatorFactory();
+            //string.Format("ms-appx-web://Microsoft.AAD.BrokerPlugIn/{0}", WebAuthenticationBroker.GetCurrentApplicationCallbackUri().Host.ToUpper());
+            //this.Factory = new KeyVaultSimulatorFactory();
+            this.Factory = new KeyVaultServiceFactoryWithAuth();
             this.InitializeComponent();
             this.DataContext = this;
         }

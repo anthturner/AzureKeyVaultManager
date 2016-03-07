@@ -16,13 +16,13 @@ namespace AzureKeyVaultManager.UWP
 
         public async Task<IAzureActiveDirectoryService> GetAzureActiveDirectoryService(string tenantId)
         {
-            var token = (await Authentication.GetToken($"https://login.microsoftonline.com/{tenantId}/", "https://graph.windows.net/")).AsBearer();
+            var token = (await Authentication.GetToken($"https://login.microsoftonline.com/{tenantId}/", Authentication.ActiveDirectoryScope, "https://graph.windows.net/")).AsBearer();
             return KeyVaultManagerFactory.GetAzureActiveDirectoryService(token, tenantId);
         }
 
         public async Task<IKeyVaultService> GetKeyVaultService(IKeyVault vault)
         {
-            var token = (await Authentication.GetToken($"https://login.microsoftonline.com/{vault.TenantId.ToString("D")}/", "https://vault.azure.net")).AsBearer();
+            var token = (await Authentication.GetToken($"https://login.microsoftonline.com/{vault.TenantId.ToString("D")}/", Authentication.KeyVaultScope, "https://vault.azure.net")).AsBearer();
             return KeyVaultManagerFactory.GetKeyVaultService(vault, token);
         }
 
