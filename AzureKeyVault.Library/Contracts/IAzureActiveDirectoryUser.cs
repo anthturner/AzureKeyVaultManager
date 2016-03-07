@@ -2,7 +2,7 @@
 
 namespace AzureKeyVaultManager.Contracts
 {
-    public interface IAzureActiveDirectoryUser
+    public interface IAzureActiveDirectoryUser : IAccessPolicies
     {
         Guid ObjectId { get; set; }
         bool AccountEnabled { get; set; }

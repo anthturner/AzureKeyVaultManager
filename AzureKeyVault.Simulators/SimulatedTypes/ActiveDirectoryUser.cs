@@ -1,5 +1,6 @@
 ﻿using System;
 using AzureKeyVaultManager.Contracts;
+using AzureKeyVaultManager.KeyVaultWrapper.Policies;
 
 namespace AzureKeyVaultManager.SimulatedTypes
 {
@@ -9,5 +10,7 @@ namespace AzureKeyVaultManager.SimulatedTypes
         public bool AccountEnabled { get; set; }
         public string Mail { get; set; }
         public string DisplayName { get; set; }
+        public AccessPolicy KeyPolicy { get; set; }
+        public AccessPolicy SecretPolicy { get; set; }
     }
 }

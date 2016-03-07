@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Azure\AzureKeyVaultManagementService.cs" />
+    <Compile Include="Contracts\IAccessPolicies.cs" />
     <Compile Include="Contracts\IAzureActiveDirectoryService.cs" />
     <Compile Include="Contracts\IAzureActiveDirectoryUser.cs" />
     <Compile Include="Contracts\IAzureManagementService.cs" />
