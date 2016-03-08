@@ -14,17 +14,10 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using AzureKeyVaultManager.UWP.Commands;
 using AzureKeyVaultManager.UWP.ViewModels;
-using System.Windows.Input;
-using Windows.Security.Authentication.Web;
-using AzureKeyVaultManager.UWP.Dialogs;
-
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
+using Windows.UI.Core;
 
 namespace AzureKeyVaultManager.UWP
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
         public KeyVaultViewModel SelectedVault { get; set; }
@@ -34,6 +27,7 @@ namespace AzureKeyVaultManager.UWP
         public Visibility VaultSelectedVisibility { get { return SelectedVault != null ? Visibility.Visible : Visibility.Collapsed; } }
         
         private ObservableCollection<IKeyVault> vaults;
+        private static MainPage MainPageInstance;
 
         public ObservableCollection<IKeyVault> Vaults
         {
@@ -68,8 +62,7 @@ namespace AzureKeyVaultManager.UWP
 
         public MainPage()
         {
-            //string.Format("ms-appx-web://Microsoft.AAD.BrokerPlugIn/{0}", WebAuthenticationBroker.GetCurrentApplicationCallbackUri().Host.ToUpper());
-            //this.Factory = new KeyVaultSimulatorFactory();
+            MainPageInstance = this;
             this.Factory = new KeyVaultServiceFactoryWithAuth();
             this.InitializeComponent();
             this.DataContext = this;
@@ -77,34 +70,48 @@ namespace AzureKeyVaultManager.UWP
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            var azure = await Factory.GetAzureManagementService();
-
-            List<Task<IEnumerable<IKeyVault>>> tasks = new List<Task<IEnumerable<IKeyVault>>>();
-
-            foreach (var subscription in await azure.GetSubscriptions())
+            try
             {
-                var t = Task.Run<IEnumerable<IKeyVault>>(async () =>
+                await ShowProgressDialog("Logging in...");
+                var azure = await Factory.GetAzureManagementService();
+
+                List<Task<IEnumerable<IKeyVault>>> tasks = new List<Task<IEnumerable<IKeyVault>>>();
+
+                await ShowProgressDialog("Loading subscriptions");
+                var subscriptions = await azure.GetSubscriptions();
+                await ShowProgressDialog($"Loading vaults");
+                foreach (var subscription in subscriptions)
                 {
-                    List<IKeyVault> groups = new List<IKeyVault>();
-
-                    foreach (var resourceGroup in await azure.GetResourceGroups(subscription))
+                    var t = Task.Run<IEnumerable<IKeyVault>>(async () =>
                     {
-                        var mgmt = await Factory.GetManagementService(subscription.SubscriptionId, resourceGroup.Name);
-                        var vaults = await mgmt.GetKeyVaults(new CancellationToken());
+                        List<IKeyVault> groups = new List<IKeyVault>();
 
-                        if (vaults != null && vaults.Count > 0)
+                        foreach (var resourceGroup in await azure.GetResourceGroups(subscription))
                         {
-                            groups.AddRange(vaults);
-                        }
-                    }
+                            var mgmt =
+                                await Factory.GetManagementService(subscription.SubscriptionId, resourceGroup.Name);
+                            var vaults = await mgmt.GetKeyVaults(new CancellationToken());
 
-                    return groups;
-                });
-                tasks.Add(t);
+                            if (vaults != null && vaults.Count > 0)
+                            {
+                                groups.AddRange(vaults);
+                            }
+                        }
+
+                        return groups;
+                    });
+                    tasks.Add(t);
+                }
+
+                Task.WaitAll(tasks.ToArray());
+                Vaults = new ObservableCollection<IKeyVault>(tasks.SelectMany(x => x.Result).ToList());
+            }
+            catch (Exception ex)
+            {
+                ShowErrorDialog(ex.ToString());
             }
 
-            Task.WaitAll(tasks.ToArray());
-            Vaults = new ObservableCollection<IKeyVault>(tasks.SelectMany(x => x.Result).ToList());
+            await HideProgressDialog();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -123,6 +130,8 @@ namespace AzureKeyVaultManager.UWP
                     return;
                 var item = (IKeyVault) e.AddedItems.Single();
 
+                await ShowProgressDialog("Getting items from vault...");
+
                 var vault = (IKeyVault) item;
                 var svc = await Factory.GetKeyVaultService(vault);
                 var secrets = await svc.GetSecrets();
@@ -134,8 +143,8 @@ namespace AzureKeyVaultManager.UWP
 
                 SelectedVault = new KeyVaultViewModel(vault)
                 {
-                    ShowAccessPermissions = new ActionCommand(() => ShowAccessPermissions()),
-                    ShowDeleteConfirmation = new ActionCommand(() => ShowVaultDeleteConfirmation())
+                    ShowAccessPermissions = new ActionCommand(() => ShowAccessPermissions(vault)),
+                    ShowDeleteConfirmation = new ActionCommand(() => ShowVaultDeleteConfirmation(vault))
                 };
                 OnPropertyChanged(nameof(VaultSelectedVisibility));
                 OnPropertyChanged(nameof(SelectedVault));
@@ -146,16 +155,14 @@ namespace AzureKeyVaultManager.UWP
                     {
                         var vm = new KeyVaultSecretViewModel((IKeyVaultSecret) x);
                         vm.ShowSecret = new ActionCommand(async () => vm.Secret = await svc.GetSecretValue((IKeyVaultSecret) x));
-                        vm.ShowAccessPermissions = new ActionCommand(() => ShowAccessPermissions());
-                        vm.ShowDeleteConfirmation = new ActionCommand(() => ShowItemDeleteConfirmation());
+                        vm.ShowDeleteConfirmation = new ActionCommand(() => ShowItemDeleteConfirmation(x));
                         return (IKeyVaultItemViewModel) vm;
                     }
                     else if (x is IKeyVaultKey)
                     {
                         var vm = new KeyVaultKeyViewModel((IKeyVaultKey) x);
                         vm.ShowKey = new ActionCommand(async () => vm.Key = await svc.GetKeyValue((IKeyVaultKey)x));
-                        vm.ShowAccessPermissions = new ActionCommand(() => ShowAccessPermissions());
-                        vm.ShowDeleteConfirmation = new ActionCommand(() => ShowItemDeleteConfirmation());
+                        vm.ShowDeleteConfirmation = new ActionCommand(() => ShowItemDeleteConfirmation(x));
                         return (IKeyVaultItemViewModel) vm;
                     }
                     return null;
@@ -163,8 +170,10 @@ namespace AzureKeyVaultManager.UWP
             }
             catch (Exception ex)
             {
-                // todo: show error dialog
+                ShowErrorDialog(ex.ToString());
             }
+
+            await HideProgressDialog();
         }
 
         private void searchFilter_TextChanged(object sender, TextChangedEventArgs e)
@@ -182,29 +191,63 @@ namespace AzureKeyVaultManager.UWP
 
         private void KeysSecretsControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // todo: clear value on previous SelectedKeySecret
-
             SelectedKeySecret = (IKeyVaultSecureItem) keysSecretsControl.SelectedItem;
             keysSecretsControl.ItemTemplateSelector = new CustomDataTemplateSelector();
             keysSecretsControl.UpdateLayout();
         }
 
-        private async void ShowAccessPermissions()
+        #region Dialogs
+        private async void ShowAccessPermissions(IKeyVault vault)
         {
-            var dialog = new AzureKeyVaultManager.UWP.Dialogs.KeyAccessPermissionsDialog(await Factory.GetAzureActiveDirectoryService(SelectedVault.TenantId.ToString("D")));
+            var dialog = new AzureKeyVaultManager.UWP.Dialogs.KeyAccessPermissionsDialog(await Factory.GetAzureActiveDirectoryService(vault.TenantId.ToString("D")));
             var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                // save
+            }
         }
 
-        private async void ShowVaultDeleteConfirmation()
+        private async void ShowVaultDeleteConfirmation(IKeyVault vault)
         {
             var dialog = new AzureKeyVaultManager.UWP.Dialogs.VaultDeleteConfirmationDialog();
             var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                // delete vault
+            }
         }
 
-        private async void ShowItemDeleteConfirmation()
+        private async void ShowItemDeleteConfirmation(IKeyVaultSecureItem item)
         {
             var dialog = new AzureKeyVaultManager.UWP.Dialogs.ItemDeleteConfirmationDialog();
             var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                var svc = await Factory.GetKeyVaultService(SelectedVault);
+                // delete item
+            }
         }
+
+        public static async void ShowErrorDialog(string text)
+        {
+            var dialog = new AzureKeyVaultManager.UWP.Dialogs.ErrorDialog(text);
+            await dialog.ShowAsync();
+        }
+
+        public static async Task ShowProgressDialog(string text = "Please wait...")
+        {
+            await MainPageInstance.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                MainPageInstance.progressOverlay.Visibility = Visibility.Visible;
+                MainPageInstance.progressText.Text = text;
+            });
+        }
+
+        public static async Task HideProgressDialog()
+        {
+            await MainPageInstance.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                () => { MainPageInstance.progressOverlay.Visibility = Visibility.Collapsed; });
+        }
+        #endregion
     }
 }

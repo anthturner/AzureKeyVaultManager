@@ -63,5 +63,14 @@
                 </ItemsPanelTemplate>
             </uwp:VariableGridView.ItemsPanel>
         </uwp:VariableGridView>
+
+        <Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Grid.RowSpan="3" Background="#99000000" Name="progressOverlay" Visibility="Collapsed">
+            <Border HorizontalAlignment="Center" VerticalAlignment="Center" Width="250" Height="150" BorderBrush="White" BorderThickness="1" Background="White">
+                <StackPanel Orientation="Vertical" Padding="25">
+                    <ProgressRing Name="progressRing" IsActive="True" Width="80" Height="80" Margin="0 0 0 10" />
+                    <TextBlock Name="progressText" HorizontalAlignment="Center" Text="Please wait..." />
+                </StackPanel>
+            </Border>
+        </Border>
     </Grid>
 </Page>
