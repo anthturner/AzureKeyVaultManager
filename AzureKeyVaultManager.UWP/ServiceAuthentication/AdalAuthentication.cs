@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.Security.Authentication.Web.Core;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
@@ -11,7 +12,6 @@ namespace AzureKeyVaultManager.UWP.ServiceAuthentication
         private const string PowershellClientId = "1950a258-227b-4e31-a9cf-717495945fc2";
 
         private static TokenCache TokenCache = new TokenCache();
-        private static AuthenticationContext AuthContext = new AuthenticationContext("https://login.microsoftonline.com/common", true, TokenCache);
 
         protected override async Task<WebTokenResponse> GetToken(string resource, string authority = null)
         {

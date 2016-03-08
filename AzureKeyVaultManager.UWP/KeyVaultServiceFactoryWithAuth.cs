@@ -7,12 +7,10 @@ namespace AzureKeyVaultManager.UWP
 {
     class KeyVaultServiceFactoryWithAuth : IKeyVaultServiceFactory
     {
-        private string DefaultToken { get; set; }
-
         public async Task<IAzureManagementService> GetAzureManagementService()
         {
-            await Initialize();
-            return KeyVaultManagerFactory.GetAzureManagementService(DefaultToken);
+            var token = (await Authentication.Instance.GetManagementApiToken()).AsBearer();
+            return KeyVaultManagerFactory.GetAzureManagementService(token);
         }
 
         public async Task<IAzureActiveDirectoryService> GetAzureActiveDirectoryService(string tenantId)
@@ -29,16 +27,8 @@ namespace AzureKeyVaultManager.UWP
 
         public async Task<IKeyVaultManagementService> GetManagementService(Guid subscriptionId, string resourceGroup)
         {
-            await Initialize();
-            return KeyVaultManagerFactory.GetManagementService(subscriptionId, resourceGroup, DefaultToken);
-        }
-
-        private async Task Initialize()
-        {
-            if (String.IsNullOrEmpty(DefaultToken))
-            {
-                DefaultToken = (await Authentication.Instance.GetManagementApiToken()).AsBearer();
-            }
+            var token = (await Authentication.Instance.GetManagementApiToken()).AsBearer();
+            return KeyVaultManagerFactory.GetManagementService(subscriptionId, resourceGroup, token);
         }
     }
 }

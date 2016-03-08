@@ -14,7 +14,7 @@
         <converter:ItemTypeToGlyphConverter x:Name="typeToGlyphConverter" />
 
         <Style x:Key="TileHeaderTextBlockStyle" TargetType="TextBlock" BasedOn="{StaticResource SubheaderTextBlockStyle}">
-            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontSize" Value="22"/>
         </Style>
     </UserControl.Resources>
     

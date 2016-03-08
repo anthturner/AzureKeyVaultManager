@@ -70,16 +70,23 @@ namespace AzureKeyVaultManager.UWP
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            IAzureManagementService azure;
+            await ShowProgressDialog("Logging in...");
             try
             {
-                await ShowProgressDialog("Logging in...");
-                var azure = await Factory.GetAzureManagementService();
+                azure = await Factory.GetAzureManagementService();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("There was an error authenticating to Azure", ex);
+            }
 
+            try
+            {
                 List<Task<IEnumerable<IKeyVault>>> tasks = new List<Task<IEnumerable<IKeyVault>>>();
 
-                await ShowProgressDialog("Loading subscriptions");
+                await ShowProgressDialog("Retrieving key vaults...");
                 var subscriptions = await azure.GetSubscriptions();
-                await ShowProgressDialog($"Loading vaults");
                 foreach (var subscription in subscriptions)
                 {
                     var t = Task.Run<IEnumerable<IKeyVault>>(async () =>
@@ -90,11 +97,15 @@ namespace AzureKeyVaultManager.UWP
                         {
                             var mgmt =
                                 await Factory.GetManagementService(subscription.SubscriptionId, resourceGroup.Name);
-                            var vaults = await mgmt.GetKeyVaults(new CancellationToken());
-
-                            if (vaults != null && vaults.Count > 0)
+                            var localVaults = await mgmt.GetKeyVaults(new CancellationToken());
+                            
+                            if (localVaults != null && localVaults.Count > 0)
                             {
-                                groups.AddRange(vaults);
+                                foreach (var vault in localVaults)
+                                {
+                                    vault.SubscriptionId = subscription.SubscriptionId;
+                                    groups.Add(vault);
+                                }
                             }
                         }
 
