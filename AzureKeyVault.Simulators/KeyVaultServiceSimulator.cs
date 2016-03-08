@@ -3,6 +3,7 @@ using AzureKeyVaultManager.SimulatedTypes;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AzureKeyVaultManager.KeyVaultWrapper;
 
 namespace AzureKeyVaultManager
 {
@@ -38,9 +39,10 @@ namespace AzureKeyVaultManager
             };
         }
 
-        public Task<string> GetKeyValue(IKeyVaultKey key)
+        public async Task<string> GetKeyValue(IKeyVaultKey key)
         {
-            throw new NotImplementedException();
+            await Task.Yield();
+            return "key value";
         }
 
         public async Task Delete(IKeyVaultKey key)
@@ -51,6 +53,30 @@ namespace AzureKeyVaultManager
         public async Task Delete(IKeyVaultSecret secret)
         {
             await Task.Yield();
+        }
+
+        public async Task<string> Encrypt(IKeyVaultKey key, KeyVaultAlgorithm algorithm, string valueToEncrypt)
+        {
+            await Task.Yield();
+            return valueToEncrypt;
+        }
+
+        public async Task<string> Decrypt(IKeyVaultKey key, KeyVaultAlgorithm algorithm, string valueToDecrypt)
+        {
+            await Task.Yield();
+            return valueToDecrypt;
+        }
+
+        public async Task<string> Sign(IKeyVaultKey key, KeyVaultAlgorithm algorithm, string digest)
+        {
+            await Task.Yield();
+            return "signature";
+        }
+
+        public async Task<bool> Verify(IKeyVaultKey key, KeyVaultAlgorithm algorithm, string digest, string valueToVerify)
+        {
+            await Task.Yield();
+            return true;
         }
     }
 }

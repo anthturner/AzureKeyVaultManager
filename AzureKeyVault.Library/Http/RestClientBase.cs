@@ -23,6 +23,18 @@ namespace AzureKeyVaultManager.Http
             return await GetResult<T>(result);
         }
 
+        protected async Task<T> Post<T>(Uri uri, string postData)
+        {
+            var result = await _client.PostAsync(uri, new StringContent(postData));
+            return await GetResult<T>(result);
+        }
+
+        protected async Task<dynamic> Post(Uri uri, string postData)
+        {
+            var result = await _client.PostAsync(uri, new StringContent(postData));
+            return await GetResultDynamic(result);
+        }
+
         protected async Task Delete(Uri uri)
         {
             var result = await _client.DeleteAsync(uri);
@@ -43,7 +55,7 @@ namespace AzureKeyVaultManager.Http
             }
             catch (Exception ex)
             {
-                var errorResult = (dynamic)JsonConvert.DeserializeObject(content);
+                dynamic errorResult = JsonConvert.DeserializeObject(content);
                 if (errorResult != null && errorResult.error.message != null)
                     throw new Exception(errorResult.error.message, ex);
                 throw;
@@ -53,6 +65,27 @@ namespace AzureKeyVaultManager.Http
                 return JsonConvert.DeserializeObject<T>(content);
             else
                 return default(T);
+        }
+
+        private async Task<dynamic> GetResultDynamic(HttpResponseMessage response)
+        {
+            var content = await response.Content.ReadAsStringAsync();
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception ex)
+            {
+                dynamic errorResult = JsonConvert.DeserializeObject(content);
+                if (errorResult != null && errorResult.error.message != null)
+                    throw new Exception(errorResult.error.message, ex);
+                throw;
+            }
+
+            if (!string.IsNullOrEmpty(content))
+                return JsonConvert.DeserializeObject(content);
+            else
+                return null;
         }
     }
 }

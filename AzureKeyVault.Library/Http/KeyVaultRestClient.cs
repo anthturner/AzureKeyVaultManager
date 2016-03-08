@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using AzureKeyVaultManager.KeyVaultWrapper;
 using Newtonsoft.Json;
 
 namespace AzureKeyVaultManager.Http
@@ -57,6 +58,55 @@ namespace AzureKeyVaultManager.Http
         {
             var uri = new Uri(_root, $"secrets/{secret.Name}?api-version={Version}");
             await Delete(uri);
+        }
+
+        public async Task<string> Encrypt(IKeyVaultKey key, KeyVaultAlgorithm algorithm, string valueData)
+        {
+            var uri = new Uri(_root, $"keys/{key.Name}/encrypt?api-version={Version}");
+            var command = new
+            {
+                alg = algorithm.GetConfigurationString(),
+                value = valueData
+            };
+            var data = await Post(uri, JsonConvert.SerializeObject(command));
+            return data.value;
+        }
+
+        public async Task<string> Decrypt(IKeyVaultKey key, KeyVaultAlgorithm algorithm, string valueData)
+        {
+            var uri = new Uri(_root, $"keys/{key.Name}/decrypt?api-version={Version}");
+            var command = new
+            {
+                alg = algorithm.GetConfigurationString(),
+                value = valueData
+            };
+            var data = await Post(uri, JsonConvert.SerializeObject(command));
+            return data.value;
+        }
+
+        public async Task<string> Sign(IKeyVaultKey key, KeyVaultAlgorithm algorithm, string digest)
+        {
+            var uri = new Uri(_root, $"keys/{key.Name}/sign?api-version={Version}");
+            var command = new
+            {
+                alg = algorithm.GetConfigurationString(),
+                value = digest
+            };
+            var data = await Post(uri, JsonConvert.SerializeObject(command));
+            return data.value;
+        }
+
+        public async Task<bool> Verify(IKeyVaultKey key, KeyVaultAlgorithm algorithm, string digest, string valueToVerify)
+        {
+            var uri = new Uri(_root, $"keys/{key.Name}/verify?api-version={Version}");
+            var command = new
+            {
+                alg = algorithm.GetConfigurationString(),
+                digest = digest,
+                value = valueToVerify
+            };
+            var data = await Post(uri, JsonConvert.SerializeObject(command));
+            return data.value;
         }
     }
 }
