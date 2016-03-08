@@ -1,11 +1,7 @@
 ﻿using AzureKeyVaultManager.Serialization;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AzureKeyVaultManager.Http
@@ -31,6 +27,12 @@ namespace AzureKeyVaultManager.Http
         {
             var uri = new Uri(_root, $"vaults/{vaultName}?api-version={Version}");
             return await Get<AzureKeyVault>(uri);
+        }
+
+        public async Task DeleteVault(string vaultName)
+        {
+            var uri = new Uri(_root, $"vaults/{vaultName}?api-version={Version}");
+            await Delete(uri);
         }
     }
 }

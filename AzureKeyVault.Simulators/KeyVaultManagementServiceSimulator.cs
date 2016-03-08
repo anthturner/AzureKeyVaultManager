@@ -36,5 +36,10 @@ namespace AzureKeyVaultManager
             await Task.Yield();
             return _vaults;
         }
+
+        public async Task DeleteKeyVault(IKeyVault vault)
+        {
+            await Task.Yield();
+        }
     }
 }

@@ -213,7 +213,8 @@ namespace AzureKeyVaultManager.UWP
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                // delete vault
+                var svc = await Factory.GetManagementService(vault.SubscriptionId, vault.ResourceGroup);
+                await svc.DeleteKeyVault(vault);
             }
         }
 
@@ -224,7 +225,10 @@ namespace AzureKeyVaultManager.UWP
             if (result == ContentDialogResult.Primary)
             {
                 var svc = await Factory.GetKeyVaultService(SelectedVault);
-                // delete item
+                if (item is IKeyVaultKey)
+                    await svc.Delete((IKeyVaultKey)item);
+                if (item is IKeyVaultSecret)
+                    await svc.Delete((IKeyVaultSecret)item);
             }
         }
 

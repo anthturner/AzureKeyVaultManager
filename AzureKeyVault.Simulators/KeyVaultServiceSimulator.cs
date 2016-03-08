@@ -42,5 +42,15 @@ namespace AzureKeyVaultManager
         {
             throw new NotImplementedException();
         }
+
+        public async Task Delete(IKeyVaultKey key)
+        {
+            await Task.Yield();
+        }
+
+        public async Task Delete(IKeyVaultSecret secret)
+        {
+            await Task.Yield();
+        }
     }
 }

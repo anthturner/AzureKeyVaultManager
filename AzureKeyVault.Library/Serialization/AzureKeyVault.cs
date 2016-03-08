@@ -1,9 +1,6 @@
 ﻿using AzureKeyVaultManager.Contracts;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AzureKeyVaultManager.Serialization
 {
@@ -28,6 +25,8 @@ namespace AzureKeyVaultManager.Serialization
                 return this.Properties.TenantId;
             }
         }
+
+        public Guid SubscriptionId { get; set; }
     }
 
     class AzureKeyVaultProperties

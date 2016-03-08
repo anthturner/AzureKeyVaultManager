@@ -36,5 +36,7 @@ namespace AzureKeyVaultManager.Decorators
         {
             get { return _vault.TenantId; }
         }
+
+        public Guid SubscriptionId { get; set; }
     }
 }

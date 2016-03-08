@@ -1,11 +1,6 @@
-﻿using AzureKeyVaultManager.Serialization;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AzureKeyVaultManager.Http
@@ -25,10 +20,26 @@ namespace AzureKeyVaultManager.Http
         protected async Task<T> Get<T>(Uri uri)
         {
             var result = await _client.GetAsync(uri);
-            var content = await result.Content.ReadAsStringAsync();
+            return await GetResult<T>(result);
+        }
+
+        protected async Task Delete(Uri uri)
+        {
+            var result = await _client.DeleteAsync(uri);
+            await GetResult(result);
+        }
+
+        private async Task GetResult(HttpResponseMessage response)
+        {
+            await GetResult<object>(response);
+        }
+
+        private async Task<T> GetResult<T>(HttpResponseMessage response)
+        {
+            var content = await response.Content.ReadAsStringAsync();
             try
             {
-                result.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode();
             }
             catch (Exception ex)
             {
@@ -38,7 +49,10 @@ namespace AzureKeyVaultManager.Http
                 throw;
             }
 
-            return JsonConvert.DeserializeObject<T>(content);
+            if (!string.IsNullOrEmpty(content))
+                return JsonConvert.DeserializeObject<T>(content);
+            else
+                return default(T);
         }
     }
 }

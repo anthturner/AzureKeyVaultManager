@@ -46,5 +46,17 @@ namespace AzureKeyVaultManager.Http
             var data = await Get<AzureKeyVaultKeyValue>(uri);
             return JsonConvert.SerializeObject(new { key = data.Key });
         }
+
+        public async Task Delete(IKeyVaultKey key)
+        {
+            var uri = new Uri(_root, $"keys/{key.Name}?api-version={Version}");
+            await Delete(uri);
+        }
+
+        public async Task Delete(IKeyVaultSecret secret)
+        {
+            var uri = new Uri(_root, $"secrets/{secret.Name}?api-version={Version}");
+            await Delete(uri);
+        }
     }
 }

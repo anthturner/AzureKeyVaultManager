@@ -18,5 +18,6 @@ namespace AzureKeyVaultManager.SimulatedTypes
         public Uri Uri { get; set; }
 
         public Guid TenantId { get; set; }
+        public Guid SubscriptionId { get; set; }
     }
 }

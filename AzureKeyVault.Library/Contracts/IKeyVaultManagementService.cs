@@ -12,5 +12,6 @@ namespace AzureKeyVaultManager.Contracts
         Task CreateKeyVault(string vaultName, string location);
         Task<IKeyVault> GetKeyVault(string name, CancellationToken cancellationToken);
         Task<ICollection<IKeyVault>> GetKeyVaults(CancellationToken cancellationToken);
+        Task DeleteKeyVault(IKeyVault vault);
     }
 }

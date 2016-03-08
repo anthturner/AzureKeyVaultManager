@@ -14,5 +14,6 @@ namespace AzureKeyVaultManager.Contracts
         string Id { get; }
         Uri Uri { get; }
         Guid TenantId { get; }
+        Guid SubscriptionId { get; set; }
     }
 }
