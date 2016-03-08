@@ -101,7 +101,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Authentication.cs" />
+    <Compile Include="ServiceAuthentication\AdalAuthentication.cs" />
+    <Compile Include="ServiceAuthentication\Authentication.cs" />
+    <Compile Include="ServiceAuthentication\UwpBrokerAuthentication.cs" />
     <Compile Include="Commands\ActionCommand.cs" />
     <Compile Include="Converters\ItemTypeToBrushConverter.cs" />
     <Compile Include="Converters\ItemTypeToGlyphConverter.cs" />

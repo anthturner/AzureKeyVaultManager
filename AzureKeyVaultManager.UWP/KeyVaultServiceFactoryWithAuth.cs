@@ -1,6 +1,7 @@
 ﻿using AzureKeyVaultManager.Contracts;
 using System;
 using System.Threading.Tasks;
+using AzureKeyVaultManager.UWP.ServiceAuthentication;
 
 namespace AzureKeyVaultManager.UWP
 {
@@ -16,13 +17,13 @@ namespace AzureKeyVaultManager.UWP
 
         public async Task<IAzureActiveDirectoryService> GetAzureActiveDirectoryService(string tenantId)
         {
-            var token = (await Authentication.GetToken($"https://login.microsoftonline.com/{tenantId}/", Authentication.ActiveDirectoryScope, "https://graph.windows.net/")).AsBearer();
+            var token = (await Authentication.Instance.GetGraphApiToken()).AsBearer();
             return KeyVaultManagerFactory.GetAzureActiveDirectoryService(token, tenantId);
         }
 
         public async Task<IKeyVaultService> GetKeyVaultService(IKeyVault vault)
         {
-            var token = (await Authentication.GetToken($"https://login.microsoftonline.com/{vault.TenantId.ToString("D")}/", Authentication.KeyVaultScope, "https://vault.azure.net")).AsBearer();
+            var token = (await Authentication.Instance.GetKeyVaultApiToken(vault.TenantId.ToString("D"))).AsBearer();
             return KeyVaultManagerFactory.GetKeyVaultService(vault, token);
         }
 
@@ -36,7 +37,7 @@ namespace AzureKeyVaultManager.UWP
         {
             if (String.IsNullOrEmpty(DefaultToken))
             {
-                DefaultToken = (await Authentication.GetManagementApiToken()).AsBearer();
+                DefaultToken = (await Authentication.Instance.GetManagementApiToken()).AsBearer();
             }
         }
     }

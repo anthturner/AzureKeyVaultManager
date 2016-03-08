@@ -25,8 +25,19 @@ namespace AzureKeyVaultManager.Http
         protected async Task<T> Get<T>(Uri uri)
         {
             var result = await _client.GetAsync(uri);
-            result.EnsureSuccessStatusCode();
             var content = await result.Content.ReadAsStringAsync();
+            try
+            {
+                result.EnsureSuccessStatusCode();
+            }
+            catch (Exception ex)
+            {
+                var errorResult = (dynamic)JsonConvert.DeserializeObject(content);
+                if (errorResult != null && errorResult.error.message != null)
+                    throw new Exception(errorResult.error.message, ex);
+                throw;
+            }
+
             return JsonConvert.DeserializeObject<T>(content);
         }
     }

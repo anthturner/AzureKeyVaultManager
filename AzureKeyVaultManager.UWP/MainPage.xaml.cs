@@ -117,47 +117,54 @@ namespace AzureKeyVaultManager.UWP
 
         private async void VaultSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems.Count == 0)
-                return;
-            var item = (IKeyVault)e.AddedItems.Single();
-
-            var vault = (IKeyVault)item;
-            var svc = await Factory.GetKeyVaultService(vault);
-            var secrets = await svc.GetSecrets();
-            var keys = await svc.GetKeys();
-
-            var castSecrets = secrets.Select(s => (IKeyVaultSecureItem)s);
-            var castKeys = keys.Select(k => (IKeyVaultSecureItem)k);
-            var secretsAndKeys = castSecrets.Union(castKeys);
-
-            SelectedVault = new KeyVaultViewModel(vault)
+            try
             {
-                ShowAccessPermissions = new ActionCommand(() => ShowAccessPermissions()),
-                ShowDeleteConfirmation = new ActionCommand(() => ShowVaultDeleteConfirmation())
-            };
-            OnPropertyChanged(nameof(VaultSelectedVisibility));
-            OnPropertyChanged(nameof(SelectedVault));
+                if (e.AddedItems.Count == 0)
+                    return;
+                var item = (IKeyVault) e.AddedItems.Single();
 
-            UpdateSecrets(secretsAndKeys.Select(x =>
+                var vault = (IKeyVault) item;
+                var svc = await Factory.GetKeyVaultService(vault);
+                var secrets = await svc.GetSecrets();
+                var keys = await svc.GetKeys();
+
+                var castSecrets = secrets.Select(s => (IKeyVaultSecureItem) s);
+                var castKeys = keys.Select(k => (IKeyVaultSecureItem) k);
+                var secretsAndKeys = castSecrets.Union(castKeys);
+
+                SelectedVault = new KeyVaultViewModel(vault)
+                {
+                    ShowAccessPermissions = new ActionCommand(() => ShowAccessPermissions()),
+                    ShowDeleteConfirmation = new ActionCommand(() => ShowVaultDeleteConfirmation())
+                };
+                OnPropertyChanged(nameof(VaultSelectedVisibility));
+                OnPropertyChanged(nameof(SelectedVault));
+
+                UpdateSecrets(secretsAndKeys.Select(x =>
+                {
+                    if (x is IKeyVaultSecret)
+                    {
+                        var vm = new KeyVaultSecretViewModel((IKeyVaultSecret) x);
+                        vm.ShowSecret = new ActionCommand(async () => vm.Secret = await svc.GetSecretValue((IKeyVaultSecret) x));
+                        vm.ShowAccessPermissions = new ActionCommand(() => ShowAccessPermissions());
+                        vm.ShowDeleteConfirmation = new ActionCommand(() => ShowItemDeleteConfirmation());
+                        return (IKeyVaultItemViewModel) vm;
+                    }
+                    else if (x is IKeyVaultKey)
+                    {
+                        var vm = new KeyVaultKeyViewModel((IKeyVaultKey) x);
+                        vm.ShowKey = new ActionCommand(async () => vm.Key = await svc.GetKeyValue((IKeyVaultKey)x));
+                        vm.ShowAccessPermissions = new ActionCommand(() => ShowAccessPermissions());
+                        vm.ShowDeleteConfirmation = new ActionCommand(() => ShowItemDeleteConfirmation());
+                        return (IKeyVaultItemViewModel) vm;
+                    }
+                    return null;
+                }));
+            }
+            catch (Exception ex)
             {
-                if (x is IKeyVaultSecret)
-                {
-                    var vm = new KeyVaultSecretViewModel((IKeyVaultSecret)x);
-                    vm.ShowSecret = new ActionCommand(() => vm.Secret = "I'm secret");
-                    vm.ShowAccessPermissions = new ActionCommand(() => ShowAccessPermissions());
-                    vm.ShowDeleteConfirmation = new ActionCommand(() => ShowItemDeleteConfirmation());
-                    return (IKeyVaultItemViewModel)vm;
-                }
-                else if (x is IKeyVaultKey)
-                {
-                    var vm = new KeyVaultKeyViewModel((IKeyVaultKey)x);
-                    vm.ShowKey = new ActionCommand(() => vm.Key = "I'm a key!");
-                    vm.ShowAccessPermissions = new ActionCommand(() => ShowAccessPermissions());
-                    vm.ShowDeleteConfirmation = new ActionCommand(() => ShowItemDeleteConfirmation());
-                    return (IKeyVaultItemViewModel)vm;
-                }
-                return null;
-            }));
+                // todo: show error dialog
+            }
         }
 
         private void searchFilter_TextChanged(object sender, TextChangedEventArgs e)
