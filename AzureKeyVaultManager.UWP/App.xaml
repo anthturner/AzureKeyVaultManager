@@ -54,13 +54,15 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Grid.RowSpan="2" Background="#E1E1E1" />
-                            <Button Grid.Row="1" Width="200" HorizontalAlignment="Center" Grid.Column="0" Command="{Binding ShowDeleteConfirmation}" CommandParameter="{Binding}">Delete</Button>
+                            <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="#E1E1E1" />
+                            <Button Width="200" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="0">Regenerate</Button>
+                            <Button Width="200" HorizontalAlignment="Center" Grid.Row="2" Grid.Column="0" Command="{Binding ShowDeleteConfirmation}" CommandParameter="{Binding}">Delete</Button>
                         </Grid>
                     </tiles:FlippableItemTile.BackChildren>
                 </tiles:FlippableItemTile>
@@ -95,14 +97,25 @@
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Grid.RowSpan="3" Background="#E1E1E1" />
-                            <Button Width="200" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="0">Regenerate</Button>
-                            <Button Width="200" HorizontalAlignment="Center" Grid.Row="2" Grid.Column="0" Command="{Binding ShowDeleteConfirmation}" CommandParameter="{Binding}">Delete</Button>
+                            <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="4" Background="#E1E1E1" />
+
+                            <Button Grid.Row="0" Grid.Column="0" Width="100" HorizontalAlignment="Center" Command="{Binding ShowEncryptDialog}" CommandParameter="{Binding}">Encrypt</Button>
+                            <Button Grid.Row="0" Grid.Column="1" Width="100" HorizontalAlignment="Center" Command="{Binding ShowDecryptDialog}" CommandParameter="{Binding}">Decrypt</Button>
+
+                            <Button Grid.Row="1" Grid.Column="0" Width="100" HorizontalAlignment="Center" Command="{Binding ShowSignDialog}" CommandParameter="{Binding}">Sign</Button>
+                            <Button Grid.Row="1" Grid.Column="1" Width="100" HorizontalAlignment="Center" Command="{Binding ShowVerifyDialog}" CommandParameter="{Binding}">Verify</Button>
+
+                            <Button Grid.Row="2" Grid.Column="0" Width="100" HorizontalAlignment="Center" Command="{Binding ShowWrapDialog}" CommandParameter="{Binding}">Wrap</Button>
+                            <Button Grid.Row="2" Grid.Column="1" Width="100" HorizontalAlignment="Center" Command="{Binding ShowUnwrapDialog}" CommandParameter="{Binding}">Unwrap</Button>
+
+                            <Button Grid.Row="3" Grid.ColumnSpan="2" Width="200" HorizontalAlignment="Center" Grid.Column="0" Command="{Binding ShowDeleteConfirmation}" CommandParameter="{Binding}">Delete</Button>
                         </Grid>
                     </tiles:FlippableItemTile.BackChildren>
                 </tiles:FlippableItemTile>

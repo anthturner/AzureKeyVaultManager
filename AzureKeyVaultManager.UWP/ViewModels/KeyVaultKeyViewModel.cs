@@ -17,6 +17,15 @@ namespace AzureKeyVaultManager.UWP.ViewModels
 
         public ICommand ShowDeleteConfirmation { get; set; }
 
+        public ICommand ShowEncryptDialog { get; set; }
+        public ICommand ShowDecryptDialog { get; set; }
+
+        public ICommand ShowSignDialog { get; set; }
+        public ICommand ShowVerifyDialog { get; set; }
+
+        public ICommand ShowWrapDialog { get; set; }
+        public ICommand ShowUnwrapDialog { get; set; }
+
         public string Key
         {
             get

@@ -15,6 +15,7 @@ using Windows.UI.Xaml;
 using AzureKeyVaultManager.UWP.Commands;
 using AzureKeyVaultManager.UWP.ViewModels;
 using Windows.UI.Core;
+using AzureKeyVaultManager.UWP.Dialogs;
 
 namespace AzureKeyVaultManager.UWP
 {
@@ -27,7 +28,7 @@ namespace AzureKeyVaultManager.UWP
         public Visibility VaultSelectedVisibility { get { return SelectedVault != null ? Visibility.Visible : Visibility.Collapsed; } }
         
         private ObservableCollection<IKeyVault> vaults;
-        private static MainPage MainPageInstance;
+        public static MainPage MainPageInstance;
 
         public ObservableCollection<IKeyVault> Vaults
         {
@@ -63,7 +64,8 @@ namespace AzureKeyVaultManager.UWP
         public MainPage()
         {
             MainPageInstance = this;
-            this.Factory = new KeyVaultServiceFactoryWithAuth();
+            //this.Factory = new KeyVaultServiceFactoryWithAuth();
+            this.Factory = new KeyVaultSimulatorFactory();
             this.InitializeComponent();
             this.DataContext = this;
         }
@@ -103,6 +105,7 @@ namespace AzureKeyVaultManager.UWP
                             {
                                 foreach (var vault in localVaults)
                                 {
+                                    vault.ResourceGroup = resourceGroup.Name;
                                     vault.SubscriptionId = subscription.SubscriptionId;
                                     groups.Add(vault);
                                 }
@@ -174,6 +177,13 @@ namespace AzureKeyVaultManager.UWP
                         var vm = new KeyVaultKeyViewModel((IKeyVaultKey) x);
                         vm.ShowKey = new ActionCommand(async () => vm.Key = await svc.GetKeyValue((IKeyVaultKey)x));
                         vm.ShowDeleteConfirmation = new ActionCommand(() => ShowItemDeleteConfirmation(x));
+
+                        vm.ShowEncryptDialog = new ActionCommand(() => ShowEncryptDialog((IKeyVaultKey)x));
+                        vm.ShowDecryptDialog = new ActionCommand(() => ShowDecryptDialog((IKeyVaultKey)x));
+                        vm.ShowSignDialog = new ActionCommand(() => ShowSignDialog((IKeyVaultKey)x));
+                        vm.ShowVerifyDialog = new ActionCommand(() => ShowVerifyDialog((IKeyVaultKey)x));
+                        vm.ShowWrapDialog = new ActionCommand(() => ShowWrapDialog((IKeyVaultKey)x));
+                        vm.ShowUnwrapDialog = new ActionCommand(() => ShowUnwrapDialog((IKeyVaultKey)x));
                         return (IKeyVaultItemViewModel) vm;
                     }
                     return null;
@@ -208,9 +218,40 @@ namespace AzureKeyVaultManager.UWP
         }
 
         #region Dialogs
+        private async void ShowEncryptDialog(IKeyVaultKey key)
+        {
+            await new DataTransformationDialog(key, DataTransformationDialog.TransformationType.Encrypt).ShowAsync();
+        }
+
+        private async void ShowDecryptDialog(IKeyVaultKey key)
+        {
+            await new DataTransformationDialog(key, DataTransformationDialog.TransformationType.Decrypt).ShowAsync();
+        }
+
+        private async void ShowSignDialog(IKeyVaultKey key)
+        {
+            //await new DataTransformationDialog(key, DataTransformationDialog.TransformationType.Sign).ShowAsync();
+        }
+
+        private async void ShowVerifyDialog(IKeyVaultKey key)
+        {
+            //await new DataTransformationDialog(key, DataTransformationDialog.TransformationType.Verify).ShowAsync();
+        }
+
+        private async void ShowWrapDialog(IKeyVaultKey key)
+        {
+            await new DataTransformationDialog(key, DataTransformationDialog.TransformationType.Wrap).ShowAsync();
+        }
+
+        private async void ShowUnwrapDialog(IKeyVaultKey key)
+        {
+            await new DataTransformationDialog(key, DataTransformationDialog.TransformationType.Unwrap).ShowAsync();
+        }
+
+
         private async void ShowAccessPermissions(IKeyVault vault)
         {
-            var dialog = new AzureKeyVaultManager.UWP.Dialogs.KeyAccessPermissionsDialog(await Factory.GetAzureActiveDirectoryService(vault.TenantId.ToString("D")));
+            var dialog = new KeyAccessPermissionsDialog(await Factory.GetAzureActiveDirectoryService(vault.TenantId.ToString("D")));
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
@@ -220,7 +261,7 @@ namespace AzureKeyVaultManager.UWP
 
         private async void ShowVaultDeleteConfirmation(IKeyVault vault)
         {
-            var dialog = new AzureKeyVaultManager.UWP.Dialogs.VaultDeleteConfirmationDialog();
+            var dialog = new VaultDeleteConfirmationDialog();
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
@@ -231,7 +272,7 @@ namespace AzureKeyVaultManager.UWP
 
         private async void ShowItemDeleteConfirmation(IKeyVaultSecureItem item)
         {
-            var dialog = new AzureKeyVaultManager.UWP.Dialogs.ItemDeleteConfirmationDialog();
+            var dialog = new ItemDeleteConfirmationDialog();
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
@@ -245,7 +286,7 @@ namespace AzureKeyVaultManager.UWP
 
         public static async void ShowErrorDialog(string text)
         {
-            var dialog = new AzureKeyVaultManager.UWP.Dialogs.ErrorDialog(text);
+            var dialog = new ErrorDialog(text);
             await dialog.ShowAsync();
         }
 

@@ -104,6 +104,9 @@
     <Compile Include="Dialogs\ErrorDialog.xaml.cs">
       <DependentUpon>ErrorDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\DataTransformationDialog.xaml.cs">
+      <DependentUpon>DataTransformationDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ServiceAuthentication\AdalAuthentication.cs" />
     <Compile Include="ServiceAuthentication\Authentication.cs" />
     <Compile Include="ServiceAuthentication\UwpBrokerAuthentication.cs" />
@@ -162,6 +165,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Dialogs\DataTransformationDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Dialogs\ItemDeleteConfirmationDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
