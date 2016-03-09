@@ -10,7 +10,7 @@ namespace AzureKeyVaultManager.Contracts
     public interface IKeyVault
     {
         string Name { get; }
-        string ResourceGroup { get; }
+        string ResourceGroup { get; set; }
         string Id { get; }
         Uri Uri { get; }
         Guid TenantId { get; }

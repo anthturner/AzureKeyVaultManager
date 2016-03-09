@@ -20,6 +20,7 @@ namespace AzureKeyVaultManager.Decorators
         public virtual string ResourceGroup
         {
             get { return _vault.ResourceGroup; }
+            set { }
         }
 
         public virtual Uri Uri
