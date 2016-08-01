@@ -7,7 +7,7 @@ namespace AzureKeyVault.Connectivity.Rest.Serialization
 {
     class AzureKeyVaultKey : IKeyVaultKey
     {
-        public string Id { get; set; }
+        public string Kid { get; set; }
 
         public AzureKeyVaultKeyAttributes Attributes { get; set; }
 
@@ -15,7 +15,7 @@ namespace AzureKeyVault.Connectivity.Rest.Serialization
         {
             get
             {
-                return this.Id.Split(new[] { '/' }, 4, StringSplitOptions.RemoveEmptyEntries).Last();
+                return this.Kid.Split(new[] { '/' }, 4, StringSplitOptions.RemoveEmptyEntries).Last();
             }
         }
 

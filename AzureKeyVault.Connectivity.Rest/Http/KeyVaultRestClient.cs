@@ -24,6 +24,8 @@ namespace AzureKeyVault.Connectivity.Rest.Http
         {
             var uri = new Uri(_root, $"secrets?api-version={Version}");
             var data = await Get<JsonValues<AzureKeyVaultSecret>>(uri);
+            if (data.Value == null)
+                return new List<IKeyVaultSecret>();
             return data.Value.Select(x => x as IKeyVaultSecret).ToList();
         }
 
@@ -38,6 +40,8 @@ namespace AzureKeyVault.Connectivity.Rest.Http
         {
             var uri = new Uri(_root, $"keys?api-version={Version}");
             var data = await Get<JsonValues<AzureKeyVaultKey>>(uri);
+            if (data.Value == null)
+                return new List<IKeyVaultKey>();
             return data.Value.Select(x => x as IKeyVaultKey).ToList();
         }
 
@@ -45,6 +49,8 @@ namespace AzureKeyVault.Connectivity.Rest.Http
         {
             var uri = new Uri(_root, $"keys/{key.Name}?api-version={Version}");
             var data = await Get<AzureKeyVaultKeyValue>(uri);
+            if (data == null)
+                return null;
             return JsonConvert.SerializeObject(new { key = data.Key });
         }
 
