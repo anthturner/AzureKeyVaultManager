@@ -1,8 +1,8 @@
-﻿using System;
+﻿using AzureKeyVault.Connectivity.Contracts;
+using AzureKeyVault.Connectivity.KeyVaultWrapper;
+using System;
 using System.Linq;
 using Windows.UI.Xaml.Controls;
-using AzureKeyVaultManager.Contracts;
-using AzureKeyVaultManager.KeyVaultWrapper;
 
 namespace AzureKeyVaultManager.UWP.Dialogs
 {

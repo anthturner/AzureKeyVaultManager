@@ -19,7 +19,11 @@ namespace AzureKeyVaultManager.UWP.ServiceAuthentication
                 authority = "common";
             
             var authContext = new AuthenticationContext($"{LoginBase}/{authority}", true, TokenCache);
-            var result = await authContext.AcquireTokenAsync(resource, PowershellClientId, new Uri("urn:ietf:wg:oauth:2.0:oob"), PromptBehavior.Auto);
+            AuthenticationResult result;
+            if (TokenCache.Count == 0)
+                result = await authContext.AcquireTokenAsync(resource, PowershellClientId, new Uri("urn:ietf:wg:oauth:2.0:oob"), PromptBehavior.Always);
+            else
+                result = await authContext.AcquireTokenAsync(resource, PowershellClientId, new Uri("urn:ietf:wg:oauth:2.0:oob"), PromptBehavior.Auto);
             var accessToken = result.AccessToken;
             return new WebTokenResponse(accessToken);
         }

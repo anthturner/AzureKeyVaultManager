@@ -1,5 +1,5 @@
-﻿using AzureKeyVaultManager.Contracts;
-using AzureKeyVaultManager.Decorators;
+﻿using AzureKeyVault.Connectivity.Contracts;
+using AzureKeyVault.Connectivity.Decorators;
 using System.ComponentModel;
 using System.Windows.Input;
 

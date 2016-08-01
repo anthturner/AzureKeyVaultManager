@@ -127,7 +127,6 @@
     <Compile Include="Tiles\FlippableItemTile.xaml.cs">
       <DependentUpon>FlippableItemTile.xaml</DependentUpon>
     </Compile>
-    <Compile Include="KeyVaultServiceFactoryWithAuth.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -203,13 +202,17 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AzureKeyVault.Library\AzureKeyVault.Library.csproj">
-      <Project>{3aa1a8bf-019c-4738-b56f-aea454b0333e}</Project>
-      <Name>AzureKeyVault.Library</Name>
+    <ProjectReference Include="..\AzureKeyVault.Connectivity.Rest\AzureKeyVault.Connectivity.Rest.csproj">
+      <Project>{cf41a475-280a-42eb-aedf-67d607537133}</Project>
+      <Name>AzureKeyVault.Connectivity.Rest</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AzureKeyVault.Simulators\AzureKeyVault.Simulators.csproj">
-      <Project>{77bb7d28-20ac-4708-bca0-6513d254c9da}</Project>
-      <Name>AzureKeyVault.Simulators</Name>
+    <ProjectReference Include="..\AzureKeyVault.Connectivity.Simulated\AzureKeyVault.Connectivity.Simulated.csproj">
+      <Project>{ff718df3-df43-4275-865d-3ae1250ab000}</Project>
+      <Name>AzureKeyVault.Connectivity.Simulated</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AzureKeyVault.Connectivity\AzureKeyVault.Connectivity.csproj">
+      <Project>{4f1fa4a7-ff9f-4adc-a1be-6356e011d142}</Project>
+      <Name>AzureKeyVault.Connectivity</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

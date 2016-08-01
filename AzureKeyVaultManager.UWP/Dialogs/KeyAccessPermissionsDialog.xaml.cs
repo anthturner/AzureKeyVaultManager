@@ -1,7 +1,6 @@
-﻿using System.Threading.Tasks;
-using AzureKeyVaultManager.Contracts;
-using Windows.UI.Xaml;
+﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using AzureKeyVault.Connectivity.Contracts;
 
 namespace AzureKeyVaultManager.UWP.Dialogs
 {

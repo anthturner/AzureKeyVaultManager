@@ -5,17 +5,19 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
-using AzureKeyVaultManager.Contracts;
-using AzureKeyVaultManager.UWP.Annotations;
 using System.Globalization;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
+using AzureKeyVault.Connectivity.Contracts;
+using AzureKeyVaultManager.UWP.Annotations;
 using AzureKeyVaultManager.UWP.Commands;
+using AzureKeyVaultManager.UWP.Dialogs;
 using AzureKeyVaultManager.UWP.ViewModels;
 using Windows.UI.Core;
-using AzureKeyVaultManager.UWP.Dialogs;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
+using AzureKeyVaultManager.UWP.ServiceAuthentication;
+using Windows.Security.Authentication.Web.Core;
 
 namespace AzureKeyVaultManager.UWP
 {
@@ -23,7 +25,7 @@ namespace AzureKeyVaultManager.UWP
     {
         public KeyVaultViewModel SelectedVault { get; set; }
         public static IKeyVaultSecureItem SelectedKeySecret { get; private set; }
-        public IKeyVaultServiceFactory Factory { get; }
+        public IKeyVaultServiceFactory Factory { get; private set; }
 
         public Visibility VaultSelectedVisibility { get { return SelectedVault != null ? Visibility.Visible : Visibility.Collapsed; } }
         
@@ -64,10 +66,18 @@ namespace AzureKeyVaultManager.UWP
         public MainPage()
         {
             MainPageInstance = this;
-            //this.Factory = new KeyVaultServiceFactoryWithAuth();
-            this.Factory = new KeyVaultSimulatorFactory();
+            
             this.InitializeComponent();
             this.DataContext = this;
+        }
+
+        private async Task CreateFactory()
+        {
+            this.Focus(FocusState.Programmatic);
+            var graphApiToken = await Authentication.Instance.GetGraphApiToken();
+            var managementApiToken = await Authentication.Instance.GetManagementApiToken();
+            this.Factory = new AzureKeyVaultServiceFactory(managementApiToken.AsBearer(), graphApiToken.AsBearer());
+            //this.Factory = new KeyVaultSimulatorFactory();
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -76,7 +86,8 @@ namespace AzureKeyVaultManager.UWP
             await ShowProgressDialog("Logging in...");
             try
             {
-                azure = await Factory.GetAzureManagementService();
+                await CreateFactory();
+                azure = Factory.GetAzureManagementService();
             }
             catch (Exception ex)
             {
@@ -97,19 +108,23 @@ namespace AzureKeyVaultManager.UWP
 
                         foreach (var resourceGroup in await azure.GetResourceGroups(subscription))
                         {
-                            var mgmt =
-                                await Factory.GetManagementService(subscription.SubscriptionId, resourceGroup.Name);
-                            var localVaults = await mgmt.GetKeyVaults(new CancellationToken());
-                            
-                            if (localVaults != null && localVaults.Count > 0)
+                            try
                             {
-                                foreach (var vault in localVaults)
+                                var mgmt = Factory.GetManagementService(subscription.SubscriptionId, resourceGroup.Name);
+                                var localVaults = await mgmt.GetKeyVaults(new CancellationToken());
+
+                                if (localVaults != null && localVaults.Count > 0)
                                 {
-                                    vault.ResourceGroup = resourceGroup.Name;
-                                    vault.SubscriptionId = subscription.SubscriptionId;
-                                    groups.Add(vault);
+                                    foreach (var vault in localVaults)
+                                    {
+                                        vault.ResourceGroup = resourceGroup.Name;
+                                        vault.SubscriptionId = subscription.SubscriptionId;
+                                        groups.Add(vault);
+                                    }
                                 }
+
                             }
+                            catch { return new List<IKeyVault>(); }
                         }
 
                         return groups;
@@ -117,7 +132,7 @@ namespace AzureKeyVaultManager.UWP
                     tasks.Add(t);
                 }
 
-                Task.WaitAll(tasks.ToArray());
+                await Task.WhenAll(tasks);
                 Vaults = new ObservableCollection<IKeyVault>(tasks.SelectMany(x => x.Result).ToList());
             }
             catch (Exception ex)
@@ -147,7 +162,8 @@ namespace AzureKeyVaultManager.UWP
                 await ShowProgressDialog("Getting items from vault...");
 
                 var vault = (IKeyVault) item;
-                var svc = await Factory.GetKeyVaultService(vault);
+                var keyVaultServiceToken = (await Authentication.Instance.GetKeyVaultApiToken(vault.TenantId.ToString("D"))).AsBearer();
+                var svc = Factory.GetKeyVaultService(vault, keyVaultServiceToken);
                 var secrets = await svc.GetSecrets();
                 var keys = await svc.GetKeys();
 
@@ -251,7 +267,7 @@ namespace AzureKeyVaultManager.UWP
 
         private async void ShowAccessPermissions(IKeyVault vault)
         {
-            var dialog = new KeyAccessPermissionsDialog(await Factory.GetAzureActiveDirectoryService(vault.TenantId.ToString("D")));
+            var dialog = new KeyAccessPermissionsDialog(Factory.GetAzureActiveDirectoryService(vault.TenantId.ToString("D")));
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
@@ -265,7 +281,7 @@ namespace AzureKeyVaultManager.UWP
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                var svc = await Factory.GetManagementService(vault.SubscriptionId, vault.ResourceGroup);
+                var svc = Factory.GetManagementService(vault.SubscriptionId, vault.ResourceGroup);
                 await svc.DeleteKeyVault(vault);
             }
         }
@@ -276,7 +292,7 @@ namespace AzureKeyVaultManager.UWP
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                var svc = await Factory.GetKeyVaultService(SelectedVault);
+                var svc = Factory.GetKeyVaultService(SelectedVault);
                 if (item is IKeyVaultKey)
                     await svc.Delete((IKeyVaultKey)item);
                 if (item is IKeyVaultSecret)

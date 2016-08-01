@@ -1,6 +1,6 @@
-﻿using System;
+﻿using AzureKeyVault.Connectivity.Contracts;
+using System;
 using Windows.UI.Xaml.Data;
-using AzureKeyVaultManager.Contracts;
 
 namespace AzureKeyVaultManager.UWP.Converters
 {

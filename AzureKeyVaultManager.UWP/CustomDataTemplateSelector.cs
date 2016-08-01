@@ -1,4 +1,4 @@
-﻿using AzureKeyVaultManager.Contracts;
+﻿using AzureKeyVault.Connectivity.Contracts;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 

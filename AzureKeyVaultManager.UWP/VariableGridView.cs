@@ -1,7 +1,7 @@
-﻿using Windows.Foundation;
+﻿using AzureKeyVault.Connectivity.Contracts;
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using AzureKeyVaultManager.Contracts;
 
 namespace AzureKeyVaultManager.UWP
 {
