@@ -15,6 +15,7 @@ namespace AzureKeyVaultManager.UWP.ServiceAuthentication
             get
             {
                 if (_instance == null)
+                    //_instance = new UwpBrokerAuthentication();
                     _instance = new AdalAuthentication();
                 return _instance;
             }

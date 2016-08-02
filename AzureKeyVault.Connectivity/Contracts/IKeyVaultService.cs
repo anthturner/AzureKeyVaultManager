@@ -9,6 +9,7 @@ namespace AzureKeyVault.Connectivity.Contracts
     {
         Task<ICollection<IKeyVaultSecret>> GetSecrets();
         Task<String> GetSecretValue(IKeyVaultSecret secret);
+        Task<String> SetSecretValue(IKeyVaultSecret secret, string value);
         Task<ICollection<IKeyVaultKey>> GetKeys();
         Task<String> GetKeyValue(IKeyVaultKey key);
         Task Delete(IKeyVaultKey key);

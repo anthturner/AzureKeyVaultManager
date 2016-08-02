@@ -18,8 +18,8 @@ namespace AzureKeyVault.Connectivity.Rest.Http
 
         public async Task<IEnumerable<IAzureActiveDirectoryUser>> SearchUsers(string searchString)
         {
-            var uri = new Uri(_root, $"users/?api-version={Version}&top=100");
-            var data = await Get<JsonValues<IAzureActiveDirectoryUser>>(uri);
+            var uri = new Uri(_root, $"users/?api-version={Version}&$filter=accountEnabled eq true and (startswith(userPrincipalName,'{searchString}') or startswith(displayName,'{searchString}'))");
+            var data = await Get<JsonValues<AzureActiveDirectoryUser>>(uri);
             return data.Value;
         }
     }

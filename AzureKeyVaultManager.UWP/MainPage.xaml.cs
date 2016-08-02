@@ -65,17 +65,23 @@ namespace AzureKeyVaultManager.UWP
 
         public MainPage()
         {
+            Application.Current.UnhandledException += Current_UnhandledException;
             MainPageInstance = this;
             
             this.InitializeComponent();
             this.DataContext = this;
         }
 
+        private void Current_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            ShowErrorDialog(e.Exception.ToString());
+        }
+
         private async Task CreateFactory()
         {
             this.Focus(FocusState.Programmatic);
-            var graphApiToken = await Authentication.Instance.GetGraphApiToken();
             var managementApiToken = await Authentication.Instance.GetManagementApiToken();
+            var graphApiToken = await Authentication.Instance.GetGraphApiToken();
             this.Factory = new AzureKeyVaultServiceFactory(managementApiToken.AsBearer(), graphApiToken.AsBearer());
             //this.Factory = new KeyVaultSimulatorFactory();
         }
@@ -91,7 +97,8 @@ namespace AzureKeyVaultManager.UWP
             }
             catch (Exception ex)
             {
-                throw new Exception("There was an error authenticating to Azure", ex);
+                ShowErrorDialog(new Exception("There was an error authenticating to Azure", ex).ToString());
+                return;
             }
 
             try
@@ -185,6 +192,7 @@ namespace AzureKeyVaultManager.UWP
                     {
                         var vm = new KeyVaultSecretViewModel((IKeyVaultSecret) x);
                         vm.ShowSecret = new ActionCommand(async () => vm.Secret = await svc.GetSecretValue((IKeyVaultSecret) x));
+                        vm.SetSecret = new ActionCommand(async () => vm.Secret = await svc.SetSecretValue((IKeyVaultSecret)x, vm.Secret));
                         vm.ShowDeleteConfirmation = new ActionCommand(() => ShowItemDeleteConfirmation(x));
                         return (IKeyVaultItemViewModel) vm;
                     }
@@ -292,7 +300,8 @@ namespace AzureKeyVaultManager.UWP
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                var svc = Factory.GetKeyVaultService(SelectedVault);
+                var keyVaultServiceToken = (await Authentication.Instance.GetKeyVaultApiToken(SelectedVault.TenantId.ToString("D"))).AsBearer();
+                var svc = Factory.GetKeyVaultService(SelectedVault, keyVaultServiceToken);
                 if (item is IKeyVaultKey)
                     await svc.Delete((IKeyVaultKey)item);
                 if (item is IKeyVaultSecret)

@@ -25,6 +25,11 @@ namespace AzureKeyVaultManager
             return Task.FromResult("I'm a secret");
         }
 
+        public Task<string> SetSecretValue(IKeyVaultSecret secret, string value)
+        {
+            return Task.FromResult("I'm a secret");
+        }
+
         public async Task<ICollection<IKeyVaultKey>> GetKeys()
         {
             await Task.Yield();

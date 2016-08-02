@@ -35,6 +35,16 @@ namespace AzureKeyVault.Connectivity.Rest.Http
             return await GetResultDynamic(result);
         }
 
+        protected async Task<T> Put<T>(Uri uri, string putData, string mediaType = null)
+        {
+            HttpResponseMessage result;
+            if (mediaType != null)
+                result = await _client.PutAsync(uri, new StringContent(putData, System.Text.UTF8Encoding.UTF8, mediaType));
+            else
+                result = await _client.PutAsync(uri, new StringContent(putData));
+            return await GetResult<T>(result);
+        }
+
         protected async Task Delete(Uri uri)
         {
             var result = await _client.DeleteAsync(uri);

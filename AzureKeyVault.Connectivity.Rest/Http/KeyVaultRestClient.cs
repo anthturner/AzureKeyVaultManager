@@ -36,6 +36,14 @@ namespace AzureKeyVault.Connectivity.Rest.Http
             return data.Value;
         }
 
+        public async Task<String> SetSecretValue(IKeyVaultSecret secret, string value)
+        {
+            var putData = $"{{ \"value\": \"{value}\" }}";
+            var uri = new Uri(_root, $"secrets/{secret.Name}?api-version={Version}");
+            var data = await Put<AzureKeyVaultSecretValue>(uri, putData, "application/json");
+            return data.Value;
+        }
+
         public async Task<ICollection<IKeyVaultKey>> GetKeys()
         {
             var uri = new Uri(_root, $"keys?api-version={Version}");
@@ -48,10 +56,11 @@ namespace AzureKeyVault.Connectivity.Rest.Http
         public async Task<String> GetKeyValue(IKeyVaultKey key)
         {
             var uri = new Uri(_root, $"keys/{key.Name}?api-version={Version}");
-            var data = await Get<AzureKeyVaultKeyValue>(uri);
+            var data = await Get<dynamic>(uri);
+            //var data = await Get<AzureKeyVaultKeyValue>(uri);
             if (data == null)
                 return null;
-            return JsonConvert.SerializeObject(new { key = data.Key });
+            return JsonConvert.SerializeObject(new { key = ((dynamic)data).key });
         }
 
         public async Task Delete(IKeyVaultKey key)

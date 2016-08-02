@@ -8,6 +8,7 @@ namespace AzureKeyVaultManager.UWP.ServiceAuthentication
 {
     public class UwpBrokerAuthentication : Authentication
     {
+        private const string LoginBase = "https://login.microsoftonline.com";
         private const string AppClientId = "af4fabeb-b77f-4680-9dec-efea4f34cd34";
         private const string Authority = "organizations";
 
@@ -15,6 +16,8 @@ namespace AzureKeyVaultManager.UWP.ServiceAuthentication
         {
             if (authority == null)
                 authority = Authority;
+            else
+                authority = $"{LoginBase}/{authority}";
 
             WebAccountProvider wap = await WebAuthenticationCoreManager.FindAccountProviderAsync("https://login.microsoft.com", authority);
             var tokenRequest = new WebTokenRequest(wap, string.Empty, AppClientId);

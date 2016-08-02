@@ -38,13 +38,13 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="40" />
                             </Grid.ColumnDefinitions>
-                            <TextBox Background="White" Grid.Column="0" Grid.RowSpan="2" Text="{Binding Secret}" />
+                            <TextBox Background="White" Grid.Column="0" Grid.RowSpan="2" Text="{Binding Secret, Mode=TwoWay}" TextWrapping="Wrap" />
 
                             <Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Background="{Binding Converter={StaticResource typeToBrushConverter}}" />
                             <Button Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" Background="Transparent" Command="{Binding ShowSecret}" CommandParameter="{Binding}">
                                 <FontIcon FontFamily="ms-appx:/Assets/FontAwesome.otf#FontAwesome" Glyph="&#xf06e;" />
                             </Button>
-                            <Button Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Background="Transparent" Command="{Binding ShowSecret}" CommandParameter="{Binding}">
+                            <Button Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Background="Transparent" Command="{Binding SetSecret}" CommandParameter="{Binding}">
                                 <FontIcon FontFamily="ms-appx:/Assets/FontAwesome.otf#FontAwesome" Glyph="&#xf040;" />
                             </Button>
                         </Grid>
@@ -80,15 +80,15 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="40" />
                             </Grid.ColumnDefinitions>
-                            <TextBox Background="White" Grid.Column="0" Grid.RowSpan="2" Text="{Binding Secret}" />
+                            <TextBox Background="White" Grid.Column="0" Grid.RowSpan="2" Text="{Binding Key}" TextWrapping="Wrap" />
 
                             <Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Background="{Binding Converter={StaticResource typeToBrushConverter}}" />
                             <Button Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" Background="Transparent" Command="{Binding ShowKey}" CommandParameter="{Binding}">
                                 <FontIcon FontFamily="ms-appx:/Assets/FontAwesome.otf#FontAwesome" Glyph="&#xf06e;" />
                             </Button>
-                            <Button Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Background="Transparent" Command="{Binding ShowKey}" CommandParameter="{Binding}">
+                            <!--<Button Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Background="Transparent" Command="{Binding ShowKey}" CommandParameter="{Binding}">
                                 <FontIcon FontFamily="ms-appx:/Assets/FontAwesome.otf#FontAwesome" Glyph="&#xf040;" />
-                            </Button>
+                            </Button>-->
                         </Grid>
                     </tiles:FlippableItemTile.FrontChildren>
                     <tiles:FlippableItemTile.BackChildren>
