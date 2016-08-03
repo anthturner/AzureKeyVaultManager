@@ -9,6 +9,13 @@ namespace AzureKeyVaultManager
 {
     class AzureActiveDirectoryServiceSimulator : IAzureActiveDirectoryService
     {
+        private static Guid _generatedOid = Guid.NewGuid();
+        public async Task<string> MyObjectId()
+        {
+            await Task.Yield();
+            return _generatedOid.ToString();
+        }
+
         public async Task<IEnumerable<IAzureActiveDirectoryUser>> SearchUsers(string searchString)
         {
             await Task.Yield();

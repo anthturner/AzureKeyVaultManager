@@ -83,8 +83,8 @@ namespace AzureKeyVault.Connectivity.Rest.Http
                 alg = algorithm.GetConfigurationString(),
                 value = valueData
             };
-            var data = await Post(uri, JsonConvert.SerializeObject(command));
-            return data.value;
+            var data = await Post(uri, JsonConvert.SerializeObject(command), "application/json");
+            return Base64Decode(data.value);
         }
 
         public async Task<string> Decrypt(IKeyVaultKey key, KeyVaultAlgorithm algorithm, string valueData)
@@ -93,9 +93,9 @@ namespace AzureKeyVault.Connectivity.Rest.Http
             var command = new
             {
                 alg = algorithm.GetConfigurationString(),
-                value = valueData
+                value = Base64Encode(valueData)
             };
-            var data = await Post(uri, JsonConvert.SerializeObject(command));
+            var data = await Post(uri, JsonConvert.SerializeObject(command), "application/json");
             return data.value;
         }
 
@@ -107,7 +107,7 @@ namespace AzureKeyVault.Connectivity.Rest.Http
                 alg = algorithm.GetConfigurationString(),
                 value = digest
             };
-            var data = await Post(uri, JsonConvert.SerializeObject(command));
+            var data = await Post(uri, JsonConvert.SerializeObject(command), "application/json");
             return data.value;
         }
 
@@ -120,8 +120,20 @@ namespace AzureKeyVault.Connectivity.Rest.Http
                 digest = digest,
                 value = valueToVerify
             };
-            var data = await Post(uri, JsonConvert.SerializeObject(command));
+            var data = await Post(uri, JsonConvert.SerializeObject(command), "application/json");
             return data.value;
+        }
+
+        private static string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return System.Convert.ToBase64String(plainTextBytes);
+        }
+
+        private static string Base64Decode(string base64EncodedData)
+        {
+            var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
+            return System.Text.Encoding.UTF8.GetString(base64EncodedBytes, 0, base64EncodedBytes.Length);
         }
     }
 }

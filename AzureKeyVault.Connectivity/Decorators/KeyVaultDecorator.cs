@@ -1,4 +1,5 @@
 ﻿using AzureKeyVault.Connectivity.Contracts;
+using AzureKeyVault.Connectivity.Shared;
 using System;
 
 namespace AzureKeyVault.Connectivity.Decorators
@@ -39,5 +40,11 @@ namespace AzureKeyVault.Connectivity.Decorators
         }
 
         public Guid SubscriptionId { get; set; }
+
+        public KeyVaultProperties Properties
+        {
+            get { return _vault.Properties; }
+            set { }
+        }
     }
 }

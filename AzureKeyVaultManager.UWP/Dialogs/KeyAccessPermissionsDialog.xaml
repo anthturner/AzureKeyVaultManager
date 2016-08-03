@@ -7,8 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Title="Access Permissions"
-    Height="Auto"
-    Width="Auto"
+    Height="521.823"
+    Width="565.659"
     VerticalAlignment="Stretch"
     HorizontalAlignment="Stretch"
     PrimaryButtonText="Save"
@@ -64,25 +64,25 @@
         </Border>
 
         <TextBlock Grid.Row="2" Style="{StaticResource SubtitleTextBlockStyle}">Keys</TextBlock>
-        <CheckBox Grid.Row="3" Grid.Column="0" IsChecked="{Binding CanEncrypt}">Encrypt</CheckBox>
-        <CheckBox Grid.Row="4" Grid.Column="0" IsChecked="{Binding CanDecrypt}">Decrypt</CheckBox>
-        <CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{Binding CanWrap}">Wrap</CheckBox>
-        <CheckBox Grid.Row="4" Grid.Column="1" IsChecked="{Binding CanUnwrap}">Unwrap</CheckBox>
-        <CheckBox Grid.Row="3" Grid.Column="2" IsChecked="{Binding CanSign}">Sign</CheckBox>
-        <CheckBox Grid.Row="4" Grid.Column="2" IsChecked="{Binding CanVerify}">Verify</CheckBox>
+        <CheckBox Grid.Row="3" Grid.Column="0" IsChecked="{Binding Keys.CanEncrypt}">Encrypt</CheckBox>
+        <CheckBox Grid.Row="4" Grid.Column="0" IsChecked="{Binding Keys.CanDecrypt}">Decrypt</CheckBox>
+        <CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{Binding Keys.CanWrap}">Wrap</CheckBox>
+        <CheckBox Grid.Row="4" Grid.Column="1" IsChecked="{Binding Keys.CanUnwrap}">Unwrap</CheckBox>
+        <CheckBox Grid.Row="3" Grid.Column="2" IsChecked="{Binding Keys.CanSign}">Sign</CheckBox>
+        <CheckBox Grid.Row="4" Grid.Column="2" IsChecked="{Binding Keys.CanVerify}">Verify</CheckBox>
 
-        <CheckBox Grid.Row="5" Grid.Column="0" IsChecked="{Binding CanCreate}">Create</CheckBox>
-        <CheckBox Grid.Row="5" Grid.Column="1" IsChecked="{Binding CanUpdate}">Update</CheckBox>
-        <CheckBox Grid.Row="5" Grid.Column="2" IsChecked="{Binding CanDelete}">Delete</CheckBox>
+        <CheckBox Grid.Row="5" Grid.Column="0" IsChecked="{Binding Keys.CanCreate}">Create</CheckBox>
+        <CheckBox Grid.Row="5" Grid.Column="1" IsChecked="{Binding Keys.CanUpdate}">Update</CheckBox>
+        <CheckBox Grid.Row="5" Grid.Column="2" IsChecked="{Binding Keys.CanDelete}">Delete</CheckBox>
 
-        <CheckBox Grid.Row="6" Grid.Column="0" IsChecked="{Binding CanBackup}">Backup</CheckBox>
-        <CheckBox Grid.Row="6" Grid.Column="1" IsChecked="{Binding CanRestore}">Restore</CheckBox>
-        <CheckBox Grid.Row="6" Grid.Column="2" IsChecked="{Binding CanImport}">Import</CheckBox>
+        <CheckBox Grid.Row="6" Grid.Column="0" IsChecked="{Binding Keys.CanBackup}">Backup</CheckBox>
+        <CheckBox Grid.Row="6" Grid.Column="1" IsChecked="{Binding Keys.CanRestore}">Restore</CheckBox>
+        <CheckBox Grid.Row="6" Grid.Column="2" IsChecked="{Binding Keys.CanImport}">Import</CheckBox>
 
         <TextBlock Grid.Row="7" Margin="0 10 0 0" Style="{StaticResource SubtitleTextBlockStyle}">Secrets</TextBlock>
-        <CheckBox Grid.Row="8" Grid.Column="0" IsChecked="{Binding CanGet}">Get</CheckBox>
-        <CheckBox Grid.Row="8" Grid.Column="1" IsChecked="{Binding CanList}">List</CheckBox>
-        <CheckBox Grid.Row="9" Grid.Column="0" IsChecked="{Binding CanSet}">Set</CheckBox>
-        <CheckBox Grid.Row="9" Grid.Column="1" IsChecked="{Binding CanDelete}">Delete</CheckBox>
+        <CheckBox Grid.Row="8" Grid.Column="0" IsChecked="{Binding Secrets.CanGet}">Get</CheckBox>
+        <CheckBox Grid.Row="8" Grid.Column="1" IsChecked="{Binding Secrets.CanList}">List</CheckBox>
+        <CheckBox Grid.Row="9" Grid.Column="0" IsChecked="{Binding Secrets.CanSet}">Set</CheckBox>
+        <CheckBox Grid.Row="9" Grid.Column="1" IsChecked="{Binding Secrets.CanDelete}">Delete</CheckBox>
     </Grid>
 </ContentDialog>

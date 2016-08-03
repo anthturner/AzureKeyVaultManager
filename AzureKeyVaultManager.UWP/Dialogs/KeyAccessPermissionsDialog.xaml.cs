@@ -1,6 +1,8 @@
 ﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using AzureKeyVault.Connectivity.Contracts;
+using System.Linq;
+using AzureKeyVault.Connectivity.KeyVaultWrapper.Policies;
 
 namespace AzureKeyVaultManager.UWP.Dialogs
 {
@@ -9,16 +11,24 @@ namespace AzureKeyVaultManager.UWP.Dialogs
         private IAzureActiveDirectoryService DirectoryService { get; set; }
 
         public KeyAccessPermissionsDialog() { }
-        public KeyAccessPermissionsDialog(IAzureActiveDirectoryService directoryService)
+        public KeyAccessPermissionsDialog(IAzureActiveDirectoryService directoryService, IKeyVaultManagementService managementService, IKeyVault vault)
         {
             DirectoryService = directoryService;
             this.InitializeComponent();
 
-            adObjects.SelectionChanged += (sender, args) =>
+            adObjects.SelectionChanged += async (sender, args) =>
             {
-                //var policy = ((EntityAccessPolicy)args.AddedItems[0]);
-                //keyGroup.DataContext = policy.KeyPolicy;
-                //secretGroup.DataContext = policy.SecretPolicy;
+                var selectedUser = (IAzureActiveDirectoryUser)args.AddedItems[0];
+                var vaultMetadata = await managementService.GetKeyVault(vault.Name, new System.Threading.CancellationToken());
+
+                var policies = vaultMetadata.Properties.AccessPolicies.ToList();
+                var selectedPolicy = policies.FirstOrDefault(p => p.ObjectId == selectedUser.ObjectId);
+
+                this.DataContext = new PermissionSet()
+                {
+                    Keys = new KeyAccessPolicy() { AccessPermissionString = selectedPolicy.Permissions.Keys.ToArray() },
+                    Secrets = new SecretAccessPolicy() { AccessPermissionString = selectedPolicy.Permissions.Secrets.ToArray() }
+                };
             };
         }
 
@@ -27,5 +37,11 @@ namespace AzureKeyVaultManager.UWP.Dialogs
             var users = await DirectoryService.SearchUsers(searchFilter.Text);
             adObjects.ItemsSource = users;
         }
+    }
+
+    public class PermissionSet
+    {
+        public KeyAccessPolicy Keys { get; set; }
+        public SecretAccessPolicy Secrets { get; set; }
     }
 }

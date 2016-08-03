@@ -29,9 +29,13 @@ namespace AzureKeyVault.Connectivity.Rest.Http
             return await GetResult<T>(result);
         }
 
-        protected async Task<dynamic> Post(Uri uri, string postData)
+        protected async Task<dynamic> Post(Uri uri, string postData, string mediaType = null)
         {
-            var result = await _client.PostAsync(uri, new StringContent(postData));
+            HttpResponseMessage result;
+            if (mediaType != null)
+                result = await _client.PostAsync(uri, new StringContent(postData, System.Text.UTF8Encoding.UTF8, mediaType));
+            else
+                result = await _client.PostAsync(uri, new StringContent(postData));
             return await GetResultDynamic(result);
         }
 

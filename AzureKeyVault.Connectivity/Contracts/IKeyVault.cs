@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using AzureKeyVault.Connectivity.Shared;
+using System;
 
 namespace AzureKeyVault.Connectivity.Contracts
 {
@@ -12,6 +8,7 @@ namespace AzureKeyVault.Connectivity.Contracts
         string Name { get; }
         string ResourceGroup { get; set; }
         string Id { get; }
+        KeyVaultProperties Properties { get; set; }
         Uri Uri { get; }
         Guid TenantId { get; }
         Guid SubscriptionId { get; set; }

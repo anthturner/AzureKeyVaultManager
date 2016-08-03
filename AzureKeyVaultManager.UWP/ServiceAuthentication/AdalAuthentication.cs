@@ -33,9 +33,12 @@ namespace AzureKeyVaultManager.UWP.ServiceAuthentication
             catch (Exception ex) { }
 
             AuthenticationResult result;
-            //if (TokenCache.Count == 0)
-            //    result = await authContext.AcquireTokenAsync(resource, PowershellClientId, new Uri("urn:ietf:wg:oauth:2.0:oob"), new PlatformParameters(PromptBehavior.Always, false));
-            //else
+            if (TokenCache.Count == 0)
+            {
+                await Task.Delay(1000);
+                result = await authContext.AcquireTokenAsync(resource, PowershellClientId, new Uri("urn:ietf:wg:oauth:2.0:oob"), new PlatformParameters(PromptBehavior.Always, false));
+            }
+            else
                 result = await authContext.AcquireTokenAsync(resource, PowershellClientId, new Uri("urn:ietf:wg:oauth:2.0:oob"), new PlatformParameters(PromptBehavior.Auto, false));
             var accessToken = result.AccessToken;
             return new WebTokenResponse(accessToken);

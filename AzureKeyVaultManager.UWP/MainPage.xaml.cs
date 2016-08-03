@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using AzureKeyVaultManager.UWP.ServiceAuthentication;
 using Windows.Security.Authentication.Web.Core;
+using AzureKeyVault.Connectivity.KeyVaultWrapper.Policies;
 
 namespace AzureKeyVaultManager.UWP
 {
@@ -31,6 +32,8 @@ namespace AzureKeyVaultManager.UWP
         
         private ObservableCollection<IKeyVault> vaults;
         public static MainPage MainPageInstance;
+
+        public static Guid LoggedInOid { get; set; }
 
         public ObservableCollection<IKeyVault> Vaults
         {
@@ -63,18 +66,31 @@ namespace AzureKeyVaultManager.UWP
             }
         }
 
+        public static KeyAccessPolicy SelectedVaultKeyPermissions { get; private set; }
+        public static SecretAccessPolicy SelectedVaultSecretPermissions { get; private set; }
+
         public MainPage()
         {
             Application.Current.UnhandledException += Current_UnhandledException;
+            
             MainPageInstance = this;
             
             this.InitializeComponent();
             this.DataContext = this;
         }
 
-        private void Current_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private async void Current_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            ShowErrorDialog(e.Exception.ToString());
+            try
+            {
+                var dialog = new ErrorDialog(e.Exception.ToString());
+                await dialog.ShowAsync();
+            }
+            catch
+            {
+                var dialog = new Windows.UI.Popups.MessageDialog(e.Exception.ToString());
+                await dialog.ShowAsync();
+            }
         }
 
         private async Task CreateFactory()
@@ -100,6 +116,8 @@ namespace AzureKeyVaultManager.UWP
                 ShowErrorDialog(new Exception("There was an error authenticating to Azure", ex).ToString());
                 return;
             }
+
+            LoggedInOid = new Guid(await Factory.GetAzureActiveDirectoryService(null).MyObjectId());
 
             try
             {
@@ -185,6 +203,18 @@ namespace AzureKeyVaultManager.UWP
                 };
                 OnPropertyChanged(nameof(VaultSelectedVisibility));
                 OnPropertyChanged(nameof(SelectedVault));
+
+                var currentUserPolicy = vault.Properties.AccessPolicies.FirstOrDefault(p => p.ObjectId == LoggedInOid);
+                if (currentUserPolicy == null)
+                {
+                    SelectedVaultKeyPermissions = new KeyAccessPolicy();
+                    SelectedVaultSecretPermissions = new SecretAccessPolicy();
+                }
+                else
+                {
+                    SelectedVaultKeyPermissions = new KeyAccessPolicy() { AccessPermissionString = currentUserPolicy.Permissions.Keys.ToArray() };
+                    SelectedVaultSecretPermissions = new SecretAccessPolicy() { AccessPermissionString = currentUserPolicy.Permissions.Secrets.ToArray() };
+                }
 
                 UpdateSecrets(secretsAndKeys.Select(x =>
                 {
@@ -275,7 +305,10 @@ namespace AzureKeyVaultManager.UWP
 
         private async void ShowAccessPermissions(IKeyVault vault)
         {
-            var dialog = new KeyAccessPermissionsDialog(Factory.GetAzureActiveDirectoryService(vault.TenantId.ToString("D")));
+            var dialog = new KeyAccessPermissionsDialog(
+                Factory.GetAzureActiveDirectoryService(vault.TenantId.ToString("D")),
+                Factory.GetManagementService(vault.SubscriptionId, vault.ResourceGroup),
+                vault);
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {

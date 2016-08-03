@@ -42,7 +42,6 @@
     <Compile Include="Contracts\IAzureActiveDirectoryUser.cs" />
     <Compile Include="Contracts\IAzureManagementService.cs" />
     <Compile Include="Contracts\IKeyVault.cs" />
-    <Compile Include="Contracts\IKeyVaultAccessPolicy.cs" />
     <Compile Include="Contracts\IKeyVaultKey.cs" />
     <Compile Include="Contracts\IKeyVaultManagementService.cs" />
     <Compile Include="Contracts\IKeyVaultSecret.cs" />
@@ -59,6 +58,10 @@
     <Compile Include="KeyVaultWrapper\Policies\KeyAccessPolicy.cs" />
     <Compile Include="KeyVaultWrapper\Policies\SecretAccessPolicy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Shared\KeyVaultAccessPolicy.cs" />
+    <Compile Include="Shared\KeyVaultPermissions.cs" />
+    <Compile Include="Shared\KeyVaultProperties.cs" />
+    <Compile Include="Shared\KeyVaultSku.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

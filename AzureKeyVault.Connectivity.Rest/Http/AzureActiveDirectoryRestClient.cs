@@ -22,5 +22,12 @@ namespace AzureKeyVault.Connectivity.Rest.Http
             var data = await Get<JsonValues<AzureActiveDirectoryUser>>(uri);
             return data.Value;
         }
+
+        public async Task<string> MyObjectId()
+        {
+            var uri = new Uri(new Uri("https://graph.windows.net/"), $"me?api-version={Version}");
+            var data = await Get<dynamic>(uri);
+            return (string)data.objectId;
+        }
     }
 }

@@ -1,9 +1,6 @@
 ﻿using AzureKeyVault.Connectivity.Contracts;
+using AzureKeyVault.Connectivity.Shared;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AzureKeyVault.Connectivity.Simulated.SimulatedTypes
 {
@@ -16,6 +13,8 @@ namespace AzureKeyVault.Connectivity.Simulated.SimulatedTypes
         public string Name { get; set; }
 
         public Uri Uri { get; set; }
+
+        public KeyVaultProperties Properties { get; set; }
 
         public Guid TenantId { get; set; }
         public Guid SubscriptionId { get; set; }

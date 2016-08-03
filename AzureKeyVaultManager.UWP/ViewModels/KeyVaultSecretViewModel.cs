@@ -1,5 +1,6 @@
 ﻿using AzureKeyVault.Connectivity.Contracts;
 using AzureKeyVault.Connectivity.Decorators;
+using AzureKeyVault.Connectivity.KeyVaultWrapper.Policies;
 using System.ComponentModel;
 using System.Windows.Input;
 
@@ -13,6 +14,8 @@ namespace AzureKeyVaultManager.UWP.ViewModels
             : base(secret)
         {
         }
+        
+        public SecretAccessPolicy AccessPolicy { get { return MainPage.SelectedVaultSecretPermissions; } }
 
         public ICommand ShowSecret { get; set; }
         public ICommand SetSecret { get; set; }
