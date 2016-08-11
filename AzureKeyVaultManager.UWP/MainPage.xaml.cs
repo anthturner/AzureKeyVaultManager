@@ -274,32 +274,32 @@ namespace AzureKeyVaultManager.UWP
         #region Dialogs
         private async void ShowEncryptDialog(IKeyVaultKey key)
         {
-            await new DataTransformationDialog(key, DataTransformationDialog.TransformationType.Encrypt).ShowAsync();
+            await new EncryptDecryptDialog(key).ShowAsync();
         }
 
         private async void ShowDecryptDialog(IKeyVaultKey key)
         {
-            await new DataTransformationDialog(key, DataTransformationDialog.TransformationType.Decrypt).ShowAsync();
+            await new EncryptDecryptDialog(key).ShowAsync();
         }
 
         private async void ShowSignDialog(IKeyVaultKey key)
         {
-            //await new DataTransformationDialog(key, DataTransformationDialog.TransformationType.Sign).ShowAsync();
+            await new SignVerifyDialog(key).ShowAsync();
         }
 
         private async void ShowVerifyDialog(IKeyVaultKey key)
         {
-            //await new DataTransformationDialog(key, DataTransformationDialog.TransformationType.Verify).ShowAsync();
+            await new SignVerifyDialog(key).ShowAsync();
         }
 
         private async void ShowWrapDialog(IKeyVaultKey key)
         {
-            await new DataTransformationDialog(key, DataTransformationDialog.TransformationType.Wrap).ShowAsync();
+            //await new DataTransformationDialog(key, DataTransformationDialog.TransformationType.Wrap).ShowAsync();
         }
 
         private async void ShowUnwrapDialog(IKeyVaultKey key)
         {
-            await new DataTransformationDialog(key, DataTransformationDialog.TransformationType.Unwrap).ShowAsync();
+            //await new DataTransformationDialog(key, DataTransformationDialog.TransformationType.Unwrap).ShowAsync();
         }
 
 

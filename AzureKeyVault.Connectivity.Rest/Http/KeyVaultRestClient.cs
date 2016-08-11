@@ -81,7 +81,7 @@ namespace AzureKeyVault.Connectivity.Rest.Http
             var command = new
             {
                 alg = algorithm.GetConfigurationString(),
-                value = Base64Encode(valueData)
+                value = valueData
             };
             var data = await Post(uri, JsonConvert.SerializeObject(command), "application/json");
             return data.value;
@@ -96,7 +96,8 @@ namespace AzureKeyVault.Connectivity.Rest.Http
                 value = valueData
             };
             var data = await Post(uri, JsonConvert.SerializeObject(command), "application/json");
-            return Base64Decode((string)((dynamic)data).value);
+            var base64EncodedData = (string)((dynamic)data).value;
+            return base64EncodedData.PadRight(base64EncodedData.Length + (4 - base64EncodedData.Length % 4) % 4, '=');
         }
 
         public async Task<string> Sign(IKeyVaultKey key, KeyVaultAlgorithm algorithm, string digest)

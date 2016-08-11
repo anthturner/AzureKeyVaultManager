@@ -1,0 +1,71 @@
+﻿<ContentDialog
+    x:Class="AzureKeyVaultManager.UWP.Dialogs.SignVerifyDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AzureKeyVaultManager.UWP.Dialogs"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Sign/Verify"
+    PrimaryButtonText="Close"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick" Height="476.629" Width="549.573">
+
+    <Grid Name="contentGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Pivot Grid.Row="0" Grid.ColumnSpan="2" Margin="0 0 0 20" Name="modePivot">
+            <PivotItem Header="Plain String" Name="modePlainString">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Height="200" AcceptsReturn="True" TextWrapping="Wrap" Grid.Column="0" Name="plainInputText" PlaceholderText="Input text"></TextBox>
+                    <TextBox Height="200" AcceptsReturn="True" TextWrapping="Wrap" Grid.Column="1" Name="plainSignatureText" PlaceholderText="Signature"></TextBox>
+                </Grid>
+            </PivotItem>
+            <PivotItem Header="Base64 String" Name="modeBase64String">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Height="200" AcceptsReturn="True" TextWrapping="Wrap" Grid.Column="0" Name="base64InputText" PlaceholderText="Input text"></TextBox>
+                    <TextBox Height="200" AcceptsReturn="True" TextWrapping="Wrap" Grid.Column="1" Name="base64SignatureText" PlaceholderText="Signature"></TextBox>
+                </Grid>
+            </PivotItem>
+            <PivotItem Header="File" Name="modeFile">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Grid.Row="0"  Name="fileInputName">None Selected</TextBlock>
+                    <Button Grid.Column="0" Grid.Row="1">Select Input File</Button>
+
+                    <TextBox Height="200" AcceptsReturn="True" TextWrapping="Wrap" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Name="fileSignatureText" PlaceholderText="Signature"></TextBox>
+                </Grid>
+            </PivotItem>
+        </Pivot>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="10 0 0 0">Hash Algorithm</TextBlock>
+        <ComboBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" Margin="10 0 0 0" Name="algorithmSelection">
+            
+        </ComboBox>
+
+        <Button Grid.Row="2" Grid.Column="0" Margin="10" HorizontalAlignment="Stretch" Name="signButton" Click="signButton_Click">Sign</Button>
+        <Button Grid.Row="2" Grid.Column="1" Margin="10" HorizontalAlignment="Stretch" Name="verifyButton" Click="verifyButton_Click">Verify</Button>
+    </Grid>
+</ContentDialog>

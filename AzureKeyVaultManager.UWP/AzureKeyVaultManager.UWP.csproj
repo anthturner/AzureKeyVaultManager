@@ -101,11 +101,14 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\SignVerifyDialog.xaml.cs">
+      <DependentUpon>SignVerifyDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\EncryptDecryptDialog.xaml.cs">
+      <DependentUpon>EncryptDecryptDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\ErrorDialog.xaml.cs">
       <DependentUpon>ErrorDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\DataTransformationDialog.xaml.cs">
-      <DependentUpon>DataTransformationDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="ServiceAuthentication\AdalAuthentication.cs" />
     <Compile Include="ServiceAuthentication\Authentication.cs" />
@@ -164,9 +167,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Dialogs\DataTransformationDialog.xaml">
+    <Page Include="Dialogs\SignVerifyDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\EncryptDecryptDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\ItemDeleteConfirmationDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
