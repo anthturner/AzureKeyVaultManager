@@ -32,10 +32,10 @@ namespace AzureKeyVaultManager.UWP.Dialogs
                 algorithmSelection.ItemsSource = allValues.Where(alg => alg.CanCryptOrWrap()).ToList();
                 algorithmSelection.SelectedIndex = 0;
 
-                this.MinHeight = MainPage.MainPageInstance.ActualHeight * 0.8 - 500;
-                this.MinWidth = MainPage.MainPageInstance.ActualWidth * 0.8;
+                //this.MinHeight = MainPage.MainPageInstance.ActualHeight * 0.8 - 500;
+                //this.MinWidth = MainPage.MainPageInstance.ActualWidth * 0.8;
 
-                contentGrid.MinHeight = this.MinHeight;
+                //contentGrid.MinHeight = this.MinHeight;
             };
         }
 
