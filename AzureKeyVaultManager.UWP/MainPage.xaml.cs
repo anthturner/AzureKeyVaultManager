@@ -318,7 +318,7 @@ namespace AzureKeyVaultManager.UWP
 
         private async void ShowCreateKey(IKeyVault vault)
         {
-            var dialog = new CreateKey();
+            var dialog = new CreateKey(vault);
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
