@@ -106,6 +106,9 @@
     </Compile>
     <Compile Include="Dialogs\EncryptDecryptDialog.xaml.cs">
       <DependentUpon>EncryptDecryptDialog.xaml</DependentUpon>
+	</Compile>
+    <Compile Include="Dialogs\CreateKey.xaml.cs">
+      <DependentUpon>CreateKey.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\ErrorDialog.xaml.cs">
       <DependentUpon>ErrorDialog.xaml</DependentUpon>
@@ -168,6 +171,14 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="Dialogs\SignVerifyDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+	</Page>
+    <Page Include="Dialogs\CreateKey.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\DataTransformationDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

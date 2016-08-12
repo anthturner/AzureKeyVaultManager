@@ -20,6 +20,27 @@ namespace AzureKeyVault.Connectivity.Rest.Http
             _root = keyVault.Uri;
         }
 
+        public async Task<IKeyVaultKey> CreateKey(IKeyVaultKey key)
+        {
+            var command = new
+            {
+                kty = "RSA", // FIXME
+                key_ops = new string[0], // FIXME
+                key_size = 2048, // static value
+                attributes = new
+                {
+                    enabled = true, // FIXME
+                    //nbf, exp
+                },
+                
+            };
+            //var data = await Post(uri, JsonConvert.SerializeObject(command), "application/json");
+
+            var uri = new Uri(_root, $"keys/{key.Name}/create?api-version={Version}");
+            var result = await Post<AzureKeyVaultKey>(uri, JsonConvert.SerializeObject(command), "application/json");
+            return result;
+        }
+
         public async Task<ICollection<IKeyVaultSecret>> GetSecrets()
         {
             var uri = new Uri(_root, $"secrets?api-version={Version}");
@@ -38,9 +59,14 @@ namespace AzureKeyVault.Connectivity.Rest.Http
 
         public async Task<String> SetSecretValue(IKeyVaultSecret secret, string value)
         {
-            var putData = $"{{ \"value\": \"{value}\" }}";
+            var command = new
+            {
+                value = value
+            };
+                        
+            //var putData = $"{{ \"value\": \"{value}\" }}";
             var uri = new Uri(_root, $"secrets/{secret.Name}?api-version={Version}");
-            var data = await Put<AzureKeyVaultSecretValue>(uri, putData, "application/json");
+            var data = await Put<AzureKeyVaultSecretValue>(uri, JsonConvert.SerializeObject(command), "application/json");
             return data.Value;
         }
 

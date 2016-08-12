@@ -312,7 +312,19 @@ namespace AzureKeyVaultManager.UWP
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                // save
+                // todo: save
+            }
+        }
+
+        private async void ShowCreateKey(IKeyVault vault)
+        {
+            var dialog = new CreateKey();
+            var result = await dialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                var svc = Factory.GetKeyVaultService(vault, (await Authentication.Instance.GetKeyVaultApiToken(vault.TenantId.ToString("D"))).AsBearer());
+                
+                // todo: save
             }
         }
 

@@ -7,6 +7,7 @@ namespace AzureKeyVault.Connectivity.Contracts
 {
     public interface IKeyVaultService
     {
+        Task<IKeyVaultKey> CreateKey(IKeyVaultKey key);
         Task<ICollection<IKeyVaultSecret>> GetSecrets();
         Task<String> GetSecretValue(IKeyVaultSecret secret);
         Task<String> SetSecretValue(IKeyVaultSecret secret, string value);
