@@ -95,5 +95,17 @@ namespace AzureKeyVaultManager
             await Task.Yield();
             return valueToDecrypt;
         }
+        
+        public async Task<IKeyVaultKey> CreateKey(IKeyVaultKey key)
+        {
+            return new KeyVaultKey()
+            {
+                Created = DateTime.Now,
+                ValidAfter = DateTime.Now.Subtract(TimeSpan.FromDays(7)),
+                Expires = DateTime.Now.Add(TimeSpan.FromDays(7)),
+                Name = "Sample Key",
+                Updated = DateTime.Now
+            };
+        }
     }
 }
