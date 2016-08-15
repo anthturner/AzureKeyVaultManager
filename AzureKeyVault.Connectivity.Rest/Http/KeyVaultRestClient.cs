@@ -125,17 +125,29 @@ namespace AzureKeyVault.Connectivity.Rest.Http
             return data.value;
         }
 
-        private static string Base64Encode(string plainText)
+        public async Task<string> Wrap(IKeyVaultKey key, KeyVaultAlgorithm algorithm, string valueToWrap)
         {
-            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
-            return System.Convert.ToBase64String(plainTextBytes);
+            var uri = new Uri(_root, $"keys/{key.Name}/wrapkey?api-version={Version}");
+            var command = new
+            {
+                alg = algorithm.GetConfigurationString(),
+                value = valueToWrap
+            };
+            var data = await Post(uri, JsonConvert.SerializeObject(command), "application/json");
+            return data.value;
         }
 
-        private static string Base64Decode(string base64EncodedData)
+        public async Task<string> Unwrap(IKeyVaultKey key, KeyVaultAlgorithm algorithm, string valueToUnwrap)
         {
-            base64EncodedData = base64EncodedData.PadRight(base64EncodedData.Length + (4 - base64EncodedData.Length % 4) % 4, '=');
-            var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
-            return System.Text.Encoding.UTF8.GetString(base64EncodedBytes, 0, base64EncodedBytes.Length);
+            var uri = new Uri(_root, $"keys/{key.Name}/unwrapkey?api-version={Version}");
+            var command = new
+            {
+                alg = algorithm.GetConfigurationString(),
+                value = valueToUnwrap
+            };
+            var data = await Post(uri, JsonConvert.SerializeObject(command), "application/json");
+            var base64EncodedData = (string)((dynamic)data).value;
+            return base64EncodedData.PadRight(base64EncodedData.Length + (4 - base64EncodedData.Length % 4) % 4, '=');
         }
     }
 }

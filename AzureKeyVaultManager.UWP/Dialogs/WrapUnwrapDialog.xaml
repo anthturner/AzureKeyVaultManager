@@ -1,0 +1,35 @@
+﻿<ContentDialog
+    x:Class="AzureKeyVaultManager.UWP.Dialogs.WrapUnwrapDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AzureKeyVaultManager.UWP.Dialogs"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Wrap/Unwrap"
+    PrimaryButtonText="Close"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick" Height="476.629" Width="549.573">
+
+    <Grid Name="contentGrid" MinWidth="450">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBox Height="200" AcceptsReturn="True" TextWrapping="Wrap" Grid.Row="0" Grid.Column="0" Name="plainInputText" PlaceholderText="Input"></TextBox>
+        <TextBox Height="200" AcceptsReturn="True" TextWrapping="Wrap" Grid.Row="0" Grid.Column="1" Name="plainOutputText" PlaceholderText="Output" IsReadOnly="True"></TextBox>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="10 0 0 0">Wrapping Algorithm</TextBlock>
+        <ComboBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" Margin="10 0 0 0" Name="algorithmSelection">
+
+        </ComboBox>
+
+        <Button Grid.Row="2" Grid.Column="0" Margin="10" HorizontalAlignment="Stretch" Name="encryptButton" Click="encryptButton_Click">Wrap</Button>
+        <Button Grid.Row="2" Grid.Column="1" Margin="10" HorizontalAlignment="Stretch" Name="decryptButton" Click="decryptButton_Click">Unwrap</Button>
+    </Grid>
+</ContentDialog>

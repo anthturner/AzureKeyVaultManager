@@ -106,14 +106,11 @@
 
                             <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="4" Background="#E1E1E1" />
 
-                            <Button Grid.Row="0" Grid.Column="0" Width="100" HorizontalAlignment="Center" IsEnabled="{Binding AccessPolicy.CanEncrypt}" Command="{Binding ShowEncryptDialog}" CommandParameter="{Binding}">Encrypt</Button>
-                            <Button Grid.Row="0" Grid.Column="1" Width="100" HorizontalAlignment="Center" IsEnabled="{Binding AccessPolicy.CanDecrypt}" Command="{Binding ShowDecryptDialog}" CommandParameter="{Binding}">Decrypt</Button>
+                            <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Width="100" HorizontalAlignment="Center" IsEnabled="{Binding AccessPolicy.CanEncrypt}" Command="{Binding ShowEncryptDialog}" CommandParameter="{Binding}">Encrypt/Decrypt</Button>
 
-                            <Button Grid.Row="1" Grid.Column="0" Width="100" HorizontalAlignment="Center" IsEnabled="{Binding AccessPolicy.CanSign}" Command="{Binding ShowSignDialog}" CommandParameter="{Binding}">Sign</Button>
-                            <Button Grid.Row="1" Grid.Column="1" Width="100" HorizontalAlignment="Center" IsEnabled="{Binding AccessPolicy.CanVerify}" Command="{Binding ShowVerifyDialog}" CommandParameter="{Binding}">Verify</Button>
+                            <Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Width="100" HorizontalAlignment="Center" IsEnabled="{Binding AccessPolicy.CanSign}" Command="{Binding ShowSignDialog}" CommandParameter="{Binding}">Sign/Verify</Button>
 
-                            <Button Grid.Row="2" Grid.Column="0" Width="100" HorizontalAlignment="Center" IsEnabled="{Binding AccessPolicy.CanWrap}" Command="{Binding ShowWrapDialog}" CommandParameter="{Binding}">Wrap</Button>
-                            <Button Grid.Row="2" Grid.Column="1" Width="100" HorizontalAlignment="Center" IsEnabled="{Binding AccessPolicy.CanUnwrap}" Command="{Binding ShowUnwrapDialog}" CommandParameter="{Binding}">Unwrap</Button>
+                            <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Width="100" HorizontalAlignment="Center" IsEnabled="{Binding AccessPolicy.CanWrap}" Command="{Binding ShowWrapDialog}" CommandParameter="{Binding}">Wrap/Unwrap</Button>
 
                             <Button Grid.Row="3" Grid.ColumnSpan="2" Width="200" HorizontalAlignment="Center" Grid.Column="0" IsEnabled="{Binding AccessPolicy.CanDelete}" Command="{Binding ShowDeleteConfirmation}" CommandParameter="{Binding}">Delete</Button>
                         </Grid>

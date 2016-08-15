@@ -199,7 +199,9 @@ namespace AzureKeyVaultManager.UWP
                 SelectedVault = new KeyVaultViewModel(vault)
                 {
                     ShowAccessPermissions = new ActionCommand(() => ShowAccessPermissions(vault)),
-                    ShowDeleteConfirmation = new ActionCommand(() => ShowVaultDeleteConfirmation(vault))
+                    ShowDeleteConfirmation = new ActionCommand(() => ShowVaultDeleteConfirmation(vault)),
+                    ShowAddKey = new ActionCommand(() => ShowAddKey(vault)),
+                    ShowAddSecret = new ActionCommand(() => ShowAddSecret(vault)),
                 };
                 OnPropertyChanged(nameof(VaultSelectedVisibility));
                 OnPropertyChanged(nameof(SelectedVault));
@@ -233,11 +235,8 @@ namespace AzureKeyVaultManager.UWP
                         vm.ShowDeleteConfirmation = new ActionCommand(() => ShowItemDeleteConfirmation(x));
 
                         vm.ShowEncryptDialog = new ActionCommand(() => ShowEncryptDialog((IKeyVaultKey)x));
-                        vm.ShowDecryptDialog = new ActionCommand(() => ShowDecryptDialog((IKeyVaultKey)x));
                         vm.ShowSignDialog = new ActionCommand(() => ShowSignDialog((IKeyVaultKey)x));
-                        vm.ShowVerifyDialog = new ActionCommand(() => ShowVerifyDialog((IKeyVaultKey)x));
                         vm.ShowWrapDialog = new ActionCommand(() => ShowWrapDialog((IKeyVaultKey)x));
-                        vm.ShowUnwrapDialog = new ActionCommand(() => ShowUnwrapDialog((IKeyVaultKey)x));
                         return (IKeyVaultItemViewModel) vm;
                     }
                     return null;
@@ -277,31 +276,25 @@ namespace AzureKeyVaultManager.UWP
             await new EncryptDecryptDialog(key).ShowAsync();
         }
 
-        private async void ShowDecryptDialog(IKeyVaultKey key)
-        {
-            await new EncryptDecryptDialog(key).ShowAsync();
-        }
-
         private async void ShowSignDialog(IKeyVaultKey key)
-        {
-            await new SignVerifyDialog(key).ShowAsync();
-        }
-
-        private async void ShowVerifyDialog(IKeyVaultKey key)
         {
             await new SignVerifyDialog(key).ShowAsync();
         }
 
         private async void ShowWrapDialog(IKeyVaultKey key)
         {
-            //await new DataTransformationDialog(key, DataTransformationDialog.TransformationType.Wrap).ShowAsync();
+            await new WrapUnwrapDialog(key).ShowAsync();
         }
 
-        private async void ShowUnwrapDialog(IKeyVaultKey key)
+        private async void ShowAddKey(IKeyVault vault)
         {
-            //await new DataTransformationDialog(key, DataTransformationDialog.TransformationType.Unwrap).ShowAsync();
+
         }
 
+        private async void ShowAddSecret(IKeyVault vault)
+        {
+
+        }
 
         private async void ShowAccessPermissions(IKeyVault vault)
         {

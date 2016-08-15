@@ -18,5 +18,7 @@ namespace AzureKeyVault.Connectivity.Contracts
         Task<string> Decrypt(IKeyVaultKey key, KeyVaultAlgorithm algorithm, string valueToDecrypt);
         Task<string> Sign(IKeyVaultKey key, KeyVaultAlgorithm algorithm, string digest);
         Task<bool> Verify(IKeyVaultKey key, KeyVaultAlgorithm algorithm, string digest, string valueToVerify);
+        Task<string> Wrap(IKeyVaultKey key, KeyVaultAlgorithm algorithm, string valueToEncrypt);
+        Task<string> Unwrap(IKeyVaultKey key, KeyVaultAlgorithm algorithm, string valueToDecrypt);
     }
 }

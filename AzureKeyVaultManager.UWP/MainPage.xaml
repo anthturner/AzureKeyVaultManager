@@ -15,6 +15,7 @@
             <RowDefinition Height="50" />
             <RowDefinition Height="50" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="50" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300" />
@@ -38,8 +39,11 @@
         </Border>
         <Border Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Background="White" Visibility="{Binding VaultSelectedVisibility}">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" DataContext="{Binding SelectedVault}">
-                <Button Margin="10 0" Width="150" Command="{Binding ShowAccessPermissions}" CommandParameter="{Binding}">Permissions</Button>
-                <Button Margin="10 0" Width="150" Command="{Binding ShowDeleteConfirmation}" CommandParameter="{Binding}">Delete Vault</Button>
+                <Button Margin="5 0" Width="100" Command="{Binding ShowAddKey}" CommandParameter="{Binding}">Add Key</Button>
+                <Button Margin="5 0" Width="100" Command="{Binding ShowAddSecret}" CommandParameter="{Binding}">Add Secret</Button>
+                <AppBarSeparator Margin="-10 0" />
+                <Button Margin="5 0" Width="100" Command="{Binding ShowAccessPermissions}" CommandParameter="{Binding}">Permissions</Button>
+                <Button Margin="5 0" Width="100" Command="{Binding ShowDeleteConfirmation}" CommandParameter="{Binding}">Delete Vault</Button>
             </StackPanel>
         </Border>
 
@@ -53,6 +57,8 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <Button Grid.Row="3" Grid.Column="0" Margin="5 0" Width="150" Command="{Binding ShowNewVault}" CommandParameter="{Binding}" HorizontalAlignment="Center">Create Vault</Button>
+        
         <uwp:VariableGridView SelectionChanged="KeysSecretsControl_OnSelectionChanged" x:Name="keysSecretsControl" Grid.Row="2" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2" ItemsSource="{Binding KeysSecrets}" Background="White">
             <uwp:VariableGridView.ItemTemplateSelector>
                 <uwp:CustomDataTemplateSelector />

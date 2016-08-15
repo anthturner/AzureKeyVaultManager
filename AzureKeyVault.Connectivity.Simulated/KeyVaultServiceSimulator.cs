@@ -83,5 +83,17 @@ namespace AzureKeyVaultManager
             await Task.Yield();
             return true;
         }
+
+        public async Task<string> Wrap(IKeyVaultKey key, KeyVaultAlgorithm algorithm, string valueToEncrypt)
+        {
+            await Task.Yield();
+            return valueToEncrypt;
+        }
+
+        public async Task<string> Unwrap(IKeyVaultKey key, KeyVaultAlgorithm algorithm, string valueToDecrypt)
+        {
+            await Task.Yield();
+            return valueToDecrypt;
+        }
     }
 }
