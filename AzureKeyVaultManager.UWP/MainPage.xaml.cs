@@ -288,12 +288,12 @@ namespace AzureKeyVaultManager.UWP
 
         private async void ShowAddKey(IKeyVault vault)
         {
-
+            await new AddKeyDialog().ShowAsync();
         }
 
         private async void ShowAddSecret(IKeyVault vault)
         {
-
+            await new AddSecretDialog().ShowAsync();
         }
 
         private async void ShowAccessPermissions(IKeyVault vault)

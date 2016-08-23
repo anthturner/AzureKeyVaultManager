@@ -8,15 +8,18 @@
     mc:Ignorable="d"
     Title="Add Key"
     PrimaryButtonText="Add"
-    PrimaryButtonClick="ContentDialog_PrimaryButtonClick" Height="476.629" Width="549.573"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick" Height="650.455" Width="584.461"
     SecondaryButtonText="Close"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
-    
+
     <Grid Name="contentGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="30" />
-            <RowDefinition Height="50" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
@@ -24,18 +27,101 @@
         </Grid.ColumnDefinitions>
         <Pivot Grid.Row="0" Grid.ColumnSpan="2" Margin="0 0 0 20" Name="modePivot">
             <PivotItem Header="New" Name="newKey">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35" />
+                        <RowDefinition Height="35" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
 
+                    <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Active After</TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Expires</TextBlock>
+                    
+                    <TextBox Grid.Row="0" Grid.Column="1" Name="activeAfter" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Name="expires" />
+                </Grid>
             </PivotItem>
             <PivotItem Header="From RSA" Name="importRsaKey">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
 
+                    <TextBlock Grid.Row="0" Grid.Column="0">RSA "n"</TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="0">RSA "e"</TextBlock>
+                    <TextBlock Grid.Row="2" Grid.Column="0">RSA "d"</TextBlock>
+                    <TextBlock Grid.Row="3" Grid.Column="0">RSA "dp"</TextBlock>
+                    <TextBlock Grid.Row="4" Grid.Column="0">RSA "dq"</TextBlock>
+                    <TextBlock Grid.Row="5" Grid.Column="0">RSA "qi"</TextBlock>
+                    <TextBlock Grid.Row="6" Grid.Column="0">RSA "p"</TextBlock>
+                    <TextBlock Grid.Row="7" Grid.Column="0">RSA "q"</TextBlock>
+
+                    <TextBox Grid.Row="0" Grid.Column="1" Name="rsaN" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Name="rsaE" />
+                    <TextBox Grid.Row="2" Grid.Column="1" Name="rsaD" />
+                    <TextBox Grid.Row="3" Grid.Column="1" Name="rsaDP" />
+                    <TextBox Grid.Row="4" Grid.Column="1" Name="rsaDQ" />
+                    <TextBox Grid.Row="5" Grid.Column="1" Name="rsaQI" />
+                    <TextBox Grid.Row="6" Grid.Column="1" Name="rsaP" />
+                    <TextBox Grid.Row="7" Grid.Column="1" Name="rsaQ" />
+                </Grid>
             </PivotItem>
 
             <PivotItem Header="Restore" Name="restoreKey">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
+                    <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">From File</TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Top">From Text</TextBlock>
+
+                    <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
+                        <Button>Select File</Button>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Name="restoreInputFile" VerticalAlignment="Center" Margin="10 0"></TextBlock>
+                    </StackPanel>
+
+                    <TextBox AcceptsReturn="True" Grid.Row="1" Grid.Column="1" Name="restoreInputText" Height="200" />
+                </Grid>
             </PivotItem>
         </Pivot>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="10 0 0 0">Key Name</TextBlock>
-        <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" Margin="10 0 0 0" Name="keyName" />
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+            <CheckBox Margin="10" Name="isEnabled" IsEnabled="{Binding UsesOptions}" IsChecked="True">Enabled?</CheckBox>
+            <CheckBox Margin="10" Name="useHsm" IsEnabled="{Binding UsesOptions}">Store in HSM?</CheckBox>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+            <CheckBox Margin="10" Name="canEncrypt" IsEnabled="{Binding UsesOptions}">Encrypt</CheckBox>
+            <CheckBox Margin="10" Name="canSign" IsEnabled="{Binding UsesOptions}">Sign</CheckBox>
+            <CheckBox Margin="10" Name="canWrap" IsEnabled="{Binding UsesOptions}">Wrap</CheckBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+            <CheckBox Margin="10" Name="canDecrypt" IsEnabled="{Binding UsesOptions}">Decrypt</CheckBox>
+            <CheckBox Margin="10" Name="canVerify" IsEnabled="{Binding UsesOptions}">Verify</CheckBox>
+            <CheckBox Margin="10" Name="canUnwrap" IsEnabled="{Binding UsesOptions}">Unwrap</CheckBox>
+        </StackPanel>
+
+        <TextBlock Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" Margin="10 0 0 0">Key Name</TextBlock>
+        <TextBox Grid.Row="5" Grid.Column="1" HorizontalAlignment="Stretch" Margin="10 0 0 0" Name="keyName" />
     </Grid>
 </ContentDialog>

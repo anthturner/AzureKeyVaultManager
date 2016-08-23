@@ -102,6 +102,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\AddSecretDialog.xaml.cs">
+      <DependentUpon>AddSecretDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\AddKeyDialog.xaml.cs">
       <DependentUpon>AddKeyDialog.xaml</DependentUpon>
     </Compile>
@@ -113,9 +116,6 @@
     </Compile>
     <Compile Include="Dialogs\EncryptDecryptDialog.xaml.cs">
       <DependentUpon>EncryptDecryptDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\CreateKey.xaml.cs">
-      <DependentUpon>CreateKey.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\ErrorDialog.xaml.cs">
       <DependentUpon>ErrorDialog.xaml</DependentUpon>
@@ -177,6 +177,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Dialogs\AddSecretDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Dialogs\AddKeyDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -186,10 +190,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Dialogs\SignVerifyDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\CreateKey.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
