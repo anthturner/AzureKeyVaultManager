@@ -40,8 +40,8 @@
                     <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Active After</TextBlock>
                     <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Expires</TextBlock>
                     
-                    <TextBox Grid.Row="0" Grid.Column="1" Name="activeAfter" />
-                    <TextBox Grid.Row="1" Grid.Column="1" Name="expires" />
+                    <TextBox Grid.Row="0" Grid.Column="1" Name="activeAfter" Text="{Binding ActiveAfter}" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Name="expires" Text="{Binding Expires}" />
                 </Grid>
             </PivotItem>
             <PivotItem Header="From RSA" Name="importRsaKey">
@@ -100,14 +100,14 @@
                         <TextBlock Grid.Row="0" Grid.Column="1" Name="restoreInputFile" VerticalAlignment="Center" Margin="10 0"></TextBlock>
                     </StackPanel>
 
-                    <TextBox AcceptsReturn="True" Grid.Row="1" Grid.Column="1" Name="restoreInputText" Height="200" />
+                    <TextBox AcceptsReturn="True" Text="{Binding RestoreKey}" Grid.Row="1" Grid.Column="1" Name="restoreInputText" Height="200" />
                 </Grid>
             </PivotItem>
         </Pivot>
 
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
-            <CheckBox Margin="10" Name="isEnabled" IsEnabled="{Binding UsesOptions}" IsChecked="True">Enabled?</CheckBox>
-            <CheckBox Margin="10" Name="useHsm" IsEnabled="{Binding UsesOptions}">Store in HSM?</CheckBox>
+            <CheckBox Margin="10" IsChecked="{Binding Enabled}" Name="isEnabled" IsEnabled="{Binding UsesOptions}">Enabled?</CheckBox>
+            <CheckBox Margin="10" IsChecked="{Binding UseHSM}" Name="useHsm" IsEnabled="{Binding UsesOptions}">Store in HSM?</CheckBox>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
@@ -122,6 +122,6 @@
         </StackPanel>
 
         <TextBlock Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" Margin="10 0 0 0">Key Name</TextBlock>
-        <TextBox Grid.Row="5" Grid.Column="1" HorizontalAlignment="Stretch" Margin="10 0 0 0" Name="keyName" />
+        <TextBox Grid.Row="5" Grid.Column="1" HorizontalAlignment="Stretch" Margin="10 0 0 0" Text="{Binding KeyName}" Name="keyName" />
     </Grid>
 </ContentDialog>

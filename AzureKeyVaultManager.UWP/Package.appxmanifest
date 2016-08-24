@@ -30,5 +30,7 @@
     <Capability Name="privateNetworkClientServer" />
     <uap:Capability Name="enterpriseAuthentication" />
     <uap:Capability Name="sharedUserCertificates" />
+    <uap:Capability Name="removableStorage" />
+	<uap:Capability Name="documentsLibrary" />
   </Capabilities>
 </Package>

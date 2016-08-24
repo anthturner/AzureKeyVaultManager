@@ -120,6 +120,7 @@
     <Compile Include="Dialogs\ErrorDialog.xaml.cs">
       <DependentUpon>ErrorDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FileOps.cs" />
     <Compile Include="ServiceAuthentication\AdalAuthentication.cs" />
     <Compile Include="ServiceAuthentication\Authentication.cs" />
     <Compile Include="ServiceAuthentication\UwpBrokerAuthentication.cs" />

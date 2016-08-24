@@ -288,12 +288,33 @@ namespace AzureKeyVaultManager.UWP
 
         private async void ShowAddKey(IKeyVault vault)
         {
-            await new AddKeyDialog().ShowAsync();
+            var dlg = new AddKeyDialog();
+            var result = await new AddKeyDialog().ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                var svc = Factory.GetKeyVaultService(vault, (await Authentication.Instance.GetKeyVaultApiToken(vault.TenantId.ToString("D"))).AsBearer());
+                switch (dlg.Mode)
+                {
+                    case AddKeyDialog.AddKeyDialogMode.Create:
+                        await svc.CreateKey(dlg.KeyName, dlg.UseHSM, dlg.Enabled, dlg.KeyOps);
+                        break;
+                    case AddKeyDialog.AddKeyDialogMode.Restore:
+                        break;
+                    case AddKeyDialog.AddKeyDialogMode.RSAImport:
+                        break;
+                }
+            }
         }
 
         private async void ShowAddSecret(IKeyVault vault)
         {
-            await new AddSecretDialog().ShowAsync();
+            var dlg = new AddSecretDialog();
+            var result = await new AddSecretDialog().ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                var svc = Factory.GetKeyVaultService(vault, (await Authentication.Instance.GetKeyVaultApiToken(vault.TenantId.ToString("D"))).AsBearer());
+                await svc.CreateSecret(dlg.SecretName, dlg.SecretText);
+            }
         }
 
         private async void ShowAccessPermissions(IKeyVault vault)
@@ -305,18 +326,6 @@ namespace AzureKeyVaultManager.UWP
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
-                // todo: save
-            }
-        }
-
-        private async void ShowCreateKey(IKeyVault vault)
-        {
-            var dialog = new CreateKey(vault);
-            var result = await dialog.ShowAsync();
-            if (result == ContentDialogResult.Primary)
-            {
-                var svc = Factory.GetKeyVaultService(vault, (await Authentication.Instance.GetKeyVaultApiToken(vault.TenantId.ToString("D"))).AsBearer());
-                
                 // todo: save
             }
         }

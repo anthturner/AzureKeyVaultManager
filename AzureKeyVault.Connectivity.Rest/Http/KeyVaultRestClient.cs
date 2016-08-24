@@ -20,24 +20,33 @@ namespace AzureKeyVault.Connectivity.Rest.Http
             _root = keyVault.Uri;
         }
 
-        public async Task<IKeyVaultKey> CreateKey(IKeyVaultKey key)
+        public async Task<IKeyVaultKey> CreateKey(string keyName, bool isHsmStored, bool enabled, string[] keyOps)
         {
             var command = new
             {
-                kty = "RSA", // FIXME
-                key_ops = new string[0], // FIXME
+                kty = isHsmStored ? "RSA-HSM" : "RSA",
+                key_ops = keyOps,
                 key_size = 2048, // static value
                 attributes = new
                 {
-                    enabled = true, // FIXME
-                    //nbf, exp
-                },
-                
+                    enabled = enabled,
+                },                
             };
-            //var data = await Post(uri, JsonConvert.SerializeObject(command), "application/json");
-
-            var uri = new Uri(_root, $"keys/{key.Name}/create?api-version={Version}");
+            
+            var uri = new Uri(_root, $"keys/{keyName}/create?api-version={Version}");
             var result = await Post<AzureKeyVaultKey>(uri, JsonConvert.SerializeObject(command), "application/json");
+            return result;
+        }
+
+        public async Task<IKeyVaultSecret> CreateSecret(string secretName, string value)
+        {
+            var command = new
+            {
+                value = value
+            };
+
+            var uri = new Uri(_root, $"secrets/{secretName}?api-version={Version}");
+            var result = await Put<AzureKeyVaultSecret>(uri, JsonConvert.SerializeObject(command), "application/json");
             return result;
         }
 

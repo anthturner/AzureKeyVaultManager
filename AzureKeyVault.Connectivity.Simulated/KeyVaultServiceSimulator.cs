@@ -96,15 +96,28 @@ namespace AzureKeyVaultManager
             return valueToDecrypt;
         }
         
-        public async Task<IKeyVaultKey> CreateKey(IKeyVaultKey key)
+        public async Task<IKeyVaultKey> CreateKey(string keyName, bool isHsmStored, bool enabled, string[] keyOps)
         {
             return new KeyVaultKey()
             {
                 Created = DateTime.Now,
                 ValidAfter = DateTime.Now.Subtract(TimeSpan.FromDays(7)),
                 Expires = DateTime.Now.Add(TimeSpan.FromDays(7)),
-                Name = "Sample Key",
+                Name = keyName,
                 Updated = DateTime.Now
+            };
+        }
+
+        public async Task<IKeyVaultSecret> CreateSecret(string secretName, string value)
+        {
+            return new KeyVaultSecret()
+            {
+                Created = DateTime.Now,
+                ValidAfter = DateTime.Now.Subtract(TimeSpan.FromDays(7)),
+                Expires = DateTime.Now.Add(TimeSpan.FromDays(7)),
+                Name = secretName,
+                Updated = DateTime.Now,
+                Value = value
             };
         }
     }
